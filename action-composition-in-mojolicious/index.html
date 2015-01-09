@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> Action composition in Mojolicious &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>Action composition in Mojolicious</h1>
+  <span class="post-date">Sun, Apr 20, 2014</span>
+      
+
+<p>Something about the routing in Mojolicious has been making things difficult, and Play Framework had the answer.</p>
+
+<p><a href="https://github.com/ian-kent/mojolicious-action-composition">Full source code for these examples can be found on GitHub</a></p>
+
+<h3 id="routing-differences-in-play-framework-and-mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Routing differences in Play Framework and Mojolicious</h3>
+
+<p>It wasn&rsquo;t obvious at first, but the routing model in Mojolicious quickly becomes an unfathomable mess - and very difficult to debug.</p>
+
+<h4 id="mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Mojolicious</h4>
+
+<ul>
+<li><p>Routes are complicated, can be chained together, and can have bridges and conditions which control the way routes behave:</p>
+
+<ul>
+<li><p>Conditions are synchronous, and can switch between sub-routes on a per-request basis</p></li>
+
+<li><p>Bridges can be asynchronous, but always ultimately end at the same destination (e.g., you couldn&rsquo;t have two identical routes running through different bridges, since Mojolicious couldn&rsquo;t determine which to use or if a route even exists, which is why conditions are synchronous).</p></li>
+</ul></li>
+
+<li><p>Controller actions are plain subs, called directly at run-time by the Mojolicious router</p>
+
+<ul>
+<li><p>Actions manipulate the stash and call Mojolicious methods directly (e.g. render)</p></li>
+
+<li><p>The return value from an action is of limited use</p></li>
+</ul></li>
+</ul>
+
+<h4 id="play-framework:a3daa83d4d79bd93ea67944afafd2b47">Play Framework:</h4>
+
+<ul>
+<li><p>Routes are simple - they&rsquo;re written statically and have no concept of bridges or conditions.</p>
+
+<ul>
+<li>One route can point to one action, limited flexibility at the routing layer</li>
+</ul></li>
+
+<li><p>Actions are composed by nesting action functions, with outer functions calling inner functions</p>
+
+<ul>
+<li><p>The action returns either a result, or a future result</p></li>
+
+<li><p>Actions can choose to call other actions, or contain multiple nested actions inside one action</p></li>
+</ul></li>
+</ul>
+
+<h3 id="action-composition:a3daa83d4d79bd93ea67944afafd2b47">Action composition</h3>
+
+<p>At first, the Play Framework routing model seemed very inflexible. Routes are static, and there&rsquo;s no concept of bridges, conditions or any other way to intercept a request.</p>
+
+<p>With Mojolicious, bridges and chained routes make its easy to abstract the &lsquo;how I get there&rsquo; logic away from the &lsquo;once I&rsquo;ve got here&rsquo; logic - and the Play Framework way of life didn&rsquo;t seem to offer the same flexibility.</p>
+
+<p>Play Framework uses action composition, which means nesting actions inside other actions, and it felt a bit too restrictive.</p>
+
+<p>But action composition quickly proved to be the more powerful of the two. And definitely the easiest to understand, especially when tracing requests through a complicated web application.</p>
+
+<h3 id="why-the-mojolicious-model-starts-well-but-ends-badly:a3daa83d4d79bd93ea67944afafd2b47">Why the Mojolicious model starts well, but ends badly</h3>
+
+<p>The Mojolicious model is extremely powerful for a simple application - we can define route stubs or bridges, attach more routes to those, intercept requests in bridges and return 404 or 500 errors. Which is great - but then we end in a messy refactoring nightmare:</p>
+
+<ul>
+<li><p>The code used in routing (e.g. authenticated bridges) needs to be shared between applications</p></li>
+
+<li><p>We move the code into a shared library, and get it to create named bridges</p></li>
+
+<li><p>We update our applications to use the named bridge from the shared library</p></li>
+</ul>
+
+<p>All good so far.</p>
+
+<p>Now we want to use a hook to intercept some part of the request - adding headers for example:</p>
+
+<ul>
+<li><p>We write a plugin which registers a hook</p></li>
+
+<li><p>The hook adds custom headers to a response</p></li>
+
+<li><p>We include the plugin in our application, and all responses get new headers</p></li>
+</ul>
+
+<p>Still good. But once we&rsquo;ve done this a few times, we end up with all routing and request manipulation being done by shared libraries. We have limited code visibility, and all we get to show for our efforts are:</p>
+
+<ul>
+<li><p>A few <code>-&gt;plugin</code> lines, adding &lsquo;unknown&rsquo; functionality to our routing</p>
+
+<p><code>$app-&gt;plugin(&lsquo;My::Magic::Routing::Plugin&rsquo;);
+$app-&gt;plugin(&lsquo;Another::Magic::Routing::Plugin&rsquo;);
+</code></p></li>
+
+<li><p>An dangerous action sub, with no idea how the request gets there</p>
+
+<p><code>sub this_should_be_authenticated_and_authorised {
+  $self-&gt;delete_all_data;
+  $self-&gt;make_everyone_admin;
+  $self-&gt;enter_maintenance_mode;
+  $self-&gt;render(text =&gt; &lsquo;hope I really was authenticated&hellip;&rsquo;);
+}
+</code></p></li>
+</ul>
+
+<p>And now we&rsquo;re potentially screwed.</p>
+
+<p>Mojolicious routing has become well hidden technical debt (or a serious defect/PR disaster) waiting to bite.</p>
+
+<h3 id="why-the-play-framework-model-is-better:a3daa83d4d79bd93ea67944afafd2b47">Why the Play Framework model is better</h3>
+
+<p>Although routing becomes far more static in Play Framework, we can still refactor our routing code into shared libraries.</p>
+
+<p>But there&rsquo;s one important difference.</p>
+
+<p>With Play Framework action composition, we maintain full code visibility at the controller:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  Authorised(request, request.user) {
+    Ok(request.user.get)
+  } otherwise {
+    Unauthorized
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Instead of tracing through multiple plugins to find out what happens to a request, it&rsquo;s all there in front of us. We know the request is Authenticated, and is then Authorised. If we have a bug, its easy to follow a request to see what happens.</p>
+
+<p>We can also choose how much code visibility we get - for example, Authenticated takes care of what happens if user authentication fails, but Authorised leaves it to the developer to decide how to handle an authorisation failure.</p>
+
+<h3 id="so-what-can-we-do-about-it:a3daa83d4d79bd93ea67944afafd2b47">So what can we do about it</h3>
+
+<p>This is Perl - there&rsquo;s always a way!</p>
+
+<p>Let&rsquo;s define the syntax first:</p>
+
+<pre><code>&lt;code&gt;# a plain action
+Action 'welcome' =&gt; sub {
+  shift-&gt;render(text =&gt; '');
+};
+
+# an asynchronous action (without a render_later call)
+Action 'login' =&gt; Async {
+  my $self = shift;
+  Mojo::IOLoop-&gt;timer(0.25 =&gt; sub {
+    $self-&gt;render(text =&gt; '');
+  });
+};
+
+# an authenticated action
+Action 'private1' =&gt; Authenticated {
+  shift-&gt;render(text =&gt; '');
+};
+
+# nested actions, with parameters
+Action 'private2' =&gt; Async { Authenticated {
+  WithPermission 'blog.post' =&gt; sub {
+    shift-&gt;render(text =&gt; '');
+  }, sub {
+    shift-&gt;render(text =&gt; 'not authorised');
+  }
+}};
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="implementing-it-in-mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Implementing it in Mojolicious</h3>
+
+<p>To start with, we need a way to define an action. This is essentially the same as the default sub{}, but lets us capture its contents.</p>
+
+<h4 id="the-basic-action-action:a3daa83d4d79bd93ea67944afafd2b47">The basic Action action</h4>
+
+<p>We need to be able to pass in a sub, and return a sub (though, for the top-level Action, we&rsquo;ll need to monkey patch it so the Mojolicious router can find it).</p>
+
+<p>Since we need to be able to chain these actions together, we also need to recursively call the inner action. We&rsquo;ll also need to do that for any other actions we define, so lets make it generic:</p>
+
+<pre><code>&lt;code&gt;sub go {
+  my ($controller, $inner) = @_;
+  my $i = $inner;
+  while($i) {
+    my $res = $i-&gt;($controller) if ref($i) eq 'CODE';
+    $i = ref($res) eq 'CODE' ? $res : undef;
+  }
+  return undef;
+}
+
+sub Action($$) {
+  my ($action, $inner) = @_;
+  monkey_patch caller, $action =&gt; sub { go(shift, $inner) }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>This is enough to let us define a new action like this:</p>
+
+<pre><code>&lt;code&gt;Action 'myaction' =&gt; sub {
+    shift-&gt;render(text =&gt; '');
+};
+&lt;/code&gt;
+</code></pre>
+
+<h4 id="a-nested-action-async:a3daa83d4d79bd93ea67944afafd2b47">A nested action - Async</h4>
+
+<p>Adding another action type is just as easy.</p>
+
+<p>Since Async is our first &lsquo;nested&rsquo; action, we&rsquo;ll implement that:</p>
+
+<pre><code>&lt;code&gt;sub Async(&amp;) {
+  my $inner = shift;
+  return sub {
+    my $controller = shift;
+    $controller-&gt;render_later;
+    go($controller, $inner);
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Now we can define an Async action, without needing to call <code>render_later</code>:</p>
+
+<pre><code>&lt;code&gt;Action 'login' =&gt; Async {
+  my $self = shift;
+  Mojo::IOLoop-&gt;timer(0.25 =&gt; sub {
+    $self-&gt;session(auth =&gt; 1);
+    $self-&gt;render(text =&gt; '');
+  });
+};
+&lt;/code&gt;
+</code></pre>
+
+<h4 id="an-action-with-parameters:a3daa83d4d79bd93ea67944afafd2b47">An action with parameters</h4>
+
+<p>We&rsquo;ll skip over the Authenticated action for now - its almost identical to Async, with the exception of needing to perform a session lookup to decide whether to continue the action chain.</p>
+
+<p>Instead, we&rsquo;ll implement WithPermission - an action with run-time parameters.</p>
+
+<p>We need to be able to pass in some custom parameters, and a sub, and have it return a sub which, like the others, invokes the inner sub when its called:</p>
+
+<pre><code>&lt;code&gt;sub WithPermission($&amp;;&amp;) {
+  my ($permission, $inner, $error) = @_;
+  return sub {
+    my $controller = shift;
+    if($permission eq 'blog.delete') {
+      go($controller, $inner);
+    } else {
+      $error ? go($controller, $error) : $controller-&gt;render_exception('Unauthorised');
+    }
+    return undef;
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Which lets us define an action like this:</p>
+
+<pre><code>&lt;code&gt;Action 'private1' =&gt; Authenticated { WithPermission 'blog.post' =&gt; sub {
+  shift-&gt;render(text =&gt; '');
+}, sub {
+  shift-&gt;render(text =&gt; 'need permission blog.post');
+}};
+&lt;/code&gt;
+</code></pre>
+
+<p>If the user is authenticated and has the permission &lsquo;blog.post&rsquo;, the first inner action gets executed, otherwise the second is called instead. However, since our WithPermission action only accepts &lsquo;blog.delete&rsquo;, this will always fail.</p>
+
+<p>The WithPermission action also implements a default failure action, so we could skip the second inner action completely.</p>
+
+<h3 id="summary:a3daa83d4d79bd93ea67944afafd2b47">Summary</h3>
+
+<p>The simple implementation above gives us the flexibility to move our bridge and condition code away from the routing and into the controller layer, improving code visibility for developers.</p>
+
+<p>We can get many of the benefits that Play Framework offers, but there&rsquo;s still one big difference.</p>
+
+<p>In Play Framework, we could invoke an action and inspect its result, and still choose to not return that content to the user. This gives us the flexibility to invoke multiple actions, and decide later which to use, for example:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  val res1 = Foo(request);
+  val res2 = Bar(request);
+  if((res1.body.json \ 'some_key').isDefined)
+    Authorised(res1, request.user) {
+  else
+    Unauthorized
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>In Mojolicious, the client might end up with a mixture of both responses, or just whichever gets called first. Because Mojolicious doesn&rsquo;t use the return value, as soon as an action calls <code>-&gt;render</code> it will immediately return a response to the client.</p>
+
+<p>It should be possible - by creating a new stash and fake response objects, and possibly patching <code>-&gt;render</code> - to trick Mojolicious into supporting a future/promise based interface.</p>
+
+</div>
+</div>
+
+  </body>
+</html>

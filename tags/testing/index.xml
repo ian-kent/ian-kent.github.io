@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Testing on Ian Kent</title>
+    <link>http://yourSiteHere/tags/testing/</link>
+    <description>Recent content in Testing on Ian Kent</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    
+    <lastBuildDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</lastBuildDate>
+    <atom:link href="http://yourSiteHere/tags/testing/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Introducing Go-MailHog</title>
+      <link>http://yoursitehere/introducing-go-mailhog/</link>
+      <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
+      
+      <guid>http://yoursitehere/introducing-go-mailhog/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
+
+&lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
+
+&lt;p&gt;| edit: it was Ruby, not Python - but painful nonetheless!&lt;/p&gt;
+
+&lt;p&gt;It was originally written in Perl based on code from &lt;a href=&#34;https://github.com/ian-kent/M3MTA&#34;&gt;M3MTA&lt;/a&gt;, but it&amp;rsquo;s been rewritten in Go for portability, and now runs on any supported platform without installation.&lt;/p&gt;
+
+&lt;p&gt;MailHog is designed for testing emails during application development. Instead of using a real SMTP server which delivers messages or has strict rules on email recipients, you can use MailHog and send messages to any email address with a valid format.&lt;/p&gt;
+
+&lt;p&gt;Instead of delivering the messages, they&amp;rsquo;re stored in MongoDB (edit: or memory!), and you can view them using the MailHog web interface, or retrieve them using an API for automated testing.&lt;/p&gt;
+
+&lt;p&gt;Using MailHog is as simple as &lt;a href=&#34;https://github.com/ian-kent/Go-MailHog/releases&#34;&gt;downloading the binary release from GitHub&lt;/a&gt; and running it.&lt;/p&gt;
+
+&lt;p&gt;With no configuration, it will listen on port 1025 for SMTP, 8025 for HTTP (both web and API), and will connect to MongoDB running on localhost port 27017.&lt;/p&gt;
+
+&lt;p&gt;To view messages, point your browser at &lt;code&gt;http://localhost:8025&lt;/code&gt; or send a GET request to &lt;code&gt;http://localhost:8025/api/v1/messages&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;
+&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

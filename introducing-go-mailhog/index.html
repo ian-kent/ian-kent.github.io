@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> Introducing Go-MailHog &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>Introducing Go-MailHog</h1>
+  <span class="post-date">Sun, Apr 20, 2014</span>
+      <p><a href="https://github.com/ian-kent/Go-MailHog">Go-MailHog</a> is a lightweight portable application which acts like a SMTP server.</p>
+
+<p>It was inspired by <a href="http://mailcatcher.me/">MailCatcher</a>, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.</p>
+
+<p>| edit: it was Ruby, not Python - but painful nonetheless!</p>
+
+<p>It was originally written in Perl based on code from <a href="https://github.com/ian-kent/M3MTA">M3MTA</a>, but it&rsquo;s been rewritten in Go for portability, and now runs on any supported platform without installation.</p>
+
+<p>MailHog is designed for testing emails during application development. Instead of using a real SMTP server which delivers messages or has strict rules on email recipients, you can use MailHog and send messages to any email address with a valid format.</p>
+
+<p>Instead of delivering the messages, they&rsquo;re stored in MongoDB (edit: or memory!), and you can view them using the MailHog web interface, or retrieve them using an API for automated testing.</p>
+
+<p>Using MailHog is as simple as <a href="https://github.com/ian-kent/Go-MailHog/releases">downloading the binary release from GitHub</a> and running it.</p>
+
+<p>With no configuration, it will listen on port 1025 for SMTP, 8025 for HTTP (both web and API), and will connect to MongoDB running on localhost port 27017.</p>
+
+<p>To view messages, point your browser at <code>http://localhost:8025</code> or send a GET request to <code>http://localhost:8025/api/v1/messages</code>.</p>
+
+<p><a href="http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png"><img src="http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png" alt="MailHog" />
+</a></p>
+
+</div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> Quick start with Scala and Play Framework &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>Quick start with Scala and Play Framework</h1>
+  <span class="post-date">Thu, Feb 13, 2014</span>
+      <p>For the quick and dirty way to get <a href="http://www.playframework.com/">Play Framework</a> up and running, you need only these:</p>
+
+<ul>
+<li><p><a href="http://vagrantup.com">Vagrant</a></p></li>
+
+<li><p><a href="https://www.virtualbox.org/">VirtualBox</a></p></li>
+
+<li><p><a href="http://git-scm.com/download/win">Git for Windows</a></p></li>
+</ul>
+
+<p>Once they&rsquo;re all installed, its this easy:</p>
+
+<ul>
+<li><p>Open Git Bash</p></li>
+
+<li><p>Clone my <a href="https://github.com/ian-kent/vagrant-scala-play-mongodb">Play/Scala vagrant repository</a>: <code>git clone https://github.com/ian-kent/vagrant-scala-play-mongodb.git playserver</code></p></li>
+
+<li><p>Change directory: <code>cd playserver</code></p></li>
+
+<li><p>Start the virtual machine: <code>vagrant up</code></p></li>
+
+<li><p>Once it&rsquo;s complete, connect using SSH: <code>vagrant ssh</code></p></li>
+
+<li><p>Create a new play app: <code>play new MyApp</code></p></li>
+
+<li><p>Change directory: <code>cd MyApp</code></p></li>
+
+<li><p>Start your application: <code>play run</code></p></li>
+
+<li><p>View your new Play site in a browser: <code>http://localhost:9000</code></p></li>
+</ul>
+
+<p>If you want to edit your Play project in <a href="http://www.jetbrains.com/idea/">IntelliJ Idea</a>, create the project files from the command line using <code>play gen-idea</code>.</p>
+
+<p>To help you get started, the Vagrantfile also installs <a href="http://www.mongodb.org/">MongoDB</a> and sets up port forwarding for port 9000 (Play) and port 27017 (MongoDB)</p>
+
+</div>
+</div>
+
+  </body>
+</html>

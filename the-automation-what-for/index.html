@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> The automation what-for &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>The automation what-for</h1>
+  <span class="post-date">Tue, Feb 25, 2014</span>
+      
+
+<p>Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&rsquo;ve invested 5 years in writing automated test cases.</p>
+
+<p>The challenge was to prove the value in continuing to automate our test cases, on the basis that it should be up to scrutiny if the value really does exist.</p>
+
+<h4 id="so-we-tried:0ce8429d54ada539b10abd45c7aa53e0">So we tried&hellip;</h4>
+
+<ul>
+<li><p>Automated tests are repeatable and consistent</p></li>
+
+<li><p>Automated tests and testing platforms can be easily scaled as the code base grows</p></li>
+
+<li><p>Automated tests can be executed concurrently against many environments</p></li>
+
+<li><p>Automated tests can provide rapid feedback on system/code changes</p></li>
+</ul>
+
+<h4 id="of-course-the-same-isn-t-true-for-manual-testing:0ce8429d54ada539b10abd45c7aa53e0">Of course, the same isn&rsquo;t true for manual testing</h4>
+
+<ul>
+<li><p>Manual tests can be unpredictable</p>
+
+<ul>
+<li><p>different testers may produce different results</p></li>
+
+<li><p>testers may use workarounds to avoid some bugs</p></li>
+</ul></li>
+
+<li><p>Manual testing isn&rsquo;t scalable - employing more people is the only option</p></li>
+
+<li><p>An individual tester can only (sensibly) test one environment at a time</p></li>
+
+<li><p>Manual tests are slow - feedback might take days, weeks or months</p></li>
+</ul>
+
+<h3 id="but-these-weren-t-the-right-answers:0ce8429d54ada539b10abd45c7aa53e0">But these weren&rsquo;t the right answers.</h3>
+
+<p>We couldn&rsquo;t understand why.</p>
+
+<p>So, lets have a closer look at automation&hellip;</p>
+
+<h2 id="what-is-automation:0ce8429d54ada539b10abd45c7aa53e0">What is automation?</h2>
+
+<p>Automation, by definition, is:</p>
+
+<blockquote>
+  
+> 
+> the technique, method, or system of operating or controlling a process by highly automatic means, as by electronic devices, reducing human intervention to a minimum
+> 
+> 
+</blockquote>
+
+<p>Originally used circa 1940, the word was an irregular formation combining &ldquo;automatic&rdquo; and &ldquo;action&rdquo;, but process automation had become a well established practice long before then.</p>
+
+<p>Everything from manufacturing and agriculture to construction and transportation - in modern history, humans have automated nearly every aspect of their lives.</p>
+
+<p>On an industrial scale the benefits are immediately obvious. A farmer wouldn&rsquo;t employ manual labour to plough fields any more than a car manufacturer would employ manual labour to assemble cars.</p>
+
+<p>The return on investment (ROI) for the automation of these processes is clear - though of course it wasn&rsquo;t in the decades leading up to the industrial revolution.</p>
+
+<h2 id="why-do-we-automate-things:0ce8429d54ada539b10abd45c7aa53e0">Why do we automate things?</h2>
+
+<p>There are many reasons to automate processes - some are purely economic while others are psychological.</p>
+
+<ul>
+<li><p>Simple or boring tasks (paying bills)</p></li>
+
+<li><p>Time consuming tasks (washing dishes)</p></li>
+
+<li><p>Beyond our physical capability (lifting shipping containers)</p></li>
+
+<li><p>To reduce cost (human labour)</p></li>
+
+<li><p>To reduce risk (bomb disposal robots)</p></li>
+</ul>
+
+<p>In all cases, our ability to automate something is limited by our mental capacity to perform that task. We can only automate the things we understand, that are simple enough and repeatable enough. We can&rsquo;t easily automate tasks requiring creativity or emotion.</p>
+
+<p>For example, we can easily automate opening a shop door (we <em>could</em> do it manually), but we would find it difficult to automate brain surgery (most humans couldn&rsquo;t do it even manually) or software engineering (many have tried).</p>
+
+<p>But sometimes, even when a process can be automated, we decide not to.</p>
+
+<h2 id="why-do-we-choose-not-to-automate-things:0ce8429d54ada539b10abd45c7aa53e0">Why do we choose not to automate things?</h2>
+
+<p>Just as there are some processes we would like to automate, but can&rsquo;t - there are some processes we could automate, but don&rsquo;t:</p>
+
+<ul>
+<li><p>Things we enjoy doing</p></li>
+
+<li><p>Economic cost, e.g. R&amp;D investment is too high or unpredictable</p></li>
+
+<li><p>Social cost, e.g. unemployment and poverty</p></li>
+</ul>
+
+<p>Like our ability to automate is limited by our mental capacity to perform a task, our ability to choose not to automate is equally limited by our physical limitations in performing a task (we wouldn&rsquo;t even consider using human labour to lift a shipping container).</p>
+
+<h1 id="how-we-decide-what-to-automate:0ce8429d54ada539b10abd45c7aa53e0">How we decide what to automate</h1>
+
+<p>Deciding whether we automate a process comes down to a cost-benefit analysis, determining if the investment required (whether an economic, physical or psychological investment) is worth the benefit we get in return.</p>
+
+<p>As with all cost-benefit analysis, the time-frame over which we calculate the costs and benefits can have a considerable impact on the ROI.</p>
+
+<p>For example, if Ford had only planned to make 1000 cars over a 2 year time frame, then it would be obvious that the ROI on designing, building, testing and deploying an automated car manufacturing process would be terrible, and would probably result in a net loss (or bankruptcy) for the company.</p>
+
+<p>But if Ford wanted to continue producing cars - maybe another <a href="http://www.autoblog.com/2012/08/31/ford-focus-is-companys-350th-millionth-vehicle-and-worlds-best/">350 million cars over a 109 years</a> - then the ROI becomes far more appealing.</p>
+
+<p>Although the up-front investment in research and development is high, the long-term benefit of this is exponentially higher, ultimately making Ford one of the world&rsquo;s leading car manufacturers and forging the modern automotive industry.</p>
+
+<h2 id="why-software-testing-is-no-different:0ce8429d54ada539b10abd45c7aa53e0">Why software testing is no different</h2>
+
+<p>Just like agriculture and manufacturing, automating software testing comes with a high initial (and sometimes on-going) cost:</p>
+
+<ul>
+<li><p>Developers and testers need to learn how to write automated tests</p></li>
+
+<li><p>Test suites need to be written and maintained</p></li>
+
+<li><p>An automated testing platform must be created</p></li>
+</ul>
+
+<p>And just like agriculture and manufacturing, some of it doesn&rsquo;t need automation (or can&rsquo;t be automated):</p>
+
+<ul>
+<li><p>If it&rsquo;s throwaway/one-use code</p></li>
+
+<li><p>Exploratory testing which requires creativity</p></li>
+
+<li><p>Visual testing (does it look/feel right)</p></li>
+</ul>
+
+<p>But in most cases, well written automated tests provide a level of confidence unmatched by manual testing:</p>
+
+<ul>
+<li><p>Entire system components can be updated or replaced efficiently</p></li>
+
+<li><p>Codebases can be safely refactored</p></li>
+
+<li><p>Integration and release can be automated</p></li>
+
+<li><p>Fixed defects can&rsquo;t regress</p></li>
+
+<li><p>More platforms can be tested (desktop, web, mobile, etc)</p></li>
+</ul>
+
+<p>By developing an automated testing suite, testing resources can then be reallocated to more productive work:</p>
+
+<ul>
+<li><p>Improving test coverage</p></li>
+
+<li><p>Collaborating with developers</p></li>
+
+<li><p>Exploratory and visual testing</p></li>
+
+<li><p>Accessibility testing</p></li>
+</ul>
+
+<h2 id="so-what-was-the-answer:0ce8429d54ada539b10abd45c7aa53e0">So, what was the answer?</h2>
+
+<p>It certainly won&rsquo;t be &ldquo;because we should&rdquo; or &ldquo;it&rsquo;s the right thing to do&rdquo;, or even &ldquo;it&rsquo;ll reduce defects&rdquo; or &ldquo;it&rsquo;ll improve code quality&rdquo;.</p>
+
+<p>It will come down to proving, through cost-benefit analysis, that the investment in automated testing provides a strong enough ROI. This will largely depend on the time frame used for the ROI calculation.</p>
+
+<p>If the focus is short-term (&ldquo;we want a great product now&rdquo;) then any further investment in test automation will yield no value, and manual testing is the only choice.</p>
+
+<p>But if the focus is long-term (&ldquo;we still want a great product in 5 years&rdquo;) then test automation is invaluable (supplemented with appropriate manual testing), and provably so in any cost-benefit analysis.</p>
+
+<h3 id="is-there-a-middle-ground:0ce8429d54ada539b10abd45c7aa53e0">Is there a middle ground?</h3>
+
+<p>The middle ground does seem attractive:</p>
+
+<ul>
+<li><p>Manual testing to get a quick delivery</p></li>
+
+<li><p>Automate tests longer-term</p></li>
+</ul>
+
+<p>It seems to promise a good short and long term ROI. We get our quick delivery, to an acceptable standard. We also get our test automation. And eventually we get a high quality product.</p>
+
+<p>But until the test automation happens, developers are constrained by the existing codebase:</p>
+
+<ul>
+<li><p>refactoring becomes difficult or impossible</p></li>
+
+<li><p>updating components carries significant risk</p></li>
+
+<li><p>minor changes, bug fixes and features take an inordinate amount of time to develop, test and deploy</p></li>
+</ul>
+
+<p>This has a substantial consequence for the product or service being delivered:</p>
+
+<ul>
+<li><p>If test automation never happens (no time is made available), the entire product will suffer and eventually adding new features or fixing bugs will become impossible</p></li>
+
+<li><p>If test automation happens (quickly), new features will be held up while test suites are automated, delaying the creation of business value</p></li>
+</ul>
+
+<p>Either way, the middle ground eventually becomes technical debt, and the short term business value gained through a reduction in the initial investment must eventually be repaid (through reduced longer-term value).</p>
+
+<h2 id="a-cost-benefit-analysis:0ce8429d54ada539b10abd45c7aa53e0">A cost-benefit analysis</h2>
+
+<p>Many cost-benefit analysis of test automation have already been carried out, so I&rsquo;m not going to write &ldquo;Yet Another Cost-Benefit Analysis&rdquo; - but here&rsquo;s a few links instead:</p>
+
+<ul>
+<li><p><a href="http://www.softwarequalitymethods.com/papers/star99%20model%20paper.pdf">Cost Benefits Analysis of Test Automation</a></p></li>
+
+<li><p><a href="http://www.ibm.com/developerworks/rational/library/content/RationalEdge/dec02/TestAutomation_TheRationalEdge_Dec2002.pdf">The Business Argument for Investing in Test Automation</a></p></li>
+
+<li><p><a href="http://www.automatedtestinginstitute.com/home/index.php?option=com_content&amp;id=58&amp;Itemid=65">Return on Investment (ROI) Calculator</a></p></li>
+
+<li><p><a href="http://wiki.directi.com/download/attachments/1703938/Automated+Testing+vs+Manual+Testing.ppt">Automated Testing vs Manual Testing</a></p></li>
+</ul>
+
+<h1 id="conclusion:0ce8429d54ada539b10abd45c7aa53e0">Conclusion</h1>
+
+<p>Given the historical importance of process automation throughout the industrial revolution, the rapid improvement to standards of living that we&rsquo;re still benefiting from today, and the significant expansion of the human race as a result of the earliest technological automation, it seems counter-intuitive to even question the value in automating software testing.</p>
+
+<p>Though I agree that some tests shouldn&rsquo;t be automated (or can&rsquo;t be), when products or services are expected to have a long &ldquo;shelf-life&rdquo;, test automation becomes the only sensible solution.</p>
+
+<p>It&rsquo;s also important to consider the human element in any cost-benefit analysis.</p>
+
+<p>Testers and developers, like anyone else, get bored easily when tasked with simple and repetitive work. If we have the opportunity to automate this work, we leave humans with the more complex and creative work - the stuff we&rsquo;re really good at, the stuff that we can&rsquo;t automate, and the stuff that&rsquo;s just more satisfying to do.</p>
+
+</div>
+</div>
+
+  </body>
+</html>

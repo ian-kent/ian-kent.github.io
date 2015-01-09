@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vagrant on Ian Kent</title>
+    <link>http://yourSiteHere/categories/vagrant/</link>
+    <description>Recent content in Vagrant on Ian Kent</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    
+    <lastBuildDate>Wed, 26 Feb 2014 19:01:35 GMT</lastBuildDate>
+    <atom:link href="http://yourSiteHere/categories/vagrant/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A quick introduction to Apache Mesos</title>
+      <link>http://yoursitehere/a-quick-introduction-to-apache-mesos/</link>
+      <pubDate>Wed, 26 Feb 2014 19:01:35 GMT</pubDate>
+      
+      <guid>http://yoursitehere/a-quick-introduction-to-apache-mesos/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;
+
+&lt;p&gt;In some ways, Mesos provides the opposite to virtualisation:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Virtualisation splits a single physical resource into multiple virtual resources&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mesos joins multiple physical resources into a single virtual resource&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It schedules CPU and memory resources across the cluster in much the same way the Linux Kernel schedules local resources.&lt;/p&gt;
+
+&lt;p&gt;A Mesos cluster is made up of four major components:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;ZooKeepers&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mesos masters&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mesos slaves&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Frameworks&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;zookeeper:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;ZooKeeper&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://zookeeper.apache.org/&#34;&gt;Apache ZooKeeper&lt;/a&gt; is a centralised configuration manager, used by distributed applications such as Mesos to coordinate activity across a cluster.&lt;/p&gt;
+
+&lt;p&gt;Mesos uses ZooKeeper to elect a leading master and for slaves to join the cluster.&lt;/p&gt;
+
+&lt;h3 id=&#34;mesos-masters:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Mesos masters&lt;/h3&gt;
+
+&lt;p&gt;A Mesos master is a Mesos instance in control of the cluster.&lt;/p&gt;
+
+&lt;p&gt;A cluster will typically have multiple Mesos masters to provide fault-tolerance, with one instance elected the leading master.&lt;/p&gt;
+
+&lt;h3 id=&#34;mesos-slaves:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Mesos slaves&lt;/h3&gt;
+
+&lt;p&gt;A Mesos slave is a Mesos instance which offers resources to the cluster.&lt;/p&gt;
+
+&lt;p&gt;They are the &amp;lsquo;worker&amp;rsquo; instances - tasks are allocated to the slaves by the Mesos master.&lt;/p&gt;
+
+&lt;h3 id=&#34;frameworks:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Frameworks&lt;/h3&gt;
+
+&lt;p&gt;On its own, Mesos only provides the basic &amp;ldquo;kernel&amp;rdquo; layer of your cluster. It lets other applications request resources in the cluster to perform tasks, but does nothing itself.&lt;/p&gt;
+
+&lt;p&gt;Frameworks bridge the gap between the Mesos layer and your applications. They are higher level abstractions which simplify the process of launching tasks on the cluster.&lt;/p&gt;
+
+&lt;h4 id=&#34;chronos:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Chronos&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/airbnb/chronos&#34;&gt;Chronos&lt;/a&gt; is a cron-like fault-tolerant scheduler for a Mesos cluster.&lt;/p&gt;
+
+&lt;p&gt;You can use it to schedule jobs, receive failure and completion notifications, and trigger other dependent jobs.&lt;/p&gt;
+
+&lt;h4 id=&#34;marathon:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Marathon&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/mesosphere/marathon&#34;&gt;Marathon&lt;/a&gt; is the equivalent of the Linux upstart or init daemons, designed for long-running applications.&lt;/p&gt;
+
+&lt;p&gt;You can use it to start, stop and scale applications across the cluster.&lt;/p&gt;
+
+&lt;h4 id=&#34;others:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Others&lt;/h4&gt;
+
+&lt;p&gt;There are a few other frameworks:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://aurora.apache.org/&#34;&gt;Aurora&lt;/a&gt; - service scheduler&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://hadoop.apache.org/&#34;&gt;Hadoop&lt;/a&gt; - data processing&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/jenkinsci/mesos-plugin&#34;&gt;Jenkins&lt;/a&gt; - Jenkins slave manager&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://spark.apache.org/&#34;&gt;Spark&lt;/a&gt; - data processing&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.adaptivecomputing.com/products/open-source/torque/&#34;&gt;Torque&lt;/a&gt; - resource manager&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can also &lt;a href=&#34;http://mesos.apache.org/documentation/latest/&#34;&gt;write your own framework&lt;/a&gt;, using Java, Python or C++.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-quick-start-guide:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;The quick start guide&lt;/h2&gt;
+
+&lt;p&gt;If you want to get a Mesos cluster up and running, you have a few options:&lt;/p&gt;
+
+&lt;h3 id=&#34;using-vagrant:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Using Vagrant&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.vagrantup.com&#34;&gt;Vagrant&lt;/a&gt; and the &lt;a href=&#34;https://github.com/everpeace/vagrant-mesos&#34;&gt;vagrant-mesos&lt;/a&gt; Vagrantfile can help you quickly build:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;a standalone Mesos instance&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;a multi-machine Mesos cluster of ZooKeepers, masters and slaves&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Unfortunately, the network configuration is a bit difficult to work with - it uses a private network between the VMs, and SSH tunnelling to provide access to the cluster.&lt;/p&gt;
+
+&lt;h3 id=&#34;using-mesosphere-and-amazon-web-services:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Using Mesosphere and Amazon Web Services&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mesosphere.io/&#34;&gt;Mesosphere&lt;/a&gt; provide &lt;a href=&#34;https://elastic.mesosphere.io/&#34;&gt;Elastic Mesosphere&lt;/a&gt;, which can quickly launch a Mesos cluster using &lt;a href=&#34;http://aws.amazon.com/ec2/&#34;&gt;Amazon EC2&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is far easier to work with than the Vagrant build, but it isn&amp;rsquo;t free - around $1.50 an hour for 6 instances or $4.50 for 18.&lt;/p&gt;
+
+&lt;h3 id=&#34;a-simpler-vagrant-build:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;A simpler Vagrant build&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve put together some Vagrantfiles to build individual components of a Mesos cluster. It&amp;rsquo;s a work in progress, but it can already build a working Mesos cluster without the networking issues. It uses bridged networking, with dynamically assigned IPs, so all instances can be accessed directly through your local network.&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;ll need the following GitHub repositories:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-zookeeper&#34;&gt;ian-kent/vagrant-zookeeper&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-mesos-master&#34;&gt;ian-kent/vagrant-mesos-master&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-mesos-slave&#34;&gt;ian-kent/vagrant-mesos-slave&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;At the moment, a cluster is limited to one ZooKeeper, but can support multiple Mesos masters and slaves.&lt;/p&gt;
+
+&lt;p&gt;Each of the instances is also built with &lt;a href=&#34;http://serfdom.io&#34;&gt;Serf&lt;/a&gt; to provide decentralised service discovery. You can use &lt;code&gt;serf members&lt;/code&gt; from any instance to list all other instances.&lt;/p&gt;
+
+&lt;p&gt;To help test deployments, there&amp;rsquo;s also a MongoDB build with Serf installed:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-mongodb&#34;&gt;ian-kent/vagrant-mongodb&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Like the ZooKeeper instances, the MongoDB instance joins the same Serf cluster but isn&amp;rsquo;t part of the Mesos cluster.&lt;/p&gt;
+
+&lt;h2 id=&#34;once-your-cluster-is-running:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Once your cluster is running&lt;/h2&gt;
+
+&lt;p&gt;You&amp;rsquo;ll need to install a framework.&lt;/p&gt;
+
+&lt;p&gt;Mesosphere lets you choose to install Marathon on Amazon EC2, so that could be a good place to start.&lt;/p&gt;
+
+&lt;p&gt;Otherwise, manually installing and configuring Marathon or another framework is easy. The quick and dirty way is to install them on the Mesos masters, but it would be better if they had their own VMs.&lt;/p&gt;
+
+&lt;p&gt;With Marathon or Aurora, you can even run other frameworks in the Mesos cluster for scalability and fault-tolerance.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Quick start with Perl and Mojolicious</title>
+      <link>http://yoursitehere/quick-start-with-perl-and-mojolicious/</link>
+      <pubDate>Fri, 14 Feb 2014 14:43:20 GMT</pubDate>
+      
+      <guid>http://yoursitehere/quick-start-with-perl-and-mojolicious/</guid>
+      <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://vagrantup.com&#34;&gt;Vagrant&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.virtualbox.org/&#34;&gt;VirtualBox&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://git-scm.com/download/win&#34;&gt;Git for Windows&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once they&amp;rsquo;re all installed, its this easy:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Open Git Bash&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Clone my &lt;a href=&#34;https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb&#34;&gt;Mojolicious/Perl vagrant repository&lt;/a&gt;: &lt;code&gt;git clone https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb.git mojoserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd mojoserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Start the virtual machine: &lt;code&gt;vagrant up&lt;/code&gt; (might take a while, installing Perl is slow!)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Once it&amp;rsquo;s complete, connect using SSH: &lt;code&gt;vagrant ssh&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Create a new Mojolicious app: &lt;code&gt;mojo generate app MyApp&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd my_app&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Start your application: &lt;code&gt;./script/my_app daemon&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;View your new Mojolicious site in a browser: &lt;code&gt;http://localhost:3000&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It installs the latest version of &lt;a href=&#34;http://mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt; and &lt;a href=&#34;http://mojolicio.us/perldoc/Mango&#34;&gt;Mango&lt;/a&gt; along with Perl 5.18.2 and &lt;a href=&#34;http://cpanmin.us&#34;&gt;cpanminus&lt;/a&gt; using Perlbrew.&lt;/p&gt;
+
+&lt;p&gt;To help you get started, the Vagrantfile also installs &lt;a href=&#34;http://www.mongodb.org/&#34;&gt;MongoDB&lt;/a&gt; and sets up port forwarding for port 3000 and 8080 (Mojolicious with Morbo and Hypnotoad) and port 27017 (MongoDB)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Quick start with Scala and Play Framework</title>
+      <link>http://yoursitehere/quick-start-with-scala-and-play-framework/</link>
+      <pubDate>Thu, 13 Feb 2014 19:23:23 GMT</pubDate>
+      
+      <guid>http://yoursitehere/quick-start-with-scala-and-play-framework/</guid>
+      <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://vagrantup.com&#34;&gt;Vagrant&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.virtualbox.org/&#34;&gt;VirtualBox&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://git-scm.com/download/win&#34;&gt;Git for Windows&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once they&amp;rsquo;re all installed, its this easy:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Open Git Bash&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Clone my &lt;a href=&#34;https://github.com/ian-kent/vagrant-scala-play-mongodb&#34;&gt;Play/Scala vagrant repository&lt;/a&gt;: &lt;code&gt;git clone https://github.com/ian-kent/vagrant-scala-play-mongodb.git playserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd playserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Start the virtual machine: &lt;code&gt;vagrant up&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Once it&amp;rsquo;s complete, connect using SSH: &lt;code&gt;vagrant ssh&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Create a new play app: &lt;code&gt;play new MyApp&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd MyApp&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Start your application: &lt;code&gt;play run&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;View your new Play site in a browser: &lt;code&gt;http://localhost:9000&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you want to edit your Play project in &lt;a href=&#34;http://www.jetbrains.com/idea/&#34;&gt;IntelliJ Idea&lt;/a&gt;, create the project files from the command line using &lt;code&gt;play gen-idea&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To help you get started, the Vagrantfile also installs &lt;a href=&#34;http://www.mongodb.org/&#34;&gt;MongoDB&lt;/a&gt; and sets up port forwarding for port 9000 (Play) and port 27017 (MongoDB)&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> Globally handling OPTIONS requests in Play Framework &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>Globally handling OPTIONS requests in Play Framework</h1>
+  <span class="post-date">Tue, Feb 11, 2014</span>
+      
+
+<p>If you&rsquo;re using AJAX to talk to a Play Framework application, you&rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.</p>
+
+<p>In a controller, we can easily define a handler to accept OPTIONS requests:</p>
+
+<pre><code>&lt;code&gt;def headers = List(
+  &quot;Access-Control-Allow-Origin&quot; -&gt; &quot;*&quot;,
+  &quot;Access-Control-Allow-Methods&quot; -&gt; &quot;GET, POST, OPTIONS, DELETE, PUT&quot;,
+  &quot;Access-Control-Max-Age&quot; -&gt; &quot;3600&quot;,
+  &quot;Access-Control-Allow-Headers&quot; -&gt; &quot;Origin, Content-Type, Accept, Authorization&quot;,
+  &quot;Access-Control-Allow-Credentials&quot; -&gt; &quot;true&quot;
+)
+
+def options = Action { request =&gt;
+  NoContent.withHeaders(headers : _*)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And we can call our new options handler from our routes file, but this has a few problems. We either need to implement an options handler for every route, or we send the same response whatever route we have, even if it doesn&rsquo;t exist.</p>
+
+<h3 id="per-route:690e640b2fe5a8e8798609567de62b3e">Per-route</h3>
+
+<p>If you want to respond on a per-route basis, that typically requires one additional line in your routes file for every route you define:</p>
+
+<pre><code>&lt;code&gt;GET / controllers.Application.index
+OPTIONS / controllers.Application.options
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="globally:690e640b2fe5a8e8798609567de62b3e">Globally</h3>
+
+<p>Or, if you don&rsquo;t mind sending the same headers back for every OPTIONS request (even if the route doesn&rsquo;t really exist), there&rsquo;s a cheat:</p>
+
+<pre><code>&lt;code&gt;OPTIONS / controllers.Application.rootOptions
+OPTIONS /*url controllers.Application.options(url: String)
+&lt;/code&gt;
+</code></pre>
+
+<p>and change your controller options handler to:</p>
+
+<pre><code>&lt;code&gt;def rootOptions = options(&quot;/&quot;)   
+def options(url: String) = Action { request =&gt;
+  NoContent.withHeaders(headers : _*)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>You can still override the global OPTIONS per-route by adding additional routes before the wildcard, for example:</p>
+
+<pre><code>&lt;code&gt;OPTIONS /foo controllers.Application.someCustomOptions
+OPTIONS / controllers.Application.rootOptions
+OPTIONS /*url controllers.Application.options(url: String)
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="or-we-can-abuse-play-framework-the-best-way:690e640b2fe5a8e8798609567de62b3e">Or we can abuse Play Framework - the best way!</h3>
+
+<p>Play Framework doesn&rsquo;t like to expose its routing, making it difficult to inspect the routing table once its been created. But it is possible! Doing that, we can globally handle OPTIONS requests but dynamically respond based on URL (or even other request parameters).</p>
+
+<p>For this example, we&rsquo;ll work out the <code>Allow</code> header so we can return a 204 response if the route would normally exist, but a 404 response if it wouldn&rsquo;t.</p>
+
+<p>This is the example routes file:</p>
+
+<pre><code>&lt;code&gt;GET /           controllers.Application.index
+GET /foo        controllers.Application.foo
+OPTIONS /       controllers.Application.rootOptions
+OPTIONS /*url   controllers.Application.options(url: String)
+&lt;/code&gt;
+</code></pre>
+
+<p>When sending OPTIONS requests, we want to respond with 204 and <code>Allow: GET, OPTIONS</code> for <code>/</code> and <code>/foo</code>, but respond with 404 for everything else.</p>
+
+<h4 id="getting-the-methods-available-for-a-url:690e640b2fe5a8e8798609567de62b3e">Getting the methods available for a URL</h4>
+
+<p>Play Framework gives us a convenient function - <code>handlerFor</code> - which is normally used to route requests to a handler. For this to work, you&rsquo;ll need to add an import:</p>
+
+<pre><code>&lt;code&gt;import play.api.Play.current
+&lt;/code&gt;
+</code></pre>
+
+<p>We can then define a <code>getMethods</code> function, which given a request will return a list of available methods. It does this by asking Play Framework to route new requests with modified method parameters. If a handler is found, the method is added to the list. The list is also cached for future requests.</p>
+
+<pre><code>&lt;code&gt;val methodList = List(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;PATCH&quot;)
+def getMethods(request: Request[AnyContent]) : List[String] = {
+  Cache.getOrElse[List[String]](&quot;options.url.&quot; + request.uri) {
+    for(m &lt;- methodList; if Play.application.routes.get.handlerFor(new RequestHeader {
+      val remoteAddress = request.remoteAddress
+      val headers = request.headers
+      val queryString = request.queryString
+      val version = request.version
+      val method = m
+      val path = request.path
+      val uri = request.uri
+      val tags = request.tags
+      val id: Long = request.id
+    }).isDefined) yield m
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>We can then update our options action to use the new method list:</p>
+
+<pre><code>&lt;code&gt;def options(url: String) = Action { request =&gt;
+  val methods = List(&quot;OPTIONS&quot;) ++ getMethods(request)
+  if(methods.length &gt; 1)
+    NoContent.withHeaders(List(&quot;Allow&quot; -&gt; methods.mkString(&quot;, &quot;)) : _*)
+  else
+    NotFound
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>We add OPTIONS back in, and if we have more than one method we return the Allow header, otherwise a 404 response.</p>
+
+<p>We could instead cache the entire response for a given URI, but caching just the method list gives us the flexibility to set other headers which may be more dynamic, for example Last-Modified. Even the current caching might be too restrictive if the available methods depends on other request parameters.</p>
+
+</div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://yoursitehere/</loc>
+    <lastmod>2014-09-08T20:49:30+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/management-and-the-frozen-lake-and-how-coffee-helps/</loc>
+    <lastmod>2014-09-08T20:49:30+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/introducing-go-mailhog/</loc>
+    <lastmod>2014-04-20T16:36:34+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/action-composition-in-mojolicious/</loc>
+    <lastmod>2014-04-20T12:58:57+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/getting-started-with-hashicorp-serf/</loc>
+    <lastmod>2014-02-27T22:53:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/a-quick-introduction-to-apache-mesos/</loc>
+    <lastmod>2014-02-26T19:01:35+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/the-automation-what-for/</loc>
+    <lastmod>2014-02-25T21:23:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/building-a-scalable-sequence-generator-in-scala/</loc>
+    <lastmod>2014-02-23T11:53:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/quick-start-with-perl-and-mojolicious/</loc>
+    <lastmod>2014-02-14T14:43:20+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/quick-start-with-scala-and-play-framework/</loc>
+    <lastmod>2014-02-13T19:23:23+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/globally-handling-options-requests-in-play-framework/</loc>
+    <lastmod>2014-02-11T21:38:30+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursitehere/action-composition-in-play-framework/</loc>
+    <lastmod>2014-02-10T16:32:47+00:00</lastmod>
+  </url>
+  
+</urlset>

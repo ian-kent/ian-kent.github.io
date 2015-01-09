@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> A quick introduction to Apache Mesos &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>A quick introduction to Apache Mesos</h1>
+  <span class="post-date">Wed, Feb 26, 2014</span>
+      
+
+<p><a href="http://mesos.apache.org/">Apache Mesos</a> is a centralised fault-tolerant cluster manager. It&rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.</p>
+
+<p>In some ways, Mesos provides the opposite to virtualisation:</p>
+
+<ul>
+<li><p>Virtualisation splits a single physical resource into multiple virtual resources</p></li>
+
+<li><p>Mesos joins multiple physical resources into a single virtual resource</p></li>
+</ul>
+
+<p>It schedules CPU and memory resources across the cluster in much the same way the Linux Kernel schedules local resources.</p>
+
+<p>A Mesos cluster is made up of four major components:</p>
+
+<ul>
+<li><p>ZooKeepers</p></li>
+
+<li><p>Mesos masters</p></li>
+
+<li><p>Mesos slaves</p></li>
+
+<li><p>Frameworks</p></li>
+</ul>
+
+<h3 id="zookeeper:d12db87a3f4ce64d7023ff8451a41464">ZooKeeper</h3>
+
+<p><a href="http://zookeeper.apache.org/">Apache ZooKeeper</a> is a centralised configuration manager, used by distributed applications such as Mesos to coordinate activity across a cluster.</p>
+
+<p>Mesos uses ZooKeeper to elect a leading master and for slaves to join the cluster.</p>
+
+<h3 id="mesos-masters:d12db87a3f4ce64d7023ff8451a41464">Mesos masters</h3>
+
+<p>A Mesos master is a Mesos instance in control of the cluster.</p>
+
+<p>A cluster will typically have multiple Mesos masters to provide fault-tolerance, with one instance elected the leading master.</p>
+
+<h3 id="mesos-slaves:d12db87a3f4ce64d7023ff8451a41464">Mesos slaves</h3>
+
+<p>A Mesos slave is a Mesos instance which offers resources to the cluster.</p>
+
+<p>They are the &lsquo;worker&rsquo; instances - tasks are allocated to the slaves by the Mesos master.</p>
+
+<h3 id="frameworks:d12db87a3f4ce64d7023ff8451a41464">Frameworks</h3>
+
+<p>On its own, Mesos only provides the basic &ldquo;kernel&rdquo; layer of your cluster. It lets other applications request resources in the cluster to perform tasks, but does nothing itself.</p>
+
+<p>Frameworks bridge the gap between the Mesos layer and your applications. They are higher level abstractions which simplify the process of launching tasks on the cluster.</p>
+
+<h4 id="chronos:d12db87a3f4ce64d7023ff8451a41464">Chronos</h4>
+
+<p><a href="https://github.com/airbnb/chronos">Chronos</a> is a cron-like fault-tolerant scheduler for a Mesos cluster.</p>
+
+<p>You can use it to schedule jobs, receive failure and completion notifications, and trigger other dependent jobs.</p>
+
+<h4 id="marathon:d12db87a3f4ce64d7023ff8451a41464">Marathon</h4>
+
+<p><a href="https://github.com/mesosphere/marathon">Marathon</a> is the equivalent of the Linux upstart or init daemons, designed for long-running applications.</p>
+
+<p>You can use it to start, stop and scale applications across the cluster.</p>
+
+<h4 id="others:d12db87a3f4ce64d7023ff8451a41464">Others</h4>
+
+<p>There are a few other frameworks:</p>
+
+<ul>
+<li><p><a href="http://aurora.apache.org/">Aurora</a> - service scheduler</p></li>
+
+<li><p><a href="http://hadoop.apache.org/">Hadoop</a> - data processing</p></li>
+
+<li><p><a href="https://github.com/jenkinsci/mesos-plugin">Jenkins</a> - Jenkins slave manager</p></li>
+
+<li><p><a href="http://spark.apache.org/">Spark</a> - data processing</p></li>
+
+<li><p><a href="http://www.adaptivecomputing.com/products/open-source/torque/">Torque</a> - resource manager</p></li>
+</ul>
+
+<p>You can also <a href="http://mesos.apache.org/documentation/latest/">write your own framework</a>, using Java, Python or C++.</p>
+
+<h2 id="the-quick-start-guide:d12db87a3f4ce64d7023ff8451a41464">The quick start guide</h2>
+
+<p>If you want to get a Mesos cluster up and running, you have a few options:</p>
+
+<h3 id="using-vagrant:d12db87a3f4ce64d7023ff8451a41464">Using Vagrant</h3>
+
+<p><a href="http://www.vagrantup.com">Vagrant</a> and the <a href="https://github.com/everpeace/vagrant-mesos">vagrant-mesos</a> Vagrantfile can help you quickly build:</p>
+
+<ul>
+<li><p>a standalone Mesos instance</p></li>
+
+<li><p>a multi-machine Mesos cluster of ZooKeepers, masters and slaves</p></li>
+</ul>
+
+<p>Unfortunately, the network configuration is a bit difficult to work with - it uses a private network between the VMs, and SSH tunnelling to provide access to the cluster.</p>
+
+<h3 id="using-mesosphere-and-amazon-web-services:d12db87a3f4ce64d7023ff8451a41464">Using Mesosphere and Amazon Web Services</h3>
+
+<p><a href="http://mesosphere.io/">Mesosphere</a> provide <a href="https://elastic.mesosphere.io/">Elastic Mesosphere</a>, which can quickly launch a Mesos cluster using <a href="http://aws.amazon.com/ec2/">Amazon EC2</a>.</p>
+
+<p>This is far easier to work with than the Vagrant build, but it isn&rsquo;t free - around $1.50 an hour for 6 instances or $4.50 for 18.</p>
+
+<h3 id="a-simpler-vagrant-build:d12db87a3f4ce64d7023ff8451a41464">A simpler Vagrant build</h3>
+
+<p>I&rsquo;ve put together some Vagrantfiles to build individual components of a Mesos cluster. It&rsquo;s a work in progress, but it can already build a working Mesos cluster without the networking issues. It uses bridged networking, with dynamically assigned IPs, so all instances can be accessed directly through your local network.</p>
+
+<p>You&rsquo;ll need the following GitHub repositories:</p>
+
+<ul>
+<li><p><a href="https://github.com/ian-kent/vagrant-zookeeper">ian-kent/vagrant-zookeeper</a></p></li>
+
+<li><p><a href="https://github.com/ian-kent/vagrant-mesos-master">ian-kent/vagrant-mesos-master</a></p></li>
+
+<li><p><a href="https://github.com/ian-kent/vagrant-mesos-slave">ian-kent/vagrant-mesos-slave</a></p></li>
+</ul>
+
+<p>At the moment, a cluster is limited to one ZooKeeper, but can support multiple Mesos masters and slaves.</p>
+
+<p>Each of the instances is also built with <a href="http://serfdom.io">Serf</a> to provide decentralised service discovery. You can use <code>serf members</code> from any instance to list all other instances.</p>
+
+<p>To help test deployments, there&rsquo;s also a MongoDB build with Serf installed:</p>
+
+<ul>
+<li><a href="https://github.com/ian-kent/vagrant-mongodb">ian-kent/vagrant-mongodb</a></li>
+</ul>
+
+<p>Like the ZooKeeper instances, the MongoDB instance joins the same Serf cluster but isn&rsquo;t part of the Mesos cluster.</p>
+
+<h2 id="once-your-cluster-is-running:d12db87a3f4ce64d7023ff8451a41464">Once your cluster is running</h2>
+
+<p>You&rsquo;ll need to install a framework.</p>
+
+<p>Mesosphere lets you choose to install Marathon on Amazon EC2, so that could be a good place to start.</p>
+
+<p>Otherwise, manually installing and configuring Marathon or another framework is easy. The quick and dirty way is to install them on the Mesos masters, but it would be better if they had their own VMs.</p>
+
+<p>With Marathon or Aurora, you can even run other frameworks in the Mesos cluster for scalability and fault-tolerance.</p>
+
+</div>
+</div>
+
+  </body>
+</html>

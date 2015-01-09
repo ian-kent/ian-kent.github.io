@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title> Action composition in Play Framework &middot; Ian Kent </title>
+
+  
+  <link rel="stylesheet" href="http://yoursitehere/css/poole.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/syntax.css">
+  <link rel="stylesheet" href="http://yoursitehere/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Ian Kent" />
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Ian Kent</h1>
+      <p class="lead">
+       Software engineering and other stuff 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      
+    </ul>
+
+    <p>&copy; 2015. All rights reserved. </p>
+  </div>
+</div>
+
+
+    <div class="content container">
+<div class="post">
+  <h1>Action composition in Play Framework</h1>
+  <span class="post-date">Mon, Feb 10, 2014</span>
+      
+
+<p>Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.</p>
+
+<p>But typical action composition can be messy. Using action builders, we can simplify the process - and you may have already used them without realising it!</p>
+
+<p>You&rsquo;ve probably seen code like this before, it&rsquo;s pretty standard stuff:</p>
+
+<pre><code>&lt;code&gt;def index = Action { request =&gt;
+  Ok(views.html.index(&quot;Your new application is ready.&quot;))
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And if you&rsquo;ve used Play Framework asynchronously, maybe something like this:</p>
+
+<pre><code>&lt;code&gt;def index = Action.async { request =&gt;
+  doSomething map { result =&gt;
+    Ok(views.html.index(&quot;Your new application is ready.&quot;))
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>You can also easily parse the request using a different content type (or &ldquo;body parser&rdquo;), for example using JSON:</p>
+
+<pre><code>&lt;code&gt;def index = Action.async(parse.json) { request =&gt;
+  doSomething map { result =&gt;
+    Ok(Json.obj(result -&gt; &quot;Your new application is ready.&quot;))
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>All of these use the Action action builder (that is, the Action object, which is an action builder).</p>
+
+<p>By creating a new action builder, we can create a drop-in replacement for the Action calls (both <code>Action</code> and <code>Action.async</code>), while still supporting the body parser parameter.</p>
+
+<h2 id="creating-a-new-action-builder:8a4e04e27a605e28f409c700d00877c8">Creating a new action builder</h2>
+
+<p>Since <code>Action</code> is just an implementation of <code>ActionBuilder[Request]</code>, we can extend <code>ActionBuilder</code> to use in place of <code>Action</code>.</p>
+
+<p>ActionBuilder requires that we implement <code>invokeBlock</code>, and that&rsquo;s where the magic happens. This is a bare minimum implementation, and its exactly what <code>Action</code> does for us already.</p>
+
+<p><code>invokeBlock</code> takes two parameters, the first is the incoming request, and the second is the function body, taking <code>Request[A]</code> as a parameter and returning a <code>Future[SimpleResult]</code></p>
+
+<pre><code>&lt;code&gt;object Interceptor extends ActionBuilder[Request] {
+  def invokeBlock[A](request: Request[A], block: (Request[A]) =&gt; Future[SimpleResult]) = block(request)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>It doesn&rsquo;t do much (in fact, nothing different from <code>Action</code>), but now we can use that in our controller instead:</p>
+
+<pre><code>&lt;code&gt;def index = Interceptor.async(parse.json) { request =&gt;
+  doSomething map { result =&gt;
+    Ok(Json.obj(result -&gt; &quot;Your new application is ready.&quot;))
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And it works using the same syntax:</p>
+
+<pre><code>&lt;code&gt;def index = Interceptor { request =&gt; Ok }
+def index = Interceptor.async { request =&gt; future { Ok } }
+def index = Interceptor(parse.json) { request =&gt; Ok }
+def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="intercepting-requests:8a4e04e27a605e28f409c700d00877c8">Intercepting requests</h3>
+
+<p>There&rsquo;s many reasons to intercept a request before it reaches your controller - authentication, authorisation, rate limiting or performance monitoring - for this example, we&rsquo;ll use authentication.</p>
+
+<p>There&rsquo;s also many ways to authenticate a request - using headers, cookies, etc. - and while this is one way you certainly wouldn&rsquo;t do it, it works for a demo:</p>
+
+<pre><code>&lt;code&gt;object Authenticated extends ActionBuilder[Request] {
+  def invokeBlock[A](request: Request[A], block: (Request[A]) =&gt; Future[SimpleResult]) = {
+    if(request.headers.get(&quot;Authorization&quot;).isDefined)
+      block(request)
+    else
+      future { Results.Status(Status.UNAUTHORIZED) }
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>This very simple example checks for an Authorization header.</p>
+
+<p>If it&rsquo;s there, it calls <code>block(request)</code> and request processing continues as expected (don&rsquo;t confuse the word &ldquo;block&rdquo; to mean the request gets blocked, we&rsquo;re actually executing the code block or function body we were passed earlier).</p>
+
+<p>If the Authorization header isn&rsquo;t found, it returns an Unauthorized (401) response, using <code>Results.Status()</code>.</p>
+
+<p>At this point we could have returned any <code>Future[SimpleResult]</code> we like. We could look up data in memcached, MongoDB or call a remote API using OAuth2 - and either let the request continue, or return an appropriate response instead.</p>
+
+<p>But this isn&rsquo;t ideal - we&rsquo;ve got our action builder sending a response to the client. We need to pass that responsibility back to the controller.</p>
+
+<h3 id="passing-user-context:8a4e04e27a605e28f409c700d00877c8">Passing user context</h3>
+
+<p>So far, we&rsquo;ve intercepted the request using action composition, but once we get to the controller code we don&rsquo;t know who the user is, and no way to find out if we couldn&rsquo;t establish the users identity.</p>
+
+<p>There&rsquo;s plenty of ways to fix this - <a href="http://www.playframework.com/documentation/2.2.x/ScalaActionsComposition">some of them documented in the Play Framework action composition documentation</a> - but we&rsquo;ll go with wrapping the request class.</p>
+
+<p>This has the advantage of keeping all existing code &lsquo;compatible&rsquo; - we can simply search and replace Action for Authenticated and every endpoint is protected.</p>
+
+<p>For a comparison, here&rsquo;s what the controller would have looked like if we&rsquo;d wrapped the action:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { user =&gt; 
+  Action { request =&gt;
+    Ok(user.get)
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And here&rsquo;s what we&rsquo;re going to create with our custom request class:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  Ok(request.user.get)
+}
+&lt;/code&gt;
+</code></pre>
+
+<h4 id="wrapping-the-request-class:8a4e04e27a605e28f409c700d00877c8">Wrapping the request class</h4>
+
+<p>To wrap the request class, and be able to access the user object from our controllers without casting the request first, we need to create a new trait and a new object.</p>
+
+<p>The trait <code>AuthenticatedRequest</code> simply extends <code>Request</code> and adds a user value:</p>
+
+<pre><code>&lt;code&gt;trait AuthenticatedRequest[+A] extends Request[A] {
+  val user: Option[JsObject]
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>The object <code>AuthenticatedRequest</code> is similar to <code>play.api.mvc.Http.Request</code> - except we copy the existing request, and add the user value:</p>
+
+<pre><code>&lt;code&gt;object AuthenticatedRequest {
+  def apply[A](u: Option[JsObject], r: Request[A]) = new AuthenticatedRequest[A] {
+    def id = r.id
+    def tags = r.tags
+    def uri = r.uri
+    def path = r.path
+    def method = r.method
+    def version = r.version
+    def queryString = r.queryString
+    def headers = r.headers
+    lazy val remoteAddress = r.remoteAddress
+    def username = None
+    val body = r.body
+    val user = u
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Next, we need to change our call to <code>block(request)</code> to pass through our new <code>AuthenticatedRequest</code> object.</p>
+
+<p>To make this work, we also need to change <em>some</em> of the <code>Request</code> types to <code>AuthenticatedRequest</code> in our <code>Authenticated</code> object. We&rsquo;ve also let the request continue even without a valid user - we can use this from a controller to know the users identity couldn&rsquo;t be established.</p>
+
+<p>Here it is in full:</p>
+
+<pre><code>&lt;code&gt;object Authenticated extends ActionBuilder[AuthenticatedRequest] {
+  def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) =&gt; Future[SimpleResult]) = {
+    if(request.headers.get(&quot;Authorization&quot;).isDefined)
+      block(AuthenticatedRequest[A](Some(Json.obj()), request))
+    else
+      block(AuthenticatedRequest[A](None, request))
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Notice that invokeBlock still expects a <code>Request[A]</code> as its request parameter, but now the block parameter defines a function with a <code>AuthenticatedRequest[A]</code> parameter instead.</p>
+
+<p>For now, our user is nothing more than an empty JsObject. In a real application, it could be any type (not just JsObject), and the value for user could come from anywhere (e.g. a database, session, OAuth2, etc).</p>
+
+<p>When authentication fails, we pass through <code>None</code>, letting the controller know that no user could be found.</p>
+
+<p>From our controller, we can now access the user object with <code>request.user</code>:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated.async { request =&gt;
+  future { Ok(request.user.get) }
+}
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="authorisation:8a4e04e27a605e28f409c700d00877c8">Authorisation</h3>
+
+<p>So far we&rsquo;ve seen how to require authentication using an action builder. While this is useful if your app uses an &lsquo;all or nothing&rsquo; security model, this isn&rsquo;t particularly useful for authorisation, for example in role based security.</p>
+
+<p>There&rsquo;s two easy ways to solve this problem:</p>
+
+<h4 id="create-another-action-builder-to-wrap-our-authenticated-builder:8a4e04e27a605e28f409c700d00877c8">Create another action builder to wrap our Authenticated builder</h4>
+
+<p>We can wrap our Authenticated action builder with another builder, giving us controller code that might look something like this:</p>
+
+<pre><code>&lt;code&gt;def index = Authorised(roles = List(&quot;blog.post&quot;)) { request =&gt;
+  Ok(request.user.get)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>This is very straightforward, but creates an unnecessary dependency between your authorisation and authentication code.</p>
+
+<h4 id="use-normal-action-composition-to-require-authorisation:8a4e04e27a605e28f409c700d00877c8">Use normal action composition to require authorisation</h4>
+
+<p>Using action composition, we might end up with code that looks like this:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  Authorised(roles = List(&quot;blog.post&quot;)) {
+    Ok(request.user.get)
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And we can also do this:</p>
+
+<pre><code>&lt;code&gt;def index = Authorised(roles = List(&quot;blog.post&quot;)) { request =&gt;
+  Ok(request.user.get)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>The downside to normal action composition is obvious once you start using different body parsers or asynchronous operations:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated(parse.json).async { request =&gt;
+  Authorised(parse.json).async(roles = List(&quot;blog.post&quot;)) {
+    future { Ok(request.user.get) }
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>On every nested action we are required to redeclare the body parser and call async.</p>
+
+<h4 id="but-this-is-scala-there-s-a-nicer-way:8a4e04e27a605e28f409c700d00877c8">But this is Scala - there&rsquo;s a nicer way!</h4>
+
+<p>Neither of those examples are particularly suitable. Neither will cleanly handle a negative outcome (either needing some messy code or hiding the unauthorised response away in a helper class), and neither of them nest well.</p>
+
+<p>Whenever you need to check authorisation, the outcome is normally one of two things - in the case of a web application, its likely that both of them will end in returning some content to the user.</p>
+
+<p>In true MVC style, this shouldn&rsquo;t be the responsibility of the authorisation code. It should be in the controller.</p>
+
+<p>We could just use an if/then/else statement, but I like something a bit cleaner:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  Authorised(request, request.user) {
+    Ok(request.user.get)
+  } otherwise {
+    Unauthorized
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And our <code>Authorised</code> implementation is simple. We provide <code>Authorised</code> and <code>Authorised.async</code> functions, and return an instance of our <code>Authorised</code> class providing an <code>otherwise</code> method.</p>
+
+<pre><code>&lt;code&gt;object Authorised {
+  def async[T](request: Request[T], user: Option[JsObject]) = {
+    (block: Future[SimpleResult]) =&gt; new Authorised[T](request, user, block)
+  }
+  def apply[T](request: Request[T], user: Option[JsObject]) = {
+    (block: SimpleResult) =&gt; new Authorised[T](request, user, future { block })
+  }
+}
+
+class Authorised[T](request: Request[T], user: Option[JsObject], success: Future[SimpleResult]) {
+  def authorised = {
+    if(user.isDefined) true else false
+  }
+  def otherwise(block: Future[SimpleResult]) : Future[SimpleResult] = authorised.flatMap { valid =&gt; if (valid) success else block }
+  def otherwise(block: SimpleResult) : SimpleResult = if(authorised.value.get.get) success.value.get.get else block
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>As with the Authentication action builder, this implementation isn&rsquo;t particularly secure. As long as the user is defined (which it will be if the Authorization header is set), then authorisation is successful.</p>
+
+<p>In this example we&rsquo;ve also passed the request object to the authorisation layer. It would be cleaner to abstract the request from our authorisation code using named roles or permissions.</p>
+
+<h3 id="action-builder-vs-helper-object:8a4e04e27a605e28f409c700d00877c8">Action builder vs helper object</h3>
+
+<p>There&rsquo;s a reason we&rsquo;ve created authentication as an action builder but kept authorisation as a helper object.</p>
+
+<p><em>Authentication</em> is a one-time process (for each request) - it rarely needs to be done multiple times, and it rarely changes once the request has been received. Even if we can&rsquo;t establish the identity of the user, that doesn&rsquo;t necessarily mean authentication has failed or that the user has no permissions.</p>
+
+<p><em>Authorisation</em> can happen multiple times within one request, in one controller, and with distinct outcomes - for example, rendering a dashboard might perform multiple unique authorisation checks to determine appropriate components for a single page.</p>
+
+<p>By keeping the authorisation check as a helper object, we can use it mutliple times within a controller action, passing different parameters each time, and with the flexibility to control the outcome of each check.</p>
+
+<p>For example, we could return <code>NotFound</code> for one level of authorisation failure, but <code>Unauthorized</code> for another:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated(parse.json) { request =&gt;
+  Authorised(request, request.user) {
+    Authorised(request, Some(Json.obj())) {
+      Ok(request.user.get)
+    } otherwise {
+      Unauthorized
+    }
+  } otherwise {
+    NotFound
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="summary:8a4e04e27a605e28f409c700d00877c8">Summary</h3>
+
+<p>We&rsquo;ve now created an authentication and authorisation layer for our web application, which supports the same syntax as the built in Play objects. For a simple application, that&rsquo;s all you need - just wire in MongoDB or OAuth2!</p>
+
+<p>The same idea can be applied to any other type of wrapper. You can even create action builders and helper objects which combine other wrappers, for example automatically applying authentication, authorisation and rate limiting through a single builder.</p>
+
+<h2 id="going-a-bit-further-with-akka:8a4e04e27a605e28f409c700d00877c8">Going a bit further with Akka</h2>
+
+<p>While it would be easy to extend that example to lookup users, roles and permissions in MongoDB, or restrict actions based on IP address, in Scala (and Play Framework) we can do things a little differently.</p>
+
+<p>There&rsquo;s no reason for authentication or authorisation to be tied to your application - they aren&rsquo;t really a direct responsibility of your web application anyway, but they&rsquo;re often left there for convenience.</p>
+
+<p><a href="http://akka.io">Akka</a> provides us with a framework to build distributed and concurrent applications - and we can keep our application concurrent and distributed right through to the authentication and authorisation layers. And better yet, it&rsquo;s already used internally by Play Framework.</p>
+
+<p>We&rsquo;ll extend this example to use an actor for authentication and authorisation, giving us the flexibility to move our authentication code anywhere - even to a remote service with Akka remoting.</p>
+
+<h3 id="creating-an-actor:8a4e04e27a605e28f409c700d00877c8">Creating an actor</h3>
+
+<p>For now, we&rsquo;ll just keep our actor next to our action builder. Moving it around later is easy.</p>
+
+<p>First we&rsquo;ll create some basic case classes to communicate using Akka:</p>
+
+<pre><code>&lt;code&gt;case class Authenticate[A](request: Request[A])
+case class AuthenticationResult(valid: Boolean, user: Option[JsObject] = None)
+&lt;/code&gt;
+</code></pre>
+
+<p>We can extend these classes if we want to provide additional context or return additional information.</p>
+
+<p>Here&rsquo;s our basic actor - it implements a receive function to handle incoming messages:</p>
+
+<pre><code>&lt;code&gt;class Authenticator extends Actor {
+  def receive = {
+    case Authenticate(request) =&gt; 
+      if(request.headers.get(&quot;Authorization&quot;).isDefined)
+        sender ! AuthenticationResult(valid = true, user = Json.obj())
+      else 
+        sender ! AuthenticationResult(valid = false)
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>It&rsquo;s only job is to return an AuthenticationResult depending on the request. It provides the same super strength foolproof security we had with our earlier example.</p>
+
+<h3 id="using-the-actor-for-authentication:8a4e04e27a605e28f409c700d00877c8">Using the actor for authentication</h3>
+
+<p>We need to get an instance of our actor for our <code>Authenticated</code> object. We&rsquo;ll send <code>Authenticate</code> requests to the actor, and get an <code>AuthenticationResult</code> back:</p>
+
+<pre><code>&lt;code&gt;val authenticationActor = Akka.system.actorOf(Props[Authenticator], name = &quot;authentication&quot;)
+implicit val timeout = Timeout(1 second)
+&lt;/code&gt;
+</code></pre>
+
+<p>We can now update our <code>invokeBlock</code> function to use the actor instead of including its own authentication logic. If authentication was successful, the actor returns the <code>JsObject</code> representing the user.</p>
+
+<pre><code>&lt;code&gt;def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) =&gt; Future[SimpleResult]) = {
+  (authenticationActor ask Authenticate(request)).mapTo[AuthenticationResult] flatMap { result =&gt;
+    if(result.valid)
+      block(AuthenticatedRequest[A](Some(result.user.get), request))
+    else
+      block(AuthenticatedRequest[A](None, request))
+  } recover {
+    case e =&gt; Results.Status(Status.INTERNAL_SERVER_ERROR)
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>We can extend our authorisation class in exactly the same way, again sending the authorisation request to an actor. I&rsquo;ll skip it here since the code is so similar to the authentication actor, but you can find it in the full source code on <a href="https://gist.github.com/ian-kent/8941847">GitHub</a>.</p>
+
+<h2 id="summary-1:8a4e04e27a605e28f409c700d00877c8">Summary</h2>
+
+<p>Action composition in Play Framework is surprisingly easy, and very powerful.</p>
+
+<p>Using action builders combined with Scala&rsquo;s concurrency and Akka&rsquo;s distributed framework, it&rsquo;s simple to keep your controller code clean without sacrificing security or scalability across your application.</p>
+
+<p>Full source code for the Akka example can be <a href="https://gist.github.com/ian-kent/8941847">found on GitHub</a>.</p>
+
+</div>
+</div>
+
+  </body>
+</html>

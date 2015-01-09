@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloud on Ian Kent</title>
+    <link>http://yourSiteHere/tags/cloud/</link>
+    <description>Recent content in Cloud on Ian Kent</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    
+    <lastBuildDate>Thu, 27 Feb 2014 22:53:03 GMT</lastBuildDate>
+    <atom:link href="http://yourSiteHere/tags/cloud/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Getting started with HashiCorp Serf</title>
+      <link>http://yoursitehere/getting-started-with-hashicorp-serf/</link>
+      <pubDate>Thu, 27 Feb 2014 22:53:03 GMT</pubDate>
+      
+      <guid>http://yoursitehere/getting-started-with-hashicorp-serf/</guid>
+      <description>
+
+&lt;p&gt;In my &lt;a href=&#34;http://iankent.co.uk/2014/02/26/a-quick-introduction-to-apache-mesos/&#34;&gt;post about Apache Mesos&lt;/a&gt; I briefly mentioned Serf.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.serfdom.io&#34;&gt;Serf&lt;/a&gt; (from &lt;a href=&#34;http://www.hashicorp.com/&#34;&gt;Hashicorp&lt;/a&gt;, who also make &lt;a href=&#34;http://www.vagrantup.com&#34;&gt;Vagrant&lt;/a&gt; and &lt;a href=&#34;http://www.packer.io/&#34;&gt;Packer&lt;/a&gt;) is a decentralised service discovery tool with support for custom events.&lt;/p&gt;
+
+&lt;p&gt;By installing a Serf agent on each node in a network, and (maybe) bootstrapping each agent with the IP address of another agent, you are quickly provided with a scalable membership system with the ability to propagate events across the network.&lt;/p&gt;
+
+&lt;p&gt;Once it&amp;rsquo;s installed and agents are started, running &lt;code&gt;serf members&lt;/code&gt; from any node will produce output similar to this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;vagrant@master10:~$ serf members
+master10     192.168.100.131:7946    alive    role=master
+zk10     192.168.100.130:7946    alive    role=zookeeper
+slave10     192.168.100.135:7946    alive    role=slave
+mongodb10     192.168.100.136:7946    alive    role=mongodb
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which is when you realise you&amp;rsquo;ve still got a Mesos cluster running that you&amp;rsquo;d forgotten about&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;The output from Serf shows the hostname, IP address, status and any tags the Serf agent is configured with. In this case, I&amp;rsquo;ve set a &lt;code&gt;role&lt;/code&gt; tag which lets us quickly find a particular instance type on the network:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;vagrant@master10:~$ serf members | grep mongodb
+mongodb10     192.168.100.136:7946    alive    role=mongodb
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This, with its event system, makes Serf ideal for efficiently maintaining cluster node state, and reducing or eliminating application configuration.&lt;/p&gt;
+
+&lt;p&gt;In a Mesos cluster, it lets us make core parts of the infrastructure (like ZooKeepers and Mesos masters) simple to scale with no manual configuration.&lt;/p&gt;
+
+&lt;p&gt;Serf has lots of other potential uses too, &lt;a href=&#34;http://www.serfdom.io/intro/use-cases.html&#34;&gt;some of them documented on the Serf website&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;getting-started-with-serf:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Getting started with Serf&lt;/h2&gt;
+
+&lt;h3 id=&#34;installation:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Installation&lt;/h3&gt;
+
+&lt;p&gt;Installing Serf couldn&amp;rsquo;t be easier.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.serfdom.io/downloads.html&#34;&gt;Download Serf&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Extract the downloaded archive&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Move the &amp;lsquo;serf&amp;rsquo; binary into your PATH (&lt;a href=&#34;http://www.serfdom.io/intro/getting-started/install.html&#34;&gt;full instructions from Serf&lt;/a&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You should be able to run &lt;code&gt;serf&lt;/code&gt; from the command line and see a list of available commands.&lt;/p&gt;
+
+&lt;h3 id=&#34;trying-it-out:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Trying it out&lt;/h3&gt;
+
+&lt;p&gt;To try Serf, you need two console windows open and you&amp;rsquo;re ready!&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Run &lt;code&gt;serf agent&lt;/code&gt; from one console&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Run &lt;code&gt;serf members&lt;/code&gt; from another&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You should see something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;vagrant@example:~$ serf members
+example     127.0.0.1:7946    alive
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That output shows a cluster containing your local machine (with a hostname of &amp;lsquo;example&amp;rsquo;), available at 127.0.0.1, and that the node is alive.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s that simple!&lt;/p&gt;
+
+&lt;h2 id=&#34;starting-serf-automatically:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Starting Serf automatically&lt;/h2&gt;
+
+&lt;p&gt;This isn&amp;rsquo;t much use on its own - we need Serf to start every time a node boots up. As soon as a new node comes online, the cluster finds out about it immediately, and the new node can configure itself.&lt;/p&gt;
+
+&lt;p&gt;Serf provides us with &lt;a href=&#34;https://github.com/hashicorp/serf/tree/master/ops-misc&#34;&gt;example scripts for upstart and systemd&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For Ubuntu, copy &lt;code&gt;upstart.conf&lt;/code&gt; to &lt;code&gt;/etc/init/serf-agent.conf&lt;/code&gt; then run &lt;code&gt;start serf-agent&lt;/code&gt; (you might need to modify the upstart script if Serf isn&amp;rsquo;t installed to &lt;code&gt;/usr/local/bin/serf&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&#34;configuration:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Configuration&lt;/h3&gt;
+
+&lt;p&gt;Now we&amp;rsquo;ve got our Serf agent running, we need to configure it so it knows what to do.&lt;/p&gt;
+
+&lt;p&gt;You can configure Serf using either command line options (useful if you&amp;rsquo;re talking to a remote Serf agent or using non-standard ports), or you can provide configuration files (which are JSON files, loaded from the configuration directory in alphabetical order).&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve used the Ubuntu upstart script, creating &lt;code&gt;config.json&lt;/code&gt; in &lt;code&gt;/etc/serf&lt;/code&gt; will work.&lt;/p&gt;
+
+&lt;p&gt;All of the configuration options are &lt;a href=&#34;http://www.serfdom.io/docs/agent/options.html&#34;&gt;documented on the Serf website&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The examples below are in JSON, but they can all be provided as command line arguments instead.&lt;/p&gt;
+
+&lt;h4 id=&#34;ip-addresses:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;IP addresses&lt;/h4&gt;
+
+&lt;p&gt;This caught me out a few times - Serf, by default, will advertise the bind address (usually the IP address of your first network interface, e.g. eth0).&lt;/p&gt;
+
+&lt;p&gt;In a Vagrant environment, you will always have a NAT connection as your first interface (the one Vagrant uses to communicate with the VM). This was causing my agents to advertise an IP which other nodes couldn&amp;rsquo;t connect to.&lt;/p&gt;
+
+&lt;p&gt;To fix this, Serf lets us override the IP address it advertises to the cluster:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;{
+    &amp;quot;advertise&amp;quot;: &amp;quot;192.168.100.200&amp;quot;
+}
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;setting-tags:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Setting tags&lt;/h4&gt;
+
+&lt;p&gt;Serf used to provide a &amp;lsquo;role&amp;rsquo; command line option (it still does, but its deprecated). In its place, we have tags, which are far more flexible.&lt;/p&gt;
+
+&lt;p&gt;Tags are key-value pairs which provide metadata about the agent. In the example above, I&amp;rsquo;ve created a tag named &lt;code&gt;role&lt;/code&gt; which describes the purpose of the node.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;{
+    &amp;quot;tags&amp;quot;: {
+        &amp;quot;role&amp;quot;: &amp;quot;mongodb&amp;quot;
+    }
+}
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can set multiple tags, but there is a limit - the Serf documentation doesn&amp;rsquo;t specify the limit, except to say&lt;/p&gt;
+
+&lt;blockquote&gt;
+  
+&gt; 
+&gt; There is a byte size limit for the maximum number of tags, but in practice dozens of tags may be used.
+&gt; 
+&gt; 
+&lt;/blockquote&gt;
+
+&lt;p&gt;You can also &lt;a href=&#34;http://www.serfdom.io/docs/commands/tags.html&#34;&gt;replace tags while the Serf agent is still running&lt;/a&gt; using the &lt;code&gt;serf tags&lt;/code&gt; command, though changes aren&amp;rsquo;t persisted to configuration files.&lt;/p&gt;
+
+&lt;h4 id=&#34;protocol:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Protocol&lt;/h4&gt;
+
+&lt;p&gt;You shouldn&amp;rsquo;t need to set the protocol - it should default to the latest version (currently 3).&lt;/p&gt;
+
+&lt;p&gt;It does, when started from the command line. But it didn&amp;rsquo;t seem to when started using upstart and a configuration directory. Easy to fix though:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;{
+    &amp;quot;protocol&amp;quot;: 3
+}
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This might not be a bad practice anyway, you can update Serf on all nodes without worrying about protocol compatibility.&lt;/p&gt;
+
+&lt;h4 id=&#34;forming-a-cluster:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Forming a cluster&lt;/h4&gt;
+
+&lt;p&gt;I&amp;rsquo;ll cover this in more detail later, but you can set either &lt;code&gt;start_join&lt;/code&gt; or &lt;code&gt;discover&lt;/code&gt; to join your agent to a cluster.&lt;/p&gt;
+
+&lt;h3 id=&#34;scripting-it:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Scripting it&lt;/h3&gt;
+
+&lt;p&gt;Since Serf is ideal for a cloud environment, its useful to script its installation and configuration.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example using bash &lt;a href=&#34;https://github.com/ian-kent/vagrant-mongodb/blob/master/Vagrantfile&#34;&gt;similar to the one in my vagrant-mongodb example&lt;/a&gt;. It installs Serf, configures upstart, and writes an example JSON configuration file.&lt;/p&gt;
+
+&lt;p&gt;Because its from a Vagrant build, it uses a workaround to find the correct IP.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;wget https://dl.bintray.com/mitchellh/serf/0.4.5_linux_amd64.zip
+unzip 0.4.5_linux_amd64.zip
+mv serf /usr/local/bin
+rm 0.4.5_linux_amd64.zip
+wget https://raw.github.com/hashicorp/serf/c15b5f15dec3d735dae1a6d1f3455d4d7b5685e7/ops-misc/upstart.conf
+mv upstart.conf /etc/init/serf-agent.conf
+mkdir /etc/serf
+ip=`ip addr list eth1 | grep &amp;quot;inet &amp;quot; | cut -d &#39; &#39; -f6 | cut -d/ -f1`
+echo { \&amp;quot;start_join\&amp;quot;: [\&amp;quot;$1\&amp;quot;], \&amp;quot;protocol\&amp;quot;: 3, \&amp;quot;tags\&amp;quot;: { \&amp;quot;role\&amp;quot;: \&amp;quot;mongodb\&amp;quot; }, \&amp;quot;advertise\&amp;quot;: \&amp;quot;$ip\&amp;quot; } | tee /etc/serf/config.json
+exec start serf-agent
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;forming-a-cluster-1:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Forming a cluster&lt;/h2&gt;
+
+&lt;p&gt;So far we have just a single Serf agent. The next step is to setup another Serf agent, and join them together, forming a (small) cluster of Serf agents.&lt;/p&gt;
+
+&lt;h4 id=&#34;using-multicast-dns-mdns:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Using multicast DNS (mDNS)&lt;/h4&gt;
+
+&lt;p&gt;Serf supports multicast DNS, so in a contained environment with multicast support we don&amp;rsquo;t need to provide it with a neighbour.&lt;/p&gt;
+
+&lt;p&gt;Using the &lt;code&gt;discover&lt;/code&gt; configuration option, we provide Serf with a cluster name which it will use to automatically discover Serf peers.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;{
+    &amp;quot;discover&amp;quot;: &amp;quot;mycluster&amp;quot;
+}
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In a cloud environment this removes the need to bootstrap Serf, making it truly autonomous.&lt;/p&gt;
+
+&lt;h4 id=&#34;providing-a-neighbour:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Providing a neighbour&lt;/h4&gt;
+
+&lt;p&gt;If we can&amp;rsquo;t use multicast DNS, we can provide a neighbour and Serf will discover the rest of the cluster from there.&lt;/p&gt;
+
+&lt;p&gt;This could be problematic, but if we&amp;rsquo;re in a Mesos cluster it becomes easy. We know at least one Zookeeper must always be available, so we can give Serf the hostnames of our known Zookeeper instances:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;{
+    &amp;quot;start_join&amp;quot;: [ &amp;quot;zk1&amp;quot;, &amp;quot;zk2&amp;quot;, &amp;quot;zk3&amp;quot; ]
+}
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or, if we get the Zookeepers to update a load balancer (using Serf!) when they join or leave the cluster, we can make our configuration even easier:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;{
+    &amp;quot;start_join&amp;quot;: [ &amp;quot;zk&amp;quot; ]
+}
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can also use the same technique to configure Serf on the Zookeeper nodes.&lt;/p&gt;
+
+&lt;h3 id=&#34;how-clusters-are-formed:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;How clusters are formed&lt;/h3&gt;
+
+&lt;p&gt;A cluster is formed as soon as one agent discovers another (whether this is through multicast DNS or using a known neighbour).&lt;/p&gt;
+
+&lt;p&gt;As soon as a cluster is formed, agents will share information between them using the &lt;a href=&#34;http://www.serfdom.io/docs/internals/gossip.html&#34;&gt;Gossip Protocol&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If agents from two existing clusters discover each other, the two clusters will become a single cluster. Full membership information is propagated to every node.&lt;/p&gt;
+
+&lt;p&gt;Once two clusters have merged, it would be difficult to split them without restarting all agents in the cluster or forcing agents to leave the cluster using the &lt;code&gt;force-leave&lt;/code&gt; command (and preventing them from discovering each other again!).&lt;/p&gt;
+
+&lt;h2 id=&#34;nodes-leaving:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Nodes leaving&lt;/h2&gt;
+
+&lt;p&gt;If a node chooses to leave the cluster (e.g. scaling down or restarting nodes), other nodes in the cluster will be informed with a &lt;code&gt;leave&lt;/code&gt; event.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s membership information will be updated to show a &amp;lsquo;left&amp;rsquo; state:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;example     192.168.100.200:7946    left    role=mongodb
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A node leaving the cluster is treated differently to a failure.&lt;/p&gt;
+
+&lt;p&gt;This is determined by the signal sent to the Serf agent to terminate the process. An &lt;code&gt;interrupt&lt;/code&gt; signal (Ctrl+C or &lt;code&gt;kill -2&lt;/code&gt;) will tell the node to leave the cluster, while a &lt;code&gt;kill&lt;/code&gt; signal (&lt;code&gt;kill -9&lt;/code&gt;) will be treated as a node failure.&lt;/p&gt;
+
+&lt;h2 id=&#34;node-failures:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Node failures&lt;/h2&gt;
+
+&lt;p&gt;When a node fails, other nodes are informed with a &lt;code&gt;failed&lt;/code&gt; event.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s membership information will be updated to show a &amp;lsquo;failed&amp;rsquo; state:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;example     192.168.100.200:7946    failed    role=mongodb
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Knowledge of the failed node is kept by other Serf agents in the cluster. They will periodically attempt to reconnect to the node, and eventually remove the node if further attempts are unsuccessful.&lt;/p&gt;
+
+&lt;h2 id=&#34;events:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Events&lt;/h2&gt;
+
+&lt;p&gt;Serf uses events to propagate membership information across the cluster, either &lt;code&gt;member-join&lt;/code&gt;, &lt;code&gt;member-leave&lt;/code&gt;, &lt;code&gt;member-failed&lt;/code&gt; or &lt;code&gt;member-update&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can also send custom events (which use the &lt;code&gt;user&lt;/code&gt; event type), and provide a custom event name and data payload to send with it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;serf event dosomething &amp;quot;{ \&amp;quot;foo\&amp;quot;: \&amp;quot;bar\&amp;quot; }&amp;quot;
+&amp;lt;/code&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Events with the same name within a short time frame are coalesced into one event, although this can be disabled using the &lt;code&gt;-coalesce=false&lt;/code&gt; command line argument.&lt;/p&gt;
+
+&lt;p&gt;This makes Serf useful as an automation tool - for example, to install applications on cluster nodes or configure ZooKeeper or Mesos instances.&lt;/p&gt;
+
+&lt;h3 id=&#34;event-handlers:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Event handlers&lt;/h3&gt;
+
+&lt;p&gt;Event handlers are scripts which are executed as a shell command in response to the events.&lt;/p&gt;
+
+&lt;h4 id=&#34;shell-environment:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Shell environment&lt;/h4&gt;
+
+&lt;p&gt;Within the shell created by Serf, we have the following environment variables available:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SERF_EVENT&lt;/code&gt; - the event type&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SERF_SELF_NAME&lt;/code&gt; - the current node name&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SERF_SELF_ROLE&lt;/code&gt; - the role of the node, but presumably deprecated&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SERF_TAG_${TAG}&lt;/code&gt; - one for each tag set (uppercased)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SERF_USER_EVENT&lt;/code&gt; - the user event type, if SERF_EVENT is &amp;lsquo;user&amp;rsquo;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;SERF_USER_LTIME&lt;/code&gt; - the &lt;a href=&#34;http://en.wikipedia.org/wiki/Lamport_timestamps&#34;&gt;Lamport timestamp&lt;/a&gt; of the event, if SERF_EVENT is &amp;lsquo;user&amp;rsquo;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Any data payload given by the event is piped to STDIN.&lt;/p&gt;
+
+&lt;h4 id=&#34;creating-event-handlers:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Creating event handlers&lt;/h4&gt;
+
+&lt;p&gt;Serf&amp;rsquo;s event handler syntax is quite flexible, and lets you listen to all events or filter based on event type.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;The most basic option is to invoke a script for every event:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;{
+    &amp;ldquo;event_handlers&amp;rdquo;: [
+        &amp;ldquo;dosomething.sh&amp;rdquo;
+    ]
+}
+&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;You can listen for a specific event type:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;{
+    &amp;ldquo;event_handlers&amp;rdquo;: [
+        &amp;ldquo;member-join=dosomething.sh&amp;rdquo;
+    ]
+}
+&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;You can specify multiple event types:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;{
+    &amp;ldquo;event_handlers&amp;rdquo;: [
+        &amp;ldquo;member-join,member-leave=dosomething.sh&amp;rdquo;
+    ]
+}
+&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;You can listen to just user events:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;{
+    &amp;ldquo;event_handlers&amp;rdquo;: [
+        &amp;ldquo;user=dosomething.sh&amp;rdquo;
+    ]
+}
+&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;You can listen for specific user event types:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;{
+    &amp;ldquo;event_handlers&amp;rdquo;: [
+        &amp;ldquo;user:dosomething=dosomething.sh&amp;rdquo;
+    ]
+}
+&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Multiple event handlers can be specified, and all event handlers which match for an event will be invoked.&lt;/p&gt;
+
+&lt;h2 id=&#34;reloading-configuration:9ebde56991c3197de5edd6f179dc2fd9&#34;&gt;Reloading configuration&lt;/h2&gt;
+
+&lt;p&gt;Serf can reload its configuration without restarting the agent.&lt;/p&gt;
+
+&lt;p&gt;To do this, send a &lt;code&gt;SIGHUP&lt;/code&gt; signal to the Serf process, for example using &lt;code&gt;killall serf -HUP&lt;/code&gt; or &lt;code&gt;kill -1 PID&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;You could even use custom user events to rewrite Serf configuration files and reload them across the entire cluster.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A quick introduction to Apache Mesos</title>
+      <link>http://yoursitehere/a-quick-introduction-to-apache-mesos/</link>
+      <pubDate>Wed, 26 Feb 2014 19:01:35 GMT</pubDate>
+      
+      <guid>http://yoursitehere/a-quick-introduction-to-apache-mesos/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;
+
+&lt;p&gt;In some ways, Mesos provides the opposite to virtualisation:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Virtualisation splits a single physical resource into multiple virtual resources&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mesos joins multiple physical resources into a single virtual resource&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It schedules CPU and memory resources across the cluster in much the same way the Linux Kernel schedules local resources.&lt;/p&gt;
+
+&lt;p&gt;A Mesos cluster is made up of four major components:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;ZooKeepers&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mesos masters&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Mesos slaves&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Frameworks&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;zookeeper:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;ZooKeeper&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://zookeeper.apache.org/&#34;&gt;Apache ZooKeeper&lt;/a&gt; is a centralised configuration manager, used by distributed applications such as Mesos to coordinate activity across a cluster.&lt;/p&gt;
+
+&lt;p&gt;Mesos uses ZooKeeper to elect a leading master and for slaves to join the cluster.&lt;/p&gt;
+
+&lt;h3 id=&#34;mesos-masters:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Mesos masters&lt;/h3&gt;
+
+&lt;p&gt;A Mesos master is a Mesos instance in control of the cluster.&lt;/p&gt;
+
+&lt;p&gt;A cluster will typically have multiple Mesos masters to provide fault-tolerance, with one instance elected the leading master.&lt;/p&gt;
+
+&lt;h3 id=&#34;mesos-slaves:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Mesos slaves&lt;/h3&gt;
+
+&lt;p&gt;A Mesos slave is a Mesos instance which offers resources to the cluster.&lt;/p&gt;
+
+&lt;p&gt;They are the &amp;lsquo;worker&amp;rsquo; instances - tasks are allocated to the slaves by the Mesos master.&lt;/p&gt;
+
+&lt;h3 id=&#34;frameworks:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Frameworks&lt;/h3&gt;
+
+&lt;p&gt;On its own, Mesos only provides the basic &amp;ldquo;kernel&amp;rdquo; layer of your cluster. It lets other applications request resources in the cluster to perform tasks, but does nothing itself.&lt;/p&gt;
+
+&lt;p&gt;Frameworks bridge the gap between the Mesos layer and your applications. They are higher level abstractions which simplify the process of launching tasks on the cluster.&lt;/p&gt;
+
+&lt;h4 id=&#34;chronos:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Chronos&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/airbnb/chronos&#34;&gt;Chronos&lt;/a&gt; is a cron-like fault-tolerant scheduler for a Mesos cluster.&lt;/p&gt;
+
+&lt;p&gt;You can use it to schedule jobs, receive failure and completion notifications, and trigger other dependent jobs.&lt;/p&gt;
+
+&lt;h4 id=&#34;marathon:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Marathon&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/mesosphere/marathon&#34;&gt;Marathon&lt;/a&gt; is the equivalent of the Linux upstart or init daemons, designed for long-running applications.&lt;/p&gt;
+
+&lt;p&gt;You can use it to start, stop and scale applications across the cluster.&lt;/p&gt;
+
+&lt;h4 id=&#34;others:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Others&lt;/h4&gt;
+
+&lt;p&gt;There are a few other frameworks:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://aurora.apache.org/&#34;&gt;Aurora&lt;/a&gt; - service scheduler&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://hadoop.apache.org/&#34;&gt;Hadoop&lt;/a&gt; - data processing&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/jenkinsci/mesos-plugin&#34;&gt;Jenkins&lt;/a&gt; - Jenkins slave manager&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://spark.apache.org/&#34;&gt;Spark&lt;/a&gt; - data processing&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.adaptivecomputing.com/products/open-source/torque/&#34;&gt;Torque&lt;/a&gt; - resource manager&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can also &lt;a href=&#34;http://mesos.apache.org/documentation/latest/&#34;&gt;write your own framework&lt;/a&gt;, using Java, Python or C++.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-quick-start-guide:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;The quick start guide&lt;/h2&gt;
+
+&lt;p&gt;If you want to get a Mesos cluster up and running, you have a few options:&lt;/p&gt;
+
+&lt;h3 id=&#34;using-vagrant:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Using Vagrant&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.vagrantup.com&#34;&gt;Vagrant&lt;/a&gt; and the &lt;a href=&#34;https://github.com/everpeace/vagrant-mesos&#34;&gt;vagrant-mesos&lt;/a&gt; Vagrantfile can help you quickly build:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;a standalone Mesos instance&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;a multi-machine Mesos cluster of ZooKeepers, masters and slaves&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Unfortunately, the network configuration is a bit difficult to work with - it uses a private network between the VMs, and SSH tunnelling to provide access to the cluster.&lt;/p&gt;
+
+&lt;h3 id=&#34;using-mesosphere-and-amazon-web-services:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Using Mesosphere and Amazon Web Services&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mesosphere.io/&#34;&gt;Mesosphere&lt;/a&gt; provide &lt;a href=&#34;https://elastic.mesosphere.io/&#34;&gt;Elastic Mesosphere&lt;/a&gt;, which can quickly launch a Mesos cluster using &lt;a href=&#34;http://aws.amazon.com/ec2/&#34;&gt;Amazon EC2&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is far easier to work with than the Vagrant build, but it isn&amp;rsquo;t free - around $1.50 an hour for 6 instances or $4.50 for 18.&lt;/p&gt;
+
+&lt;h3 id=&#34;a-simpler-vagrant-build:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;A simpler Vagrant build&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve put together some Vagrantfiles to build individual components of a Mesos cluster. It&amp;rsquo;s a work in progress, but it can already build a working Mesos cluster without the networking issues. It uses bridged networking, with dynamically assigned IPs, so all instances can be accessed directly through your local network.&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;ll need the following GitHub repositories:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-zookeeper&#34;&gt;ian-kent/vagrant-zookeeper&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-mesos-master&#34;&gt;ian-kent/vagrant-mesos-master&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-mesos-slave&#34;&gt;ian-kent/vagrant-mesos-slave&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;At the moment, a cluster is limited to one ZooKeeper, but can support multiple Mesos masters and slaves.&lt;/p&gt;
+
+&lt;p&gt;Each of the instances is also built with &lt;a href=&#34;http://serfdom.io&#34;&gt;Serf&lt;/a&gt; to provide decentralised service discovery. You can use &lt;code&gt;serf members&lt;/code&gt; from any instance to list all other instances.&lt;/p&gt;
+
+&lt;p&gt;To help test deployments, there&amp;rsquo;s also a MongoDB build with Serf installed:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ian-kent/vagrant-mongodb&#34;&gt;ian-kent/vagrant-mongodb&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Like the ZooKeeper instances, the MongoDB instance joins the same Serf cluster but isn&amp;rsquo;t part of the Mesos cluster.&lt;/p&gt;
+
+&lt;h2 id=&#34;once-your-cluster-is-running:d12db87a3f4ce64d7023ff8451a41464&#34;&gt;Once your cluster is running&lt;/h2&gt;
+
+&lt;p&gt;You&amp;rsquo;ll need to install a framework.&lt;/p&gt;
+
+&lt;p&gt;Mesosphere lets you choose to install Marathon on Amazon EC2, so that could be a good place to start.&lt;/p&gt;
+
+&lt;p&gt;Otherwise, manually installing and configuring Marathon or another framework is easy. The quick and dirty way is to install them on the Mesos masters, but it would be better if they had their own VMs.&lt;/p&gt;
+
+&lt;p&gt;With Marathon or Aurora, you can even run other frameworks in the Mesos cluster for scalability and fault-tolerance.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
