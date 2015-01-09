@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Agile on Ian Kent</title>
-    <link>http://yourSiteHere/tags/agile/</link>
+    <link>/tags/agile/</link>
     <description>Recent content in Agile on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Mon, 08 Sep 2014 20:49:30 &#43;0000</lastBuildDate>
-    <atom:link href="http://yourSiteHere/tags/agile/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/agile/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Management and the frozen lake (and how coffee helps)</title>
-      <link>http://yoursitehere/management-and-the-frozen-lake-and-how-coffee-helps/</link>
+      <link>/management-and-the-frozen-lake-and-how-coffee-helps/</link>
       <pubDate>Mon, 08 Sep 2014 20:49:30 &#43;0000</pubDate>
       
-      <guid>http://yoursitehere/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
+      <guid>/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
       <description>
 
 &lt;p&gt;It’s winter, and you’ve gone out for a walk. You’ve already passed the shops and an occasional snowman. You smile, briefly, but carry on. In front of you there should be a lake - you’re convinced there should be a lake - but it looks frosty, dull, and blends into its surroundings. You doubt yourself, perhaps it isn’t a lake after all?&lt;/p&gt;
@@ -145,10 +145,10 @@
     
     <item>
       <title>The automation what-for</title>
-      <link>http://yoursitehere/the-automation-what-for/</link>
+      <link>/the-automation-what-for/</link>
       <pubDate>Tue, 25 Feb 2014 21:23:04 GMT</pubDate>
       
-      <guid>http://yoursitehere/the-automation-what-for/</guid>
+      <guid>/the-automation-what-for/</guid>
       <description>
 
 &lt;p&gt;Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&amp;rsquo;ve invested 5 years in writing automated test cases.&lt;/p&gt;

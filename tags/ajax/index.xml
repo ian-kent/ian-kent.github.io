@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ajax on Ian Kent</title>
-    <link>http://yourSiteHere/tags/ajax/</link>
+    <link>/tags/ajax/</link>
     <description>Recent content in Ajax on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Tue, 11 Feb 2014 21:38:30 GMT</lastBuildDate>
-    <atom:link href="http://yourSiteHere/tags/ajax/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/ajax/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Globally handling OPTIONS requests in Play Framework</title>
-      <link>http://yoursitehere/globally-handling-options-requests-in-play-framework/</link>
+      <link>/globally-handling-options-requests-in-play-framework/</link>
       <pubDate>Tue, 11 Feb 2014 21:38:30 GMT</pubDate>
       
-      <guid>http://yoursitehere/globally-handling-options-requests-in-play-framework/</guid>
+      <guid>/globally-handling-options-requests-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;If you&amp;rsquo;re using AJAX to talk to a Play Framework application, you&amp;rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.&lt;/p&gt;

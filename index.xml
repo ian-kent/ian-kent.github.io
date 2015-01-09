@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ian Kent</title>
-    <link>http://yourSiteHere/</link>
+    <link>/</link>
     <description>Recent content on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Mon, 08 Sep 2014 20:49:30 &#43;0000</lastBuildDate>
-    <atom:link href="http://yourSiteHere/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Management and the frozen lake (and how coffee helps)</title>
-      <link>http://yoursitehere/management-and-the-frozen-lake-and-how-coffee-helps/</link>
+      <link>/management-and-the-frozen-lake-and-how-coffee-helps/</link>
       <pubDate>Mon, 08 Sep 2014 20:49:30 &#43;0000</pubDate>
       
-      <guid>http://yoursitehere/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
+      <guid>/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
       <description>
 
 &lt;p&gt;It’s winter, and you’ve gone out for a walk. You’ve already passed the shops and an occasional snowman. You smile, briefly, but carry on. In front of you there should be a lake - you’re convinced there should be a lake - but it looks frosty, dull, and blends into its surroundings. You doubt yourself, perhaps it isn’t a lake after all?&lt;/p&gt;
@@ -145,10 +145,10 @@
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>http://yoursitehere/introducing-go-mailhog/</link>
+      <link>/introducing-go-mailhog/</link>
       <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
       
-      <guid>http://yoursitehere/introducing-go-mailhog/</guid>
+      <guid>/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
@@ -174,10 +174,10 @@
     
     <item>
       <title>Action composition in Mojolicious</title>
-      <link>http://yoursitehere/action-composition-in-mojolicious/</link>
+      <link>/action-composition-in-mojolicious/</link>
       <pubDate>Sun, 20 Apr 2014 12:58:57 &#43;0000</pubDate>
       
-      <guid>http://yoursitehere/action-composition-in-mojolicious/</guid>
+      <guid>/action-composition-in-mojolicious/</guid>
       <description>
 
 &lt;p&gt;Something about the routing in Mojolicious has been making things difficult, and Play Framework had the answer.&lt;/p&gt;
@@ -469,10 +469,10 @@ sub Action($$) {
     
     <item>
       <title>Getting started with HashiCorp Serf</title>
-      <link>http://yoursitehere/getting-started-with-hashicorp-serf/</link>
+      <link>/getting-started-with-hashicorp-serf/</link>
       <pubDate>Thu, 27 Feb 2014 22:53:03 GMT</pubDate>
       
-      <guid>http://yoursitehere/getting-started-with-hashicorp-serf/</guid>
+      <guid>/getting-started-with-hashicorp-serf/</guid>
       <description>
 
 &lt;p&gt;In my &lt;a href=&#34;http://iankent.co.uk/2014/02/26/a-quick-introduction-to-apache-mesos/&#34;&gt;post about Apache Mesos&lt;/a&gt; I briefly mentioned Serf.&lt;/p&gt;
@@ -821,10 +821,10 @@ exec start serf-agent
     
     <item>
       <title>A quick introduction to Apache Mesos</title>
-      <link>http://yoursitehere/a-quick-introduction-to-apache-mesos/</link>
+      <link>/a-quick-introduction-to-apache-mesos/</link>
       <pubDate>Wed, 26 Feb 2014 19:01:35 GMT</pubDate>
       
-      <guid>http://yoursitehere/a-quick-introduction-to-apache-mesos/</guid>
+      <guid>/a-quick-introduction-to-apache-mesos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;
@@ -967,10 +967,10 @@ exec start serf-agent
     
     <item>
       <title>The automation what-for</title>
-      <link>http://yoursitehere/the-automation-what-for/</link>
+      <link>/the-automation-what-for/</link>
       <pubDate>Tue, 25 Feb 2014 21:23:04 GMT</pubDate>
       
-      <guid>http://yoursitehere/the-automation-what-for/</guid>
+      <guid>/the-automation-what-for/</guid>
       <description>
 
 &lt;p&gt;Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&amp;rsquo;ve invested 5 years in writing automated test cases.&lt;/p&gt;
@@ -1199,10 +1199,10 @@ exec start serf-agent
     
     <item>
       <title>Building a scalable sequence generator (in Scala)</title>
-      <link>http://yoursitehere/building-a-scalable-sequence-generator-in-scala/</link>
+      <link>/building-a-scalable-sequence-generator-in-scala/</link>
       <pubDate>Sun, 23 Feb 2014 11:53:37 GMT</pubDate>
       
-      <guid>http://yoursitehere/building-a-scalable-sequence-generator-in-scala/</guid>
+      <guid>/building-a-scalable-sequence-generator-in-scala/</guid>
       <description>
 
 &lt;p&gt;Building a scalable sequence generator was more difficult than I&amp;rsquo;d anticipated.&lt;/p&gt;
@@ -1479,10 +1479,10 @@ exec start serf-agent
     
     <item>
       <title>Quick start with Perl and Mojolicious</title>
-      <link>http://yoursitehere/quick-start-with-perl-and-mojolicious/</link>
+      <link>/quick-start-with-perl-and-mojolicious/</link>
       <pubDate>Fri, 14 Feb 2014 14:43:20 GMT</pubDate>
       
-      <guid>http://yoursitehere/quick-start-with-perl-and-mojolicious/</guid>
+      <guid>/quick-start-with-perl-and-mojolicious/</guid>
       <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -1523,10 +1523,10 @@ exec start serf-agent
     
     <item>
       <title>Quick start with Scala and Play Framework</title>
-      <link>http://yoursitehere/quick-start-with-scala-and-play-framework/</link>
+      <link>/quick-start-with-scala-and-play-framework/</link>
       <pubDate>Thu, 13 Feb 2014 19:23:23 GMT</pubDate>
       
-      <guid>http://yoursitehere/quick-start-with-scala-and-play-framework/</guid>
+      <guid>/quick-start-with-scala-and-play-framework/</guid>
       <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -1567,10 +1567,10 @@ exec start serf-agent
     
     <item>
       <title>Globally handling OPTIONS requests in Play Framework</title>
-      <link>http://yoursitehere/globally-handling-options-requests-in-play-framework/</link>
+      <link>/globally-handling-options-requests-in-play-framework/</link>
       <pubDate>Tue, 11 Feb 2014 21:38:30 GMT</pubDate>
       
-      <guid>http://yoursitehere/globally-handling-options-requests-in-play-framework/</guid>
+      <guid>/globally-handling-options-requests-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;If you&amp;rsquo;re using AJAX to talk to a Play Framework application, you&amp;rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.&lt;/p&gt;
@@ -1694,10 +1694,10 @@ def getMethods(request: Request[AnyContent]) : List[String] = {
     
     <item>
       <title>Action composition in Play Framework</title>
-      <link>http://yoursitehere/action-composition-in-play-framework/</link>
+      <link>/action-composition-in-play-framework/</link>
       <pubDate>Mon, 10 Feb 2014 16:32:47 GMT</pubDate>
       
-      <guid>http://yoursitehere/action-composition-in-play-framework/</guid>
+      <guid>/action-composition-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.&lt;/p&gt;

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Testing on Ian Kent</title>
-    <link>http://yourSiteHere/tags/testing/</link>
+    <link>/tags/testing/</link>
     <description>Recent content in Testing on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</lastBuildDate>
-    <atom:link href="http://yourSiteHere/tags/testing/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/testing/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>http://yoursitehere/introducing-go-mailhog/</link>
+      <link>/introducing-go-mailhog/</link>
       <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
       
-      <guid>http://yoursitehere/introducing-go-mailhog/</guid>
+      <guid>/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;

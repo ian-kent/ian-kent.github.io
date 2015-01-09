@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mojolicious on Ian Kent</title>
-    <link>http://yourSiteHere/tags/mojolicious/</link>
+    <link>/tags/mojolicious/</link>
     <description>Recent content in Mojolicious on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Sun, 20 Apr 2014 12:58:57 &#43;0000</lastBuildDate>
-    <atom:link href="http://yourSiteHere/tags/mojolicious/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/mojolicious/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Action composition in Mojolicious</title>
-      <link>http://yoursitehere/action-composition-in-mojolicious/</link>
+      <link>/action-composition-in-mojolicious/</link>
       <pubDate>Sun, 20 Apr 2014 12:58:57 &#43;0000</pubDate>
       
-      <guid>http://yoursitehere/action-composition-in-mojolicious/</guid>
+      <guid>/action-composition-in-mojolicious/</guid>
       <description>
 
 &lt;p&gt;Something about the routing in Mojolicious has been making things difficult, and Play Framework had the answer.&lt;/p&gt;
@@ -308,10 +308,10 @@ sub Action($$) {
     
     <item>
       <title>Quick start with Perl and Mojolicious</title>
-      <link>http://yoursitehere/quick-start-with-perl-and-mojolicious/</link>
+      <link>/quick-start-with-perl-and-mojolicious/</link>
       <pubDate>Fri, 14 Feb 2014 14:43:20 GMT</pubDate>
       
-      <guid>http://yoursitehere/quick-start-with-perl-and-mojolicious/</guid>
+      <guid>/quick-start-with-perl-and-mojolicious/</guid>
       <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;

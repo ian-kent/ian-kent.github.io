@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Akka on Ian Kent</title>
-    <link>http://yourSiteHere/categories/akka/</link>
+    <link>/categories/akka/</link>
     <description>Recent content in Akka on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Mon, 10 Feb 2014 16:32:47 GMT</lastBuildDate>
-    <atom:link href="http://yourSiteHere/categories/akka/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/akka/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Action composition in Play Framework</title>
-      <link>http://yoursitehere/action-composition-in-play-framework/</link>
+      <link>/action-composition-in-play-framework/</link>
       <pubDate>Mon, 10 Feb 2014 16:32:47 GMT</pubDate>
       
-      <guid>http://yoursitehere/action-composition-in-play-framework/</guid>
+      <guid>/action-composition-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.&lt;/p&gt;

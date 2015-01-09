@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vagrant on Ian Kent</title>
-    <link>http://yourSiteHere/categories/vagrant/</link>
+    <link>/categories/vagrant/</link>
     <description>Recent content in Vagrant on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Wed, 26 Feb 2014 19:01:35 GMT</lastBuildDate>
-    <atom:link href="http://yourSiteHere/categories/vagrant/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/categories/vagrant/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>A quick introduction to Apache Mesos</title>
-      <link>http://yoursitehere/a-quick-introduction-to-apache-mesos/</link>
+      <link>/a-quick-introduction-to-apache-mesos/</link>
       <pubDate>Wed, 26 Feb 2014 19:01:35 GMT</pubDate>
       
-      <guid>http://yoursitehere/a-quick-introduction-to-apache-mesos/</guid>
+      <guid>/a-quick-introduction-to-apache-mesos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;
@@ -159,10 +159,10 @@
     
     <item>
       <title>Quick start with Perl and Mojolicious</title>
-      <link>http://yoursitehere/quick-start-with-perl-and-mojolicious/</link>
+      <link>/quick-start-with-perl-and-mojolicious/</link>
       <pubDate>Fri, 14 Feb 2014 14:43:20 GMT</pubDate>
       
-      <guid>http://yoursitehere/quick-start-with-perl-and-mojolicious/</guid>
+      <guid>/quick-start-with-perl-and-mojolicious/</guid>
       <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -203,10 +203,10 @@
     
     <item>
       <title>Quick start with Scala and Play Framework</title>
-      <link>http://yoursitehere/quick-start-with-scala-and-play-framework/</link>
+      <link>/quick-start-with-scala-and-play-framework/</link>
       <pubDate>Thu, 13 Feb 2014 19:23:23 GMT</pubDate>
       
-      <guid>http://yoursitehere/quick-start-with-scala-and-play-framework/</guid>
+      <guid>/quick-start-with-scala-and-play-framework/</guid>
       <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;

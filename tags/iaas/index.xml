@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Iaas on Ian Kent</title>
-    <link>http://yourSiteHere/tags/iaas/</link>
+    <link>/tags/iaas/</link>
     <description>Recent content in Iaas on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Thu, 27 Feb 2014 22:53:03 GMT</lastBuildDate>
-    <atom:link href="http://yourSiteHere/tags/iaas/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/iaas/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Getting started with HashiCorp Serf</title>
-      <link>http://yoursitehere/getting-started-with-hashicorp-serf/</link>
+      <link>/getting-started-with-hashicorp-serf/</link>
       <pubDate>Thu, 27 Feb 2014 22:53:03 GMT</pubDate>
       
-      <guid>http://yoursitehere/getting-started-with-hashicorp-serf/</guid>
+      <guid>/getting-started-with-hashicorp-serf/</guid>
       <description>
 
 &lt;p&gt;In my &lt;a href=&#34;http://iankent.co.uk/2014/02/26/a-quick-introduction-to-apache-mesos/&#34;&gt;post about Apache Mesos&lt;/a&gt; I briefly mentioned Serf.&lt;/p&gt;
@@ -365,10 +365,10 @@ exec start serf-agent
     
     <item>
       <title>A quick introduction to Apache Mesos</title>
-      <link>http://yoursitehere/a-quick-introduction-to-apache-mesos/</link>
+      <link>/a-quick-introduction-to-apache-mesos/</link>
       <pubDate>Wed, 26 Feb 2014 19:01:35 GMT</pubDate>
       
-      <guid>http://yoursitehere/a-quick-introduction-to-apache-mesos/</guid>
+      <guid>/a-quick-introduction-to-apache-mesos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;
