@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ajax on Ian Kent</title>
-    <link>/tags/ajax/</link>
-    <description>Recent content in Ajax on Ian Kent</description>
+    <title>Ajax on Software engineering and other stuff</title>
+    <link>http://iankent.uk/tags/ajax/</link>
+    <description>Recent content in Ajax on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-    
-    <lastBuildDate>Tue, 11 Feb 2014 21:38:30 GMT</lastBuildDate>
-    <atom:link href="/tags/ajax/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language>
+    <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
+    <lastBuildDate>Tue, 11 Feb 2014 21:38:30 +0000</lastBuildDate>
+    <atom:link href="http://iankent.uk/tags/ajax/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Globally handling OPTIONS requests in Play Framework</title>
-      <link>/globally-handling-options-requests-in-play-framework/</link>
-      <pubDate>Tue, 11 Feb 2014 21:38:30 GMT</pubDate>
+      <link>http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/</link>
+      <pubDate>Tue, 11 Feb 2014 21:38:30 +0000</pubDate>
       
-      <guid>/globally-handling-options-requests-in-play-framework/</guid>
+      <guid>http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;If you&amp;rsquo;re using AJAX to talk to a Play Framework application, you&amp;rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.&lt;/p&gt;
@@ -59,7 +58,7 @@ OPTIONS /*url controllers.Application.options(url: String)
 
 &lt;p&gt;and change your controller options handler to:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def rootOptions = options(&amp;quot;/&amp;quot;)   
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def rootOptions = options(&amp;quot;/&amp;quot;)
 def options(url: String) = Action { request =&amp;gt;
   NoContent.withHeaders(headers : _*)
 }

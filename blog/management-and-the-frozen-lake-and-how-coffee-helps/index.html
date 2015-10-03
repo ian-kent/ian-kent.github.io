@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="keywords" content="Agile, Leadership, Management, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content=""/>
+<meta property="og:title" content="Management and the frozen lake (and how coffee helps) : iankent.uk"/>
+<meta property="og:site_name" content="Ian Kent"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-09-08"/>
+<meta property="article:modified_time" content="2014-09-08"/>
+
+
+
+<meta property="article:tag" content="Agile">
+<meta property="article:tag" content="Leadership">
+<meta property="article:tag" content="Management">
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:site" content="@iankent">
+<meta name="twitter:title" content="Management and the frozen lake (and how coffee helps) : iankent.uk">
+<meta name="twitter:creator" content="@iankent">
+<meta name="twitter:description" content="">
+<meta name="twitter:image:src" content="">
+<meta name="twitter:domain" content="iankent.uk">
+
+
+    
+    <base href="http://iankent.uk/">
+    <title>Software engineering and other stuff</title>
+    <link rel="canonical" href="http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/">
+    <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/image.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/menu.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/segment.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/list.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/transition.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+
+      .hidden.menu {
+        display: none;
+      }
+
+      .masthead.segment {
+        min-height: 700px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 3em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+
+      .footer.segment {
+        padding: 5em 0em;
+      }
+
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+      .ui.large.secondary.menu {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+      }
+      .ui.large.secondary.menu .ui.button {
+        margin-left: 0.5em;
+      }
+
+      .ui.vertical.stripe {
+        padding: 2em 0 !important;
+      }
+
+      .ui.inverted.huge.button:hover{
+        color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .ui.inverted.huge.button {
+        padding: 0.3em 0.5em 0.3em 0.4em;
+        margin-right: 0.5em;
+        font-size: 1.9em !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.8) inset !important;
+        letter-spacing: -3px;
+      }
+
+      .ui.inverted.button .icon {
+        margin-left: -12px;
+        margin-right: 4px;
+      }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="/assets/semantic/components/visibility.js"></script>
+    <script src="/assets/semantic/components/sidebar.js"></script>
+    <script src="/assets/semantic/components/transition.js"></script>
+    <script>
+    $(document)
+      .ready(function() {
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        $('.ui.sidebar')
+          .sidebar('attach events', '.toc.item')
+        ;
+
+      })
+    ;
+    </script>
+  </head>
+  <body lang="en">
+
+    
+    <div class="ui inverted top menu fixed segment aligned center">
+      <div class="ui container">
+        <div class="ui large secondary inverted pointing menu">
+          <a class="toc item">
+            <i class="sidebar icon"></i>
+          </a>
+          <a href="/" class="ui inverted huge button">IK</a>
+          <a class="item" href="/">Home</a>
+          <a class="active item" href="/blog/">Blog</a>
+          <a class="item" href="/project/">Projects</a>
+          <div class="right item">
+            <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+            <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ui vertical inverted sidebar menu">
+      <a class="item" href="/">Home</a>
+      <a class="active item" href="/blog/">Blog</a>
+      <a class="item" href="/project/">Projects</a>
+      <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+      <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+    </div>
+
+
+    
+    <div class="pusher">
+      <div class="ui inverted vertical center aligned segment">
+
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu">
+            <a class="toc item">
+              <i class="sidebar icon"></i>
+            </a>
+            <a href="/" class="ui inverted huge button">IK</a>
+            <a class="item" href="/">Home</a>
+            <a class="active item" href="/blog/">Blog</a>
+            <a class="item" href="/project/">Projects</a>
+            <div class="right item">
+              <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+              <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui vertical segment content">
+
+
+<section id="main" class="ui container">
+  <h1 itemprop="name" id="title" class="ui header">Management and the frozen lake (and how coffee helps)</h1>
+  <div class="ui text">
+        <article itemprop="articleBody" id="content">
+           
+
+<p>It’s winter, and you’ve gone out for a walk. You’ve already passed the shops and an occasional snowman. You smile, briefly, but carry on. In front of you there should be a lake - you’re convinced there should be a lake - but it looks frosty, dull, and blends into its surroundings. You doubt yourself, perhaps it isn’t a lake after all?</p>
+
+<p>You carry on walking - happy that you can get home sooner. It’s cold out here, and the warmth of home seems far away, you’re in a hurry. Something doesn’t feel right, it sounds a bit crunchier than land, not quite what you’d expect - but you think what the hell, if it looks like land, and it works like land, it must be land. So you continue - you reason with yourself that it’s probably too late to go back now anyway.</p>
+
+<p>After a few minutes, you think you’re getting close. So close you can see home, you can nearly feel it. The tingly cold feeling slowly replaced with tingly warm. Then all of a sudden, it’s gone! Air replaced with water, your vision of home with one of drowning, anxiety and death. It seems it wasn’t land after all.</p>
+
+<p>Months later, following an expensive rescue operation and a long stay in hospital, you’re back home - everything seems fine now, winter has gone and the lake is definitely back (you’ve checked, its water!).</p>
+
+<p>You begin to remember falling in the lake, and soon have a realisation. You’ve fallen in the lake every year - and you keep on doing it! What’s even stranger - you hear of lots of other people doing it too. Somehow, you’ve adapted to ignoring the ice, falling in the lake, and you hadn’t even noticed.</p>
+
+<p>You wonder to yourself, why isn’t everyone falling in the lake? They have the same environment, the same hats, gloves and scarves. Why aren’t they getting wet? How are they getting home? They must just be lucky.</p>
+
+<h2 id="so-why-are-some-people-just-so-damn-lucky:66c9f5edc1b53f9bbedb45111bdff41f">So why are some people just so damn lucky?</h2>
+
+<p>Now it’s winter again - you’ve nipped out for your annual walk to wherever. But this year, on your way back, you try something a bit different. You’ve walked past the shops, and the snowmen, but you stop. You buy a coffee. There’s a bench - it’s cold, but you’ve wrapped up warm and you’re in no hurry. It’d be nice to be home, but you don’t really want to spend another few months in hospital.</p>
+
+<p>So you wipe away the snow, take a seat, and sip at your coffee, burning your lips, then pretending to “smoke”. Ahh, how relaxing.</p>
+
+<p>After just a few minutes, someone walks past. They’re in a hurry - you don’t know (or care) why. They get to where you thought the lake should be. They pause for a moment, then carry on - they’ve got somewhere to be. But you don’t follow - besides, you’ve still got some coffee left, and the bench feels a lot warmer than when you got here!</p>
+
+<p>You don’t have to wait long until a few more people walk past, and they all hurry off in the same direction.</p>
+
+<p>After a longer wait (though probably still not that long, your coffee is definitely still hot!), you spot something a bit unusual. Someone has got to where the lake should be, but they’ve stopped. How bizarre, you think to yourself, and take another sip of your coffee.</p>
+
+<p>You see them crouch down, and hear a small scraping noise. It’s a bit too dark to see what they’re doing, but you watch patiently anyway. Unexpectedly, they stand up, turn around, backtrack a few steps, and walk off in a completely different direction. You’re confused, nobody else has done that, but most importantly, you still have coffee.</p>
+
+<p>As time passes, you see more and more people walk past. Some of them stop, crouch down, then walk off in different directions. But most of them carry on walking - they’re in too much of a hurry to stop, or even consider taking the longer route. It is cold after all - they seen the weather warnings, but they weren’t prepared enough for this.</p>
+
+<p>Your coffee’s gone. Damnit, but at least you’re warmed up a bit for the walk home. Just as you stand up you hear a scream (definitely sounded like those people you seen earlier), a deafening crack, and a very wet sounding splash. You see a crack rip towards the shore, and the ice disappears into the water below.</p>
+
+<p>You walk off, with a grin on your face - clearly pleased with yourself - and you make it home. A little later than expected, but sooner than last year! You didn’t follow the others, you did something different too, and although the results weren’t immediate they were definitely worth waiting for.</p>
+
+<h2 id="uh-seriously-what:66c9f5edc1b53f9bbedb45111bdff41f">Uh, seriously&hellip; what?</h2>
+
+<p>I think I enjoyed writing that way too much - but there is a serious point to be made.</p>
+
+<p>Over time, organisations and businesses can become frozen lakes. Managers and employees become the people and the fish, separated by thick, unbreakable ice. And although the results can occasionally be spectacular, the dangers are hidden, and often overlooked or massively underestimated.</p>
+
+<p>And the solution is to repeat the same mistakes, use the same broken logic and failing communication mechanisms which created exactly the problem we’re trying to solve. And somehow we forget, or remember inaccurately, and do it again and again.</p>
+
+<h2 id="so-what-does-it-all-mean:66c9f5edc1b53f9bbedb45111bdff41f">So what does it all mean?</h2>
+
+<p>Your perspective on this will depend on your position in your organisation.</p>
+
+<p>The higher up in management you are, the more like the “people” you are. You can hurry out onto the ice, oblivious to the precarious situation you’re in, and all you see is a distorted reflection of your surroundings, everything just looks “kind of ok”. One wrong move, disaster for you - wait too long, disaster for you and the fish!</p>
+
+<p>And lower down, you’re more like the “fish” - or whichever lake-dwelling animal you prefer. You can clearly see the danger, it’s the overpowering dullness above you, but you’re powerless to help. You’re trapped - you need air, but the surface is unreachable. You can scream as much as you can - but the ice, as well as hiding danger, is an effective sound barrier, and nobody hears a thing. And even if they did, they’re in too much of a hurry to notice.</p>
+
+<p>But you saw in the story, some people got home - they didn’t make the same mistakes, they didn’t get wet. And they even helped a few fish along the way.</p>
+
+<p>So what did they do differently? Why didn’t they make the same mistake? And how did they help those damn fish?</p>
+
+<h2 id="you-need-to-gently-break-the-ice-metaphorically-speaking:66c9f5edc1b53f9bbedb45111bdff41f">You need to gently break the ice, metaphorically speaking</h2>
+
+<p>Those people you seen crouching down - they weren’t “managers”.</p>
+
+<p>They were leaders.</p>
+
+<p>And that’s a significant difference!</p>
+
+<p>They were scratching away at the surface - digging deeper and deeper into the ice. Of course, they wanted to serve their own purpose, to find the dangers below to avoid them. But they went about it differently - and it had a side effect, one even they weren’t expecting. They cut a hole in the ice, and a lucky few fish got the air they desperately needed.</p>
+
+<p>Most importantly, instead of trusting that if it looks like ice, it must be ice, they took the initiative to check. And by checking for themselves, they found out that ice could be misleading. It could easily distort their view of the world, hiding dangers and increasing risks, despite the largest population (the fish) seeing things clearly.</p>
+
+<p>The same applies in organisations - and this is the mistake you made in the story. Year after year, despite repeating the same mistakes, and knowing their outcome, you used the same technique (“if it looks like ice”) to deliver the same failed results (expensive rescue and lengthy hospitalisation), then clearly remembered the technique and completely forgot the outcome. Ad infinitum.</p>
+
+<p>The leaders were different. They didn’t trust what worked before - especially since they knew it didn’t actually work last time - they slowed down, and found out for themselves, to avoid repeating the same mistakes again. They didn’t “ask the ice” what was happening below - they broke through it, went straight to the source, and got far clearer, and far more valuable information as a result. And helped a few fish survive of course!</p>
+
+<h2 id="what-does-this-mean-for-me:66c9f5edc1b53f9bbedb45111bdff41f">What does this mean for me?</h2>
+
+<p>As either a manager or employee, your view of the ice is similar - everything looks dull and bland, but kind of similar to how things look now (the distorted reflections and white dullness). The management-gap between employees and management is the “ice” - and the more levels of management there are, the thicker the ice, the more distorted the view, and the harder it is to break through, from either side.</p>
+
+<p>As a manager, particularly holding a senior position in an organisation, you should stop relying on (often) historical management structures to communicate with your employees. Go straight to the source - talk to them, spend time with them, and you’ll get a lot more back. Don’t ask the ice, break it.</p>
+
+<p>And if you’re near the top, don’t just help the fish near the top, help them all, even the ones right at the bottom. And I don’t mean every year either - I mean every day. Live with the fish if you have to - they provide the food that makes you what you are, protect them and care about them.</p>
+
+<p>It’ll be weird at first, and your employees might panic, but they’ll adjust. They’ll benefit too, but they’ll probably hate you until they can see it. That’s just tough, buy their temporary appreciation with nice toys if you have to - but work hard to earn their respect and trust, and in return you’ll get loyal, engaged and probably happy workers, who’ll back you up - even when you make mistakes.</p>
+
+<h2 id="um-tell-me-a-bit-more-about-those-fish:66c9f5edc1b53f9bbedb45111bdff41f">Um, tell me a bit more about those fish?</h2>
+
+<p>If you’re a fish, you have a lot to gain from this too. But often you’ll eventually lose. While the “people” have the power to harm you, it requires commitment and participation from both sides if we want to keep winning.</p>
+
+<p>You can just about survive when the people take the shortcut and smash the ice. It’s a turbulent few minutes, but as an uninjured fish, you’ll be fine again until next year.</p>
+
+<p>Some fish are unlucky - the annual strain gets too much, and eventually they die, or they sadly get their faces smashed in with a flying shard of ice (intensity intended… it happens to some employees, hopefully not literally speaking!). But however they go, they take with them some knowledge, or skill, which would ultimately benefit the school in warmer times.</p>
+
+<p>But when someone does break through the ice, even if only a tiny bit, you get air, a lifeline. It might not be much, but it helps repair just a bit of the damage - and now someone knows, maybe they’ll be able to help a bit more next year?</p>
+
+<h2 id="and-what-s-this-about-coffee:66c9f5edc1b53f9bbedb45111bdff41f">And what’s this about coffee?</h2>
+
+<p>The coffee is a metaphor for taking a break - sitting back and watching. See what people do. Don’t act. It’s far better to do the right thing later than do the wrong thing now, but sadly its too tempting to do the wrong thing now - the results come sooner, and often whether they’re good or bad is unimportant.</p>
+
+<p>Management stuck in the frozen lake cycle just need to take a break, stop intervening - let people do their jobs. And help them when they ask.</p>
+
+<p>If the fish ask for comically small pickaxes, and you just happen to have some (or can afford to buy some), help them, act quickly! They’re probably not crying wolf (or shark, perhaps?). And if they don’t ask, don’t give them anything - if you have to think they need it, then they probably don’t.</p>
+
+<p>But it <strong>ONLY</strong> applies to management. Clearly fish can’t drink coffee.</p>
+
+<p>If you’re a fish (or an employee, as is more likely!), you need to do the exact opposite. You’re trapped, you can’t get air, and you’re going to die soon. And if you don’t die, you’ll need time to heal, time to rest, a long summer before the next cold winter. You could just go about your fishy business, but you can’t do that for long - one way or another, disaster is coming!</p>
+
+<p>So what can you do? Remember those tiny holes in the surface - the ones the leaders dug? Find them - scream and shout at them, don’t leave them alone. They’re the only ones who stand a chance of hearing you. And importantly, they’re up there - if they shout loud enough too, perhaps they can get other people to help - break apart the ice and save the fish, instead of just making sure they get home safe.</p>
+
+<p>Sadly, as in nature, it might not work. If the people are the top are tricked by the distorted reflection they see, and no leaders walk past to help, you’ll either have some sense of normalcy followed by a major blowout (highly likely), repeated consistently, or you’ll suffer and eventually die (thankfully far less likely).</p>
+
+<h2 id="happily-ever-after:66c9f5edc1b53f9bbedb45111bdff41f">Happily ever after</h2>
+
+<p>So I conclude my story about management and frozen lakes (and some snowmen, fish and a coffee).</p>
+
+<p>Disappointingly, there is no happily ever after. Not in this story, that’s something you’ll have to get over. Please don’t cry. Ok, cry - I’ll wait.</p>
+
+<p>&hellip;</p>
+
+<p>But there is a “happily for as long as we keep trying”. If the people keep digging and the fish keep screaming, there is some hope - and eventually you get home, warm and dry, and the fish get to live (albeit cold and wet). And you’re all better for it - you won’t make the same mistakes next year.</p>
+
+<p>Better still, you won’t even blindly walk around the lake next time - despite your commitment to remembering its a lake - because that won’t help the fish.</p>
+
+<p>Every year, from now on, you’ll stop, have a coffee, dig through the ice, and save the fish! And you can be happy knowing that everything is working just how it should - you’re sure it is, because the ice has gone and you can see clearly again.</p>
+
+<p>And although fish might not be able to scream, you can!</p>
+
+<p>(p.s. generally harassing your managers about stuff is as good as screaming - it’s quite possible that you’ll get escorted off the premises if you literally start screaming in work, and may end up in a mental hospital if you persist - be warned)</p>
+
+        </article>
+  </div>
+</section>
+
+</div>
+<div class="ui inverted vertical footer segment">
+  <div class="ui container">
+    <div class="ui stackable inverted divided equal height stackable grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">About</h4>
+        <div class="ui inverted link list">
+          <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+          <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+          <a href="mailto:email@iankent.co.uk" class="item"><i class="mail icon"></i> E-mail</a>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui inverted header">Services</h4>
+        <div class="ui inverted link list">
+          <a href="#" class="item">Banana Pre-Order</a>
+          <a href="#" class="item">DNA FAQ</a>
+          <a href="#" class="item">How To Access</a>
+          <a href="#" class="item">Favorite X-Men</a>
+        </div>
+      </div>
+      <div class="seven wide column">
+        <h4 class="ui inverted header">Footer Header</h4>
+        <p>&copy; Ian Kent, 2014 - 2015</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+
+</html>
+

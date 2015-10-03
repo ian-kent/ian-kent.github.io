@@ -2,64 +2,74 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>/</loc>
-    <lastmod>2014-09-08T20:49:30+00:00</lastmod>
+    <loc>http://iankent.uk/</loc>
+    <lastmod>2015-02-16T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/management-and-the-frozen-lake-and-how-coffee-helps/</loc>
+    <loc>http://iankent.uk/blog/securing-http-handlers-in-go/</loc>
+    <lastmod>2015-02-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/</loc>
     <lastmod>2014-09-08T20:49:30+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/introducing-go-mailhog/</loc>
+    <loc>http://iankent.uk/blog/introducing-go-mailhog/</loc>
     <lastmod>2014-04-20T16:36:34+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/action-composition-in-mojolicious/</loc>
+    <loc>http://iankent.uk/blog/action-composition-in-mojolicious/</loc>
     <lastmod>2014-04-20T12:58:57+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/getting-started-with-hashicorp-serf/</loc>
+    <loc>http://iankent.uk/blog/getting-started-with-hashicorp-serf/</loc>
     <lastmod>2014-02-27T22:53:03+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/a-quick-introduction-to-apache-mesos/</loc>
+    <loc>http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/</loc>
     <lastmod>2014-02-26T19:01:35+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/the-automation-what-for/</loc>
+    <loc>http://iankent.uk/blog/the-automation-what-for/</loc>
     <lastmod>2014-02-25T21:23:04+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/building-a-scalable-sequence-generator-in-scala/</loc>
+    <loc>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</loc>
     <lastmod>2014-02-23T11:53:37+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/quick-start-with-perl-and-mojolicious/</loc>
+    <loc>http://iankent.uk/blog/quick-start-with-perl-and-mojolicious/</loc>
     <lastmod>2014-02-14T14:43:20+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/quick-start-with-scala-and-play-framework/</loc>
+    <loc>http://iankent.uk/blog/quick-start-with-scala-and-play-framework/</loc>
     <lastmod>2014-02-13T19:23:23+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/globally-handling-options-requests-in-play-framework/</loc>
+    <loc>http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/</loc>
     <lastmod>2014-02-11T21:38:30+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/action-composition-in-play-framework/</loc>
-    <lastmod>2014-02-10T16:32:47+00:00</lastmod>
+    <loc>http://iankent.uk/blog/action-composition-in-play-framework/</loc>
+    <lastmod>2014-02-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://iankent.uk/project/mailhog/</loc>
+    <lastmod>2013-07-04T00:00:00+00:00</lastmod>
   </url>
   
 </urlset>

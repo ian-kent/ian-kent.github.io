@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<head>
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="keywords" content="Mojolicious, Perl, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content=""/>
+<meta property="og:title" content="Action composition in Mojolicious : iankent.uk"/>
+<meta property="og:site_name" content="Ian Kent"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://localhost:1313/post/action-composition-in-mojolicious/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-04-20"/>
+<meta property="article:modified_time" content="2014-04-20"/>
+
+
+
+<meta property="article:tag" content="Mojolicious">
+<meta property="article:tag" content="Perl">
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:site" content="@iankent">
+<meta name="twitter:title" content="Action composition in Mojolicious : iankent.uk">
+<meta name="twitter:creator" content="@iankent">
+<meta name="twitter:description" content="">
+<meta name="twitter:image:src" content="">
+<meta name="twitter:domain" content="iankent.uk">
+
+
+    <base href="http://localhost:1313">
+    <title> Action composition in Mojolicious - iankent.uk </title>
+    <link rel="canonical" href="http://localhost:1313/post/action-composition-in-mojolicious/">
+    
+
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/static/css/style.css">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+</head>
+
+<body lang="en" itemscope itemtype="http://schema.org/Article">
+<header id="header">
+    <figure>
+      <a href="/" border=0 id="logolink"><div class="icon-spf13-3" id="logo"> </div></a>
+    </figure>
+    <div id="byline">by Ian Kent</div>
+    <nav id="nav">
+            <ul id="mainnav">
+            <li>
+                <a href="/post/">
+                <span class="icon"> <i aria-hidden="true" class="icon-quill"></i></span>
+                <span> blog </span>
+            </a>
+            </li>
+            <li>
+            <a href="/project/">
+                <span class="icon"> <i aria-hidden="true" class="icon-console"></i></span>
+                <span> code </span>
+            </a>
+            </li>
+            <li>
+            <a href="/presentation/">
+                <span class="icon"> <i aria-hidden="true" class="icon-stats"></i></span>
+                <span> talks </span>
+            </a>
+            </li>
+            <li>
+            <a href="http://stevefrancia.com">
+                <span class="icon"> <i aria-hidden="true" class="icon-13"></i></span>
+                <span> me </span>
+            </a>
+            </li>
+        </ul>
+
+            <ul id="social">
+            <li id="share">
+                <span class="icon icon-bubbles"> </span>
+                <span class="title"> share </span>
+                <div class="dropdown share">
+                    <ul class="social">
+                      <li> <a href="https://twitter.com/intent/tweet?status=Action%20composition%20in%20Mojolicious-http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f" target="_blank" title="Follow me on Twitter" class="twitter"><span class="icon icon-twitter"></span>Twitter</a> </li>
+                        <li> <a href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f" target="_blank" title="Join me on Facebook" class="facebook"><span class="icon icon-facebook"></span>Facebook</a> </li>
+                        <li> <a href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f" target="_blank" title="Google+" class="googleplus"><span class="icon icon-google-plus"></span>Google+</a> </li>
+                        <li> <a href="http://www.linkedin.com/shareArticle?mini=true&url=http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f&title=Action%20composition%20in%20Mojolicious&source=spf13" target="_blank" title="LinkedIn" class="linkedin"><span class="icon icon-linkedin"></span>LinkedIn</a> </li>
+                        <li> <a href="http://del.icio.us/post?url=http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f" target="_blank" title="Delicious" class="delicious"><span class="icon icon-delicious"></span>Delicious</a> </li>
+                        <li> <a href="http://www.reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f" target="_blank" title="Reddit" class="reddit"><span class="icon icon-reddit"></span>Reddit</a> </li>
+                        <li> <a href="http://www.stumbleupon.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fpost%2faction-composition-in-mojolicious%2f" target="_blank" title="StumbleUpon" class="stumbleupon"><span class="icon icon-stumbleupon"></span>StumbleUpon</a> </li>
+                    </ul>
+                    <span class="subcount">sharing is caring</span>
+                </div>
+            </li>
+            <li id="follow">
+                <span class="icon icon-rocket"> </span>
+                <span class="title"> follow </span>
+                <div class="dropdown follow">
+                    <ul class="social">
+                        <li> <a href="http://feeds.feedburner.com/spf13" target="_blank" title="Subscribe by RSS" class="rss"><span class="icon icon-feed-2"></span>RSS</a> </li>
+                        <li> <a href="http://www.twitter.com/iankent" target="_blank" title="Follow me on Twitter" class="twitter"><span class="icon icon-twitter"></span>Twitter</a> </li>
+                        <li> <a href="http://github.com/ian-kent" target="_blank" title="GitHub" class="github"><span class="icon icon-github"></span>GitHub</a> </li>
+                    </ul>
+                    <span class="subcount">join 10k+ subscribers &amp; followers</span>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+</header>
+
+
+
+<section id="main">
+  <h1 itemprop="name" id="title">Action composition in Mojolicious</h1>
+  <div>
+        <article itemprop="articleBody" id="content">
+           
+
+<p>Something about the routing in Mojolicious has been making things difficult, and Play Framework had the answer.</p>
+
+<p><a href="https://github.com/ian-kent/mojolicious-action-composition">Full source code for these examples can be found on GitHub</a></p>
+
+<h3 id="routing-differences-in-play-framework-and-mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Routing differences in Play Framework and Mojolicious</h3>
+
+<p>It wasn&rsquo;t obvious at first, but the routing model in Mojolicious quickly becomes an unfathomable mess - and very difficult to debug.</p>
+
+<h4 id="mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Mojolicious</h4>
+
+<ul>
+<li><p>Routes are complicated, can be chained together, and can have bridges and conditions which control the way routes behave:</p>
+
+<ul>
+<li><p>Conditions are synchronous, and can switch between sub-routes on a per-request basis</p></li>
+
+<li><p>Bridges can be asynchronous, but always ultimately end at the same destination (e.g., you couldn&rsquo;t have two identical routes running through different bridges, since Mojolicious couldn&rsquo;t determine which to use or if a route even exists, which is why conditions are synchronous).</p></li>
+</ul></li>
+
+<li><p>Controller actions are plain subs, called directly at run-time by the Mojolicious router</p>
+
+<ul>
+<li><p>Actions manipulate the stash and call Mojolicious methods directly (e.g. render)</p></li>
+
+<li><p>The return value from an action is of limited use</p></li>
+</ul></li>
+</ul>
+
+<h4 id="play-framework:a3daa83d4d79bd93ea67944afafd2b47">Play Framework:</h4>
+
+<ul>
+<li><p>Routes are simple - they&rsquo;re written statically and have no concept of bridges or conditions.</p>
+
+<ul>
+<li>One route can point to one action, limited flexibility at the routing layer</li>
+</ul></li>
+
+<li><p>Actions are composed by nesting action functions, with outer functions calling inner functions</p>
+
+<ul>
+<li><p>The action returns either a result, or a future result</p></li>
+
+<li><p>Actions can choose to call other actions, or contain multiple nested actions inside one action</p></li>
+</ul></li>
+</ul>
+
+<h3 id="action-composition:a3daa83d4d79bd93ea67944afafd2b47">Action composition</h3>
+
+<p>At first, the Play Framework routing model seemed very inflexible. Routes are static, and there&rsquo;s no concept of bridges, conditions or any other way to intercept a request.</p>
+
+<p>With Mojolicious, bridges and chained routes make its easy to abstract the &lsquo;how I get there&rsquo; logic away from the &lsquo;once I&rsquo;ve got here&rsquo; logic - and the Play Framework way of life didn&rsquo;t seem to offer the same flexibility.</p>
+
+<p>Play Framework uses action composition, which means nesting actions inside other actions, and it felt a bit too restrictive.</p>
+
+<p>But action composition quickly proved to be the more powerful of the two. And definitely the easiest to understand, especially when tracing requests through a complicated web application.</p>
+
+<h3 id="why-the-mojolicious-model-starts-well-but-ends-badly:a3daa83d4d79bd93ea67944afafd2b47">Why the Mojolicious model starts well, but ends badly</h3>
+
+<p>The Mojolicious model is extremely powerful for a simple application - we can define route stubs or bridges, attach more routes to those, intercept requests in bridges and return 404 or 500 errors. Which is great - but then we end in a messy refactoring nightmare:</p>
+
+<ul>
+<li><p>The code used in routing (e.g. authenticated bridges) needs to be shared between applications</p></li>
+
+<li><p>We move the code into a shared library, and get it to create named bridges</p></li>
+
+<li><p>We update our applications to use the named bridge from the shared library</p></li>
+</ul>
+
+<p>All good so far.</p>
+
+<p>Now we want to use a hook to intercept some part of the request - adding headers for example:</p>
+
+<ul>
+<li><p>We write a plugin which registers a hook</p></li>
+
+<li><p>The hook adds custom headers to a response</p></li>
+
+<li><p>We include the plugin in our application, and all responses get new headers</p></li>
+</ul>
+
+<p>Still good. But once we&rsquo;ve done this a few times, we end up with all routing and request manipulation being done by shared libraries. We have limited code visibility, and all we get to show for our efforts are:</p>
+
+<ul>
+<li><p>A few <code>-&gt;plugin</code> lines, adding &lsquo;unknown&rsquo; functionality to our routing</p>
+
+<p><code>$app-&gt;plugin(&lsquo;My::Magic::Routing::Plugin&rsquo;);
+$app-&gt;plugin(&lsquo;Another::Magic::Routing::Plugin&rsquo;);
+</code></p></li>
+
+<li><p>An dangerous action sub, with no idea how the request gets there</p>
+
+<p><code>sub this_should_be_authenticated_and_authorised {
+  $self-&gt;delete_all_data;
+  $self-&gt;make_everyone_admin;
+  $self-&gt;enter_maintenance_mode;
+  $self-&gt;render(text =&gt; &lsquo;hope I really was authenticated&hellip;&rsquo;);
+}
+</code></p></li>
+</ul>
+
+<p>And now we&rsquo;re potentially screwed.</p>
+
+<p>Mojolicious routing has become well hidden technical debt (or a serious defect/PR disaster) waiting to bite.</p>
+
+<h3 id="why-the-play-framework-model-is-better:a3daa83d4d79bd93ea67944afafd2b47">Why the Play Framework model is better</h3>
+
+<p>Although routing becomes far more static in Play Framework, we can still refactor our routing code into shared libraries.</p>
+
+<p>But there&rsquo;s one important difference.</p>
+
+<p>With Play Framework action composition, we maintain full code visibility at the controller:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  Authorised(request, request.user) {
+    Ok(request.user.get)
+  } otherwise {
+    Unauthorized
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Instead of tracing through multiple plugins to find out what happens to a request, it&rsquo;s all there in front of us. We know the request is Authenticated, and is then Authorised. If we have a bug, its easy to follow a request to see what happens.</p>
+
+<p>We can also choose how much code visibility we get - for example, Authenticated takes care of what happens if user authentication fails, but Authorised leaves it to the developer to decide how to handle an authorisation failure.</p>
+
+<h3 id="so-what-can-we-do-about-it:a3daa83d4d79bd93ea67944afafd2b47">So what can we do about it</h3>
+
+<p>This is Perl - there&rsquo;s always a way!</p>
+
+<p>Let&rsquo;s define the syntax first:</p>
+
+<pre><code>&lt;code&gt;# a plain action
+Action 'welcome' =&gt; sub {
+  shift-&gt;render(text =&gt; '');
+};
+
+# an asynchronous action (without a render_later call)
+Action 'login' =&gt; Async {
+  my $self = shift;
+  Mojo::IOLoop-&gt;timer(0.25 =&gt; sub {
+    $self-&gt;render(text =&gt; '');
+  });
+};
+
+# an authenticated action
+Action 'private1' =&gt; Authenticated {
+  shift-&gt;render(text =&gt; '');
+};
+
+# nested actions, with parameters
+Action 'private2' =&gt; Async { Authenticated {
+  WithPermission 'blog.post' =&gt; sub {
+    shift-&gt;render(text =&gt; '');
+  }, sub {
+    shift-&gt;render(text =&gt; 'not authorised');
+  }
+}};
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="implementing-it-in-mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Implementing it in Mojolicious</h3>
+
+<p>To start with, we need a way to define an action. This is essentially the same as the default sub{}, but lets us capture its contents.</p>
+
+<h4 id="the-basic-action-action:a3daa83d4d79bd93ea67944afafd2b47">The basic Action action</h4>
+
+<p>We need to be able to pass in a sub, and return a sub (though, for the top-level Action, we&rsquo;ll need to monkey patch it so the Mojolicious router can find it).</p>
+
+<p>Since we need to be able to chain these actions together, we also need to recursively call the inner action. We&rsquo;ll also need to do that for any other actions we define, so lets make it generic:</p>
+
+<pre><code>&lt;code&gt;sub go {
+  my ($controller, $inner) = @_;
+  my $i = $inner;
+  while($i) {
+    my $res = $i-&gt;($controller) if ref($i) eq 'CODE';
+    $i = ref($res) eq 'CODE' ? $res : undef;
+  }
+  return undef;
+}
+
+sub Action($$) {
+  my ($action, $inner) = @_;
+  monkey_patch caller, $action =&gt; sub { go(shift, $inner) }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>This is enough to let us define a new action like this:</p>
+
+<pre><code>&lt;code&gt;Action 'myaction' =&gt; sub {
+    shift-&gt;render(text =&gt; '');
+};
+&lt;/code&gt;
+</code></pre>
+
+<h4 id="a-nested-action-async:a3daa83d4d79bd93ea67944afafd2b47">A nested action - Async</h4>
+
+<p>Adding another action type is just as easy.</p>
+
+<p>Since Async is our first &lsquo;nested&rsquo; action, we&rsquo;ll implement that:</p>
+
+<pre><code>&lt;code&gt;sub Async(&amp;) {
+  my $inner = shift;
+  return sub {
+    my $controller = shift;
+    $controller-&gt;render_later;
+    go($controller, $inner);
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Now we can define an Async action, without needing to call <code>render_later</code>:</p>
+
+<pre><code>&lt;code&gt;Action 'login' =&gt; Async {
+  my $self = shift;
+  Mojo::IOLoop-&gt;timer(0.25 =&gt; sub {
+    $self-&gt;session(auth =&gt; 1);
+    $self-&gt;render(text =&gt; '');
+  });
+};
+&lt;/code&gt;
+</code></pre>
+
+<h4 id="an-action-with-parameters:a3daa83d4d79bd93ea67944afafd2b47">An action with parameters</h4>
+
+<p>We&rsquo;ll skip over the Authenticated action for now - its almost identical to Async, with the exception of needing to perform a session lookup to decide whether to continue the action chain.</p>
+
+<p>Instead, we&rsquo;ll implement WithPermission - an action with run-time parameters.</p>
+
+<p>We need to be able to pass in some custom parameters, and a sub, and have it return a sub which, like the others, invokes the inner sub when its called:</p>
+
+<pre><code>&lt;code&gt;sub WithPermission($&amp;;&amp;) {
+  my ($permission, $inner, $error) = @_;
+  return sub {
+    my $controller = shift;
+    if($permission eq 'blog.delete') {
+      go($controller, $inner);
+    } else {
+      $error ? go($controller, $error) : $controller-&gt;render_exception('Unauthorised');
+    }
+    return undef;
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>Which lets us define an action like this:</p>
+
+<pre><code>&lt;code&gt;Action 'private1' =&gt; Authenticated { WithPermission 'blog.post' =&gt; sub {
+  shift-&gt;render(text =&gt; '');
+}, sub {
+  shift-&gt;render(text =&gt; 'need permission blog.post');
+}};
+&lt;/code&gt;
+</code></pre>
+
+<p>If the user is authenticated and has the permission &lsquo;blog.post&rsquo;, the first inner action gets executed, otherwise the second is called instead. However, since our WithPermission action only accepts &lsquo;blog.delete&rsquo;, this will always fail.</p>
+
+<p>The WithPermission action also implements a default failure action, so we could skip the second inner action completely.</p>
+
+<h3 id="summary:a3daa83d4d79bd93ea67944afafd2b47">Summary</h3>
+
+<p>The simple implementation above gives us the flexibility to move our bridge and condition code away from the routing and into the controller layer, improving code visibility for developers.</p>
+
+<p>We can get many of the benefits that Play Framework offers, but there&rsquo;s still one big difference.</p>
+
+<p>In Play Framework, we could invoke an action and inspect its result, and still choose to not return that content to the user. This gives us the flexibility to invoke multiple actions, and decide later which to use, for example:</p>
+
+<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
+  val res1 = Foo(request);
+  val res2 = Bar(request);
+  if((res1.body.json \ 'some_key').isDefined)
+    Authorised(res1, request.user) {
+  else
+    Unauthorized
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>In Mojolicious, the client might end up with a mixture of both responses, or just whichever gets called first. Because Mojolicious doesn&rsquo;t use the return value, as soon as an action calls <code>-&gt;render</code> it will immediately return a response to the client.</p>
+
+<p>It should be possible - by creating a new stash and fake response objects, and possibly patching <code>-&gt;render</code> - to trick Mojolicious into supporting a future/promise based interface.</p>
+
+        </article>
+  </div>
+</section>
+
+
+
+<aside id="meta">
+
+    <div>
+        <section id="datecount">
+          <h4 id="date"> Sun Apr 20, 2014 </h4>
+          <h5 id="wc"> 1500 Words </h5>
+          <h5 id="readtime"> Read in about 7 Min </h5>
+        </section>
+        <ul id="categories">
+          
+        </ul>
+        <ul id="tags">
+          
+            <li> <a href="http://localhost:1313/tags/mojolicious">Mojolicious</a> </li>
+          
+            <li> <a href="http://localhost:1313/tags/perl">Perl</a> </li>
+          
+        </ul>
+    </div>
+
+    <div>
+        <section id="prev">
+            &nbsp;<a class="previous" href="http://localhost:1313/post/introducing-go-mailhog/"><i class="icon-arrow-left"></i> Introducing Go-MailHog</a><br>
+        </section><section id="next">
+            &nbsp;<a class="next" href="http://localhost:1313/post/getting-started-with-hashicorp-serf/">Getting started with HashiCorp Serf <i class="icon-arrow-right"></i></a>
+        </section>
+    </div>
+
+    <div>
+        <section id="author">
+             <h4>About the Author:</h4> 
+                Steve Francia is the Chief Developer
+                Advocate for <a href="http://mongodb.com">MongoDB</a>. He is a open
+                source contributor and author of <a
+                href="http://vim.spf13.com">spf13-vim</a>, <a
+                href="http://hugo.spf13.com">Hugo</a> and <a
+                href="http://github.com/spf13/cobra">Cobra</a>. You can find him on <a href="http://twitter.com">Twitter</a>,
+                <a href="http://github.com/spf13">Github</a>, and <a title="Author: Steve Francia on Google+" rel="author"
+                href="https://plus.google.com/+SteveFrancia/posts?rel=author"
+                target="_blank">Google+</a>.
+        </section>
+    </div>
+
+</aside>
+
+<meta itemprop="wordCount" content="1480">
+<meta itemprop="datePublished" content="2014-04-20">
+<meta itemprop="url" content="http://localhost:1313/post/action-composition-in-mojolicious/">
+
+
+<aside id=comments>
+    <div><h2> Comments </h2></div>
+    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'iankent';
+    var disqus_identifier = 'http:\/\/localhost:1313\/post\/action-composition-in-mojolicious\/';
+    var disqus_title = 'Action composition in Mojolicious';
+    var disqus_url = 'http:\/\/localhost:1313\/post\/action-composition-in-mojolicious\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</aside>
+
+<footer>
+  <div>
+    <p>
+    &copy; 2014-15 <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Ian Kent.</span></span>
+    <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons Attribution">Some rights reserved</a>;
+    please attribute properly and link back. <br>
+    Powered by <a href="http://hugo.spf13.com">Hugo</a>.
+        Hosted by <a href="https://pages.github.com/">GitHub Pages</a>.
+    </p>
+  </div>
+</footer>
+<script type="text/javascript">
+(function(){var j=function(a,b){return window.getComputedStyle?getComputedStyle(a).getPropertyValue(b):a.currentStyle[b]};var k=function(a,b,c){if(a.addEventListener)a.addEventListener(b,c,false);else a.attachEvent('on'+b,c)};var l=function(a,b){for(key in b)if(b.hasOwnProperty(key))a[key]=b[key];return a};window.fitText=function(d,e,f){var g=l({'minFontSize':-1/0,'maxFontSize':1/0},f);var h=function(a){var b=e||1;var c=function(){a.style.fontSize=Math.max(Math.min(a.clientWidth/(b*10),parseFloat(g.maxFontSize)),parseFloat(g.minFontSize))+'px'};c();k(window,'resize',c)};if(d.length)for(var i=0;i<d.length;i++)h(d[i]);else h(d);return d}})();
+fitText(document.getElementById('title'), 1)
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-47956770-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+</script>
+<script>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+

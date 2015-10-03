@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Reactive on Ian Kent</title>
-    <link>/tags/reactive/</link>
-    <description>Recent content in Reactive on Ian Kent</description>
+    <title>Reactive on Software engineering and other stuff</title>
+    <link>http://iankent.uk/tags/reactive/</link>
+    <description>Recent content in Reactive on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-    
-    <lastBuildDate>Sun, 23 Feb 2014 11:53:37 GMT</lastBuildDate>
-    <atom:link href="/tags/reactive/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language>
+    <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
+    <lastBuildDate>Sun, 23 Feb 2014 11:53:37 +0000</lastBuildDate>
+    <atom:link href="http://iankent.uk/tags/reactive/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Building a scalable sequence generator (in Scala)</title>
-      <link>/building-a-scalable-sequence-generator-in-scala/</link>
-      <pubDate>Sun, 23 Feb 2014 11:53:37 GMT</pubDate>
+      <link>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</link>
+      <pubDate>Sun, 23 Feb 2014 11:53:37 +0000</pubDate>
       
-      <guid>/building-a-scalable-sequence-generator-in-scala/</guid>
+      <guid>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</guid>
       <description>
 
 &lt;p&gt;Building a scalable sequence generator was more difficult than I&amp;rsquo;d anticipated.&lt;/p&gt;
@@ -82,16 +81,16 @@
 
 &lt;p&gt;Running that example produces output like this (the exact ordering of numbers may be different):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;2 3 1 4 5 7 6 8 9 10 11 12 
-14 13 16 17 15 19 18 21 22 20 24 23 25 
-26 27 28 30 29 
-31 32 34 33 36 35 37 38 39 40 41 43 42 
-44 46 45 47 48 49 50 51 52 
-53 55 54 56 57 58 60 59 
-62 61 63 64 65 66 67 68 69 70 
-71 72 74 73 75 76 78 77 80 79 81 
-82 83 85 84 86 87 89 88 90 91 
-93 95 92 96 97 94 99 98 100 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;2 3 1 4 5 7 6 8 9 10 11 12
+14 13 16 17 15 19 18 21 22 20 24 23 25
+26 27 28 30 29
+31 32 34 33 36 35 37 38 39 40 41 43 42
+44 46 45 47 48 49 50 51 52
+53 55 54 56 57 58 60 59
+62 61 63 64 65 66 67 68 69 70
+71 72 74 73 75 76 78 77 80 79 81
+82 83 85 84 86 87 89 88 90 91
+93 95 92 96 97 94 99 98 100
 &amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -153,16 +152,16 @@
 
 &lt;p&gt;While it does at least take batches of sequence numbers, we get the following unexpected but understandable output:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221 
-101 81 111 51 
-231 251 241 261 271 281 291 301 
-311 321 331 341 351 361 371 381 
-391 401 411 421 441 431 451 461 471 
-481 491 501 511 521 531 541 551 
-561 571 581 591 601 611 621 631 641 651 661 671 681 701 701 731 731 721 
-741 751 761 791 781 771 801 811 821 831 841 
-861 871 851 881 891 911 
-901 921 931 951 961 941 971 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221
+101 81 111 51
+231 251 241 261 271 281 291 301
+311 321 331 341 351 361 371 381
+391 401 411 421 441 431 451 461 471
+481 491 501 511 521 531 541 551
+561 571 581 591 601 611 621 631 641 651 661 671 681 701 701 731 731 721
+741 751 761 791 781 771 801 811 821 831 841
+861 871 851 881 891 911
+901 921 931 951 961 941 971
 991 981
 &amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -253,17 +252,17 @@
 
 &lt;p&gt;And running that example generates output like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;3 5 6 2 7 8 9 10 
-4 1 13 11 12 14 15 17 19 20 
-16 18 23 21 24 26 27 28 29 30 22 
-25 34 35 31 33 37 38 39 40 
-32 36 45 41 44 46 47 48 43 
-49 50 42 52 53 55 51 60 54 56 
-57 58 59 62 
-64 70 63 61 65 66 67 68 69 72 75 71 
-73 74 76 77 78 80 79 82 83 85 84 86 87 81 
-89 88 90 92 95 93 99 98 100 97 
-96 91 94 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;3 5 6 2 7 8 9 10
+4 1 13 11 12 14 15 17 19 20
+16 18 23 21 24 26 27 28 29 30 22
+25 34 35 31 33 37 38 39 40
+32 36 45 41 44 46 47 48 43
+49 50 42 52 53 55 51 60 54 56
+57 58 59 62
+64 70 63 61 65 66 67 68 69 72 75 71
+73 74 76 77 78 80 79 82 83 85 84 86 87 81
+89 88 90 92 95 93 99 98 100 97
+96 91 94
 &amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 

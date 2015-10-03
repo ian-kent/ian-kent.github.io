@@ -1,61 +1,354 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="en-gb">
+  <head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title> Agile &middot; Ian Kent </title>
 
-  
-  <link rel="stylesheet" href="/css/poole.css">
-  <link rel="stylesheet" href="/css/syntax.css">
-  <link rel="stylesheet" href="/css/hyde.css">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+<meta name="keywords" content="">
 
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link rel="shortcut icon" href="/favicon.ico">
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content=""/>
+<meta property="og:title" content="Agile : iankent.uk"/>
+<meta property="og:site_name" content="Ian Kent"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://iankent.uk/tags/agile/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-09-08"/>
+<meta property="article:modified_time" content="2014-09-08"/>
 
-  
-  <link href="/tags/agile/index.xml" rel="alternate" type="application/rss+xml" title="Ian Kent" />
-</head>
 
-<body>
 
-<div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      <h1>Ian Kent</h1>
-      <p class="lead">
-       Software engineering and other stuff 
-      </p>
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:site" content="@iankent">
+<meta name="twitter:title" content="Agile : iankent.uk">
+<meta name="twitter:creator" content="@iankent">
+<meta name="twitter:description" content="">
+<meta name="twitter:image:src" content="">
+<meta name="twitter:domain" content="iankent.uk">
+
+
+    
+    <base href="http://iankent.uk/">
+    <title>Software engineering and other stuff</title>
+    <link rel="canonical" href="http://iankent.uk/tags/agile/">
+    <link href="http://iankent.uk/tags/agile/index.xml" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/image.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/menu.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/segment.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/list.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/transition.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+
+      .hidden.menu {
+        display: none;
+      }
+
+      .masthead.segment {
+        min-height: 700px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 3em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+
+      .footer.segment {
+        padding: 5em 0em;
+      }
+
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+      .ui.large.secondary.menu {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+      }
+      .ui.large.secondary.menu .ui.button {
+        margin-left: 0.5em;
+      }
+
+      .ui.vertical.stripe {
+        padding: 2em 0 !important;
+      }
+
+      .ui.inverted.huge.button:hover{
+        color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .ui.inverted.huge.button {
+        padding: 0.3em 0.5em 0.3em 0.4em;
+        margin-right: 0.5em;
+        font-size: 1.9em !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.8) inset !important;
+        letter-spacing: -3px;
+      }
+
+      .ui.inverted.button .icon {
+        margin-left: -12px;
+        margin-right: 4px;
+      }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="/assets/semantic/components/visibility.js"></script>
+    <script src="/assets/semantic/components/sidebar.js"></script>
+    <script src="/assets/semantic/components/transition.js"></script>
+    <script>
+    $(document)
+      .ready(function() {
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        $('.ui.sidebar')
+          .sidebar('attach events', '.toc.item')
+        ;
+
+      })
+    ;
+    </script>
+  </head>
+  <body lang="en">
+
+    
+    <div class="ui inverted top menu fixed segment aligned center">
+      <div class="ui container">
+        <div class="ui large secondary inverted pointing menu">
+          <a class="toc item">
+            <i class="sidebar icon"></i>
+          </a>
+          <a href="/" class="ui inverted huge button">IK</a>
+          <a class="item" href="/">Home</a>
+          <a class="item" href="/blog/">Blog</a>
+          <a class="item" href="/project/">Projects</a>
+          <div class="right item">
+            <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+            <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <ul class="sidebar-nav">
-      <li><a href="/">Home</a> </li>
-      
-    </ul>
+    
+    <div class="ui vertical inverted sidebar menu">
+      <a class="item" href="/">Home</a>
+      <a class="item" href="/blog/">Blog</a>
+      <a class="item" href="/project/">Projects</a>
+      <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+      <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+    </div>
 
-    <p>&copy; 2015. All rights reserved. </p>
+
+    
+    <div class="pusher">
+      <div class="ui inverted vertical center aligned segment">
+
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu">
+            <a class="toc item">
+              <i class="sidebar icon"></i>
+            </a>
+            <a href="/" class="ui inverted huge button">IK</a>
+            <a class="item" href="/">Home</a>
+            <a class="item" href="/blog/">Blog</a>
+            <a class="item" href="/project/">Projects</a>
+            <div class="right item">
+              <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+              <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui vertical segment content">
+
+
+<section id="main" class="ui container">
+  <div>
+   <h1 id="title">Agile</h1>
+    
+        <article class="ui item">
+    <div class="ui header">
+      <a href="http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/">Management and the frozen lake (and how coffee helps) </a>
+      <h3 class="sub header">Mon, 8 September 2014 </h3>
+    </div>
+
+    <div>
+      It’s winter, and you’ve gone out for a walk. You’ve already passed the shops and an occasional snowman. You smile, briefly, but carry on. In front of you there should be a lake - you’re convinced there should be a lake - but it looks frosty, dull, and blends into its surroundings. You doubt yourself, perhaps it isn’t a lake after all? You carry on walking - happy that you can get home sooner.
+    </div>
+
+    
+    <div>
+      <a href='http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/'><nobr>Read more →</nobr></a>
+    </div>
+    
+</article>
+
+    
+        <article class="ui item">
+    <div class="ui header">
+      <a href="http://iankent.uk/blog/the-automation-what-for/">The automation what-for </a>
+      <h3 class="sub header">Tue, 25 February 2014 </h3>
+    </div>
+
+    <div>
+      Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&rsquo;ve invested 5 years in writing automated test cases. The challenge was to prove the value in continuing to automate our test cases, on the basis that it should be up to scrutiny if the value really does exist. So we tried&hellip; Automated tests are repeatable and consistent Automated tests and testing platforms can be easily scaled as the code base grows Automated tests can be executed concurrently against many environments Automated tests can provide rapid feedback on system/code changes Of course, the same isn&rsquo;t true for manual testing Manual tests can be unpredictable different testers may produce different results testers may use workarounds to avoid some bugs Manual testing isn&rsquo;t scalable - employing more people is the only option An individual tester can only (sensibly) test one environment at a time Manual tests are slow - feedback might take days, weeks or months But these weren&rsquo;t the right answers.
+    </div>
+
+    
+    <div>
+      <a href='http://iankent.uk/blog/the-automation-what-for/'><nobr>Read more →</nobr></a>
+    </div>
+    
+</article>
+
+    
+  </div>
+</section>
+
+<aside id="meta"> </aside>
+
+</div>
+<div class="ui inverted vertical footer segment">
+  <div class="ui container">
+    <div class="ui stackable inverted divided equal height stackable grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">About</h4>
+        <div class="ui inverted link list">
+          <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+          <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+          <a href="mailto:email@iankent.co.uk" class="item"><i class="mail icon"></i> E-mail</a>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui inverted header">Services</h4>
+        <div class="ui inverted link list">
+          <a href="#" class="item">Banana Pre-Order</a>
+          <a href="#" class="item">DNA FAQ</a>
+          <a href="#" class="item">How To Access</a>
+          <a href="#" class="item">Favorite X-Men</a>
+        </div>
+      </div>
+      <div class="seven wide column">
+        <h4 class="ui inverted header">Footer Header</h4>
+        <p>&copy; Ian Kent, 2014 - 2015</p>
+      </div>
+    </div>
   </div>
 </div>
+</div>
 
-
-  <div class="content container">
-    <ul class="posts">
-        
-        <li>
-          <span><a href="/management-and-the-frozen-lake-and-how-coffee-helps/">Management and the frozen lake (and how coffee helps)</a> <time class="pull-right post-list">Mon, Sep 8, 2014</time></span>
-        </li>
-        
-        <li>
-          <span><a href="/the-automation-what-for/">The automation what-for</a> <time class="pull-right post-list">Tue, Feb 25, 2014</time></span>
-        </li>
-        
-    </ul>
-  </div>
 </body>
+
 </html>
+

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Play Framework on Ian Kent</title>
-    <link>/categories/play-framework/</link>
+    <link>http://localhost:1313/categories/play-framework/</link>
     <description>Recent content in Play Framework on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Thu, 13 Feb 2014 19:23:23 GMT</lastBuildDate>
-    <atom:link href="/categories/play-framework/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/play-framework/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Quick start with Scala and Play Framework</title>
-      <link>/quick-start-with-scala-and-play-framework/</link>
+      <link>http://localhost:1313/quick-start-with-scala-and-play-framework/</link>
       <pubDate>Thu, 13 Feb 2014 19:23:23 GMT</pubDate>
       
-      <guid>/quick-start-with-scala-and-play-framework/</guid>
+      <guid>http://localhost:1313/quick-start-with-scala-and-play-framework/</guid>
       <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -57,10 +57,10 @@
     
     <item>
       <title>Globally handling OPTIONS requests in Play Framework</title>
-      <link>/globally-handling-options-requests-in-play-framework/</link>
+      <link>http://localhost:1313/globally-handling-options-requests-in-play-framework/</link>
       <pubDate>Tue, 11 Feb 2014 21:38:30 GMT</pubDate>
       
-      <guid>/globally-handling-options-requests-in-play-framework/</guid>
+      <guid>http://localhost:1313/globally-handling-options-requests-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;If you&amp;rsquo;re using AJAX to talk to a Play Framework application, you&amp;rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.&lt;/p&gt;
@@ -184,10 +184,10 @@ def getMethods(request: Request[AnyContent]) : List[String] = {
     
     <item>
       <title>Action composition in Play Framework</title>
-      <link>/action-composition-in-play-framework/</link>
+      <link>http://localhost:1313/action-composition-in-play-framework/</link>
       <pubDate>Mon, 10 Feb 2014 16:32:47 GMT</pubDate>
       
-      <guid>/action-composition-in-play-framework/</guid>
+      <guid>http://localhost:1313/action-composition-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.&lt;/p&gt;

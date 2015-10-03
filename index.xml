@@ -1,22 +1,160 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ian Kent</title>
-    <link>/</link>
-    <description>Recent content on Ian Kent</description>
+    <title>Software engineering and other stuff</title>
+    <link>http://iankent.uk/</link>
+    <description>Recent content on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en-gb</language>
+    <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 16 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://iankent.uk/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <lastBuildDate>Mon, 08 Sep 2014 20:49:30 &#43;0000</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Securing HTTP handlers in Go</title>
+      <link>http://iankent.uk/blog/securing-http-handlers-in-go/</link>
+      <pubDate>Mon, 16 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://iankent.uk/blog/securing-http-handlers-in-go/</guid>
+      <description>
+
+&lt;p&gt;So you&amp;rsquo;ve got a Go web application, and you want to secure your handlers&amp;hellip; easy, right?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package user
+
+import(
+    &amp;quot;net/http&amp;quot;
+    &amp;quot;pseudo/data&amp;quot;
+    &amp;quot;github.com/gorilla/pat&amp;quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(changePassword)
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) {
+    identity, err := data.GetUserFromAuth(req.Header.Get(&amp;quot;Authorization&amp;quot;))
+
+    if err != nil {
+        w.WriteHeader(401)
+        return
+    }
+
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The problem with that? It gets repeated for every handler.&lt;/p&gt;
+
+&lt;h3 id=&#34;making-it-easier:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;Making it easier&lt;/h3&gt;
+
+&lt;p&gt;We can create a helper function which does this bit for us - and we can wrap our handlers using it, centralising authentication and enforcing it at the routing layer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package user
+
+import(
+    &amp;quot;net/http&amp;quot;
+    &amp;quot;pseudo/data&amp;quot;
+    &amp;quot;github.com/gorilla/pat&amp;quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(isAuthenticated(changePassword))
+}
+
+func isAuthenticated(f func(w http.ResponseWriter, req *http.Request)) func(w http.ResponseWriter, req *http.Request) {
+    return func(w http.ResponseWriter, req *http.Request) {
+        identity, err := data.GetUserFromAuth(req.Header.Get(&amp;quot;Authorization&amp;quot;))
+
+        if err != nil {
+            w.WriteHeader(401)
+            return
+        }
+
+        f(w, req)
+    }
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) {
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All we&amp;rsquo;ve done is define a function which accepts a handler function, and returns another handler function. The returned function wraps the one we passed in, performing authentication and potentially returning a 401 error to the client.&lt;/p&gt;
+
+&lt;p&gt;The request doesn&amp;rsquo;t go anywhere near the handler without authentication. If authentication is successful, we call the inner handler as normal.&lt;/p&gt;
+
+&lt;h3 id=&#34;but-there-s-a-problem:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;But there&amp;rsquo;s a problem&lt;/h3&gt;
+
+&lt;p&gt;Two, actually.&lt;/p&gt;
+
+&lt;h4 id=&#34;passing-the-identity-around:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;Passing the identity around&lt;/h4&gt;
+
+&lt;p&gt;In the example above, we need to change the users password - but which user?&lt;/p&gt;
+
+&lt;p&gt;We can pass a header, use a global context variable, or define our own (type-incompatible) implementation of http.Request with an identity field, etc. But they&amp;rsquo;re not very nice solutions.&lt;/p&gt;
+
+&lt;h4 id=&#34;routing:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;Routing&lt;/h4&gt;
+
+&lt;p&gt;This one is more difficult to manage. Since you&amp;rsquo;re now trusting authentication to a wrapper, we need to make sure you don&amp;rsquo;t accidentally change your routing to allow unauthenticated requests through. Risky!&lt;/p&gt;
+
+&lt;p&gt;This, for example, would now be a very bad idea:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(changePassword)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We could add an assertion to every handler, but then there probably wasn&amp;rsquo;t much point centralising the authentication code into a wrapper in the first place.&lt;/p&gt;
+
+&lt;h3 id=&#34;a-nice-solution:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;A nice solution&lt;/h3&gt;
+
+&lt;p&gt;There&amp;rsquo;s a clean solution which solves both of those problems.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package user
+
+import(
+    &amp;quot;net/http&amp;quot;
+    &amp;quot;pseudo/data&amp;quot;
+    &amp;quot;github.com/gorilla/pat&amp;quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(isAuthenticated(changePassword))
+}
+
+type Identity string
+
+func isAuthenticated(f func(w http.ResponseWriter, req *http.Request) func (Identity)) func(w http.ResponseWriter, req *http.Request) {
+    return func(w http.ResponseWriter, req *http.Request) {
+        identity, err := data.GetUserFromAuth(req.Header.Get(&amp;quot;Authorization&amp;quot;))
+
+        if err != nil {
+            w.WriteHeader(401)
+            return
+        }
+
+        f(w, req)(Identity(identity))
+    }
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
+    return func (identity Identity) {
+        // ...
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By getting our handlers to return another function, we&amp;rsquo;ve avoided potential routing errors. It also gives us the opportunity to use a closure to pass the identity around.&lt;/p&gt;
+
+&lt;p&gt;As a extra safety measure, we&amp;rsquo;ve type aliased Identity - if we add other wrappers in future, we can&amp;rsquo;t mix them up in our routing, and we can&amp;rsquo;t accidentally call the handlers from an unauthenticated part of our code - we have compile time handler safety!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Management and the frozen lake (and how coffee helps)</title>
-      <link>/management-and-the-frozen-lake-and-how-coffee-helps/</link>
-      <pubDate>Mon, 08 Sep 2014 20:49:30 &#43;0000</pubDate>
+      <link>http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/</link>
+      <pubDate>Mon, 08 Sep 2014 20:49:30 +0000</pubDate>
       
-      <guid>/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
+      <guid>http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
       <description>
 
 &lt;p&gt;It’s winter, and you’ve gone out for a walk. You’ve already passed the shops and an occasional snowman. You smile, briefly, but carry on. In front of you there should be a lake - you’re convinced there should be a lake - but it looks frosty, dull, and blends into its surroundings. You doubt yourself, perhaps it isn’t a lake after all?&lt;/p&gt;
@@ -145,10 +283,10 @@
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>/introducing-go-mailhog/</link>
-      <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
+      <link>http://iankent.uk/blog/introducing-go-mailhog/</link>
+      <pubDate>Sun, 20 Apr 2014 16:36:34 +0000</pubDate>
       
-      <guid>/introducing-go-mailhog/</guid>
+      <guid>http://iankent.uk/blog/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
@@ -167,17 +305,16 @@
 
 &lt;p&gt;To view messages, point your browser at &lt;code&gt;http://localhost:8025&lt;/code&gt; or send a GET request to &lt;code&gt;http://localhost:8025/api/v1/messages&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;
-&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Action composition in Mojolicious</title>
-      <link>/action-composition-in-mojolicious/</link>
-      <pubDate>Sun, 20 Apr 2014 12:58:57 &#43;0000</pubDate>
+      <link>http://iankent.uk/blog/action-composition-in-mojolicious/</link>
+      <pubDate>Sun, 20 Apr 2014 12:58:57 +0000</pubDate>
       
-      <guid>/action-composition-in-mojolicious/</guid>
+      <guid>http://iankent.uk/blog/action-composition-in-mojolicious/</guid>
       <description>
 
 &lt;p&gt;Something about the routing in Mojolicious has been making things difficult, and Play Framework had the answer.&lt;/p&gt;
@@ -469,10 +606,10 @@ sub Action($$) {
     
     <item>
       <title>Getting started with HashiCorp Serf</title>
-      <link>/getting-started-with-hashicorp-serf/</link>
-      <pubDate>Thu, 27 Feb 2014 22:53:03 GMT</pubDate>
+      <link>http://iankent.uk/blog/getting-started-with-hashicorp-serf/</link>
+      <pubDate>Thu, 27 Feb 2014 22:53:03 +0000</pubDate>
       
-      <guid>/getting-started-with-hashicorp-serf/</guid>
+      <guid>http://iankent.uk/blog/getting-started-with-hashicorp-serf/</guid>
       <description>
 
 &lt;p&gt;In my &lt;a href=&#34;http://iankent.co.uk/2014/02/26/a-quick-introduction-to-apache-mesos/&#34;&gt;post about Apache Mesos&lt;/a&gt; I briefly mentioned Serf.&lt;/p&gt;
@@ -594,11 +731,11 @@ example     127.0.0.1:7946    alive
 &lt;p&gt;You can set multiple tags, but there is a limit - the Serf documentation doesn&amp;rsquo;t specify the limit, except to say&lt;/p&gt;
 
 &lt;blockquote&gt;
-  
-&gt; 
+
+&gt;
 &gt; There is a byte size limit for the maximum number of tags, but in practice dozens of tags may be used.
-&gt; 
-&gt; 
+&gt;
+&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;You can also &lt;a href=&#34;http://www.serfdom.io/docs/commands/tags.html&#34;&gt;replace tags while the Serf agent is still running&lt;/a&gt; using the &lt;code&gt;serf tags&lt;/code&gt; command, though changes aren&amp;rsquo;t persisted to configuration files.&lt;/p&gt;
@@ -821,10 +958,10 @@ exec start serf-agent
     
     <item>
       <title>A quick introduction to Apache Mesos</title>
-      <link>/a-quick-introduction-to-apache-mesos/</link>
-      <pubDate>Wed, 26 Feb 2014 19:01:35 GMT</pubDate>
+      <link>http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/</link>
+      <pubDate>Wed, 26 Feb 2014 19:01:35 +0000</pubDate>
       
-      <guid>/a-quick-introduction-to-apache-mesos/</guid>
+      <guid>http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;
@@ -967,10 +1104,10 @@ exec start serf-agent
     
     <item>
       <title>The automation what-for</title>
-      <link>/the-automation-what-for/</link>
-      <pubDate>Tue, 25 Feb 2014 21:23:04 GMT</pubDate>
+      <link>http://iankent.uk/blog/the-automation-what-for/</link>
+      <pubDate>Tue, 25 Feb 2014 21:23:04 +0000</pubDate>
       
-      <guid>/the-automation-what-for/</guid>
+      <guid>http://iankent.uk/blog/the-automation-what-for/</guid>
       <description>
 
 &lt;p&gt;Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&amp;rsquo;ve invested 5 years in writing automated test cases.&lt;/p&gt;
@@ -1018,11 +1155,11 @@ exec start serf-agent
 &lt;p&gt;Automation, by definition, is:&lt;/p&gt;
 
 &lt;blockquote&gt;
-  
-&gt; 
+
+&gt;
 &gt; the technique, method, or system of operating or controlling a process by highly automatic means, as by electronic devices, reducing human intervention to a minimum
-&gt; 
-&gt; 
+&gt;
+&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;Originally used circa 1940, the word was an irregular formation combining &amp;ldquo;automatic&amp;rdquo; and &amp;ldquo;action&amp;rdquo;, but process automation had become a well established practice long before then.&lt;/p&gt;
@@ -1199,10 +1336,10 @@ exec start serf-agent
     
     <item>
       <title>Building a scalable sequence generator (in Scala)</title>
-      <link>/building-a-scalable-sequence-generator-in-scala/</link>
-      <pubDate>Sun, 23 Feb 2014 11:53:37 GMT</pubDate>
+      <link>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</link>
+      <pubDate>Sun, 23 Feb 2014 11:53:37 +0000</pubDate>
       
-      <guid>/building-a-scalable-sequence-generator-in-scala/</guid>
+      <guid>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</guid>
       <description>
 
 &lt;p&gt;Building a scalable sequence generator was more difficult than I&amp;rsquo;d anticipated.&lt;/p&gt;
@@ -1268,16 +1405,16 @@ exec start serf-agent
 
 &lt;p&gt;Running that example produces output like this (the exact ordering of numbers may be different):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;2 3 1 4 5 7 6 8 9 10 11 12 
-14 13 16 17 15 19 18 21 22 20 24 23 25 
-26 27 28 30 29 
-31 32 34 33 36 35 37 38 39 40 41 43 42 
-44 46 45 47 48 49 50 51 52 
-53 55 54 56 57 58 60 59 
-62 61 63 64 65 66 67 68 69 70 
-71 72 74 73 75 76 78 77 80 79 81 
-82 83 85 84 86 87 89 88 90 91 
-93 95 92 96 97 94 99 98 100 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;2 3 1 4 5 7 6 8 9 10 11 12
+14 13 16 17 15 19 18 21 22 20 24 23 25
+26 27 28 30 29
+31 32 34 33 36 35 37 38 39 40 41 43 42
+44 46 45 47 48 49 50 51 52
+53 55 54 56 57 58 60 59
+62 61 63 64 65 66 67 68 69 70
+71 72 74 73 75 76 78 77 80 79 81
+82 83 85 84 86 87 89 88 90 91
+93 95 92 96 97 94 99 98 100
 &amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -1339,16 +1476,16 @@ exec start serf-agent
 
 &lt;p&gt;While it does at least take batches of sequence numbers, we get the following unexpected but understandable output:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221 
-101 81 111 51 
-231 251 241 261 271 281 291 301 
-311 321 331 341 351 361 371 381 
-391 401 411 421 441 431 451 461 471 
-481 491 501 511 521 531 541 551 
-561 571 581 591 601 611 621 631 641 651 661 671 681 701 701 731 731 721 
-741 751 761 791 781 771 801 811 821 831 841 
-861 871 851 881 891 911 
-901 921 931 951 961 941 971 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221
+101 81 111 51
+231 251 241 261 271 281 291 301
+311 321 331 341 351 361 371 381
+391 401 411 421 441 431 451 461 471
+481 491 501 511 521 531 541 551
+561 571 581 591 601 611 621 631 641 651 661 671 681 701 701 731 731 721
+741 751 761 791 781 771 801 811 821 831 841
+861 871 851 881 891 911
+901 921 931 951 961 941 971
 991 981
 &amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -1439,17 +1576,17 @@ exec start serf-agent
 
 &lt;p&gt;And running that example generates output like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;3 5 6 2 7 8 9 10 
-4 1 13 11 12 14 15 17 19 20 
-16 18 23 21 24 26 27 28 29 30 22 
-25 34 35 31 33 37 38 39 40 
-32 36 45 41 44 46 47 48 43 
-49 50 42 52 53 55 51 60 54 56 
-57 58 59 62 
-64 70 63 61 65 66 67 68 69 72 75 71 
-73 74 76 77 78 80 79 82 83 85 84 86 87 81 
-89 88 90 92 95 93 99 98 100 97 
-96 91 94 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;3 5 6 2 7 8 9 10
+4 1 13 11 12 14 15 17 19 20
+16 18 23 21 24 26 27 28 29 30 22
+25 34 35 31 33 37 38 39 40
+32 36 45 41 44 46 47 48 43
+49 50 42 52 53 55 51 60 54 56
+57 58 59 62
+64 70 63 61 65 66 67 68 69 72 75 71
+73 74 76 77 78 80 79 82 83 85 84 86 87 81
+89 88 90 92 95 93 99 98 100 97
+96 91 94
 &amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -1479,10 +1616,10 @@ exec start serf-agent
     
     <item>
       <title>Quick start with Perl and Mojolicious</title>
-      <link>/quick-start-with-perl-and-mojolicious/</link>
-      <pubDate>Fri, 14 Feb 2014 14:43:20 GMT</pubDate>
+      <link>http://iankent.uk/blog/quick-start-with-perl-and-mojolicious/</link>
+      <pubDate>Fri, 14 Feb 2014 14:43:20 +0000</pubDate>
       
-      <guid>/quick-start-with-perl-and-mojolicious/</guid>
+      <guid>http://iankent.uk/blog/quick-start-with-perl-and-mojolicious/</guid>
       <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -1523,10 +1660,10 @@ exec start serf-agent
     
     <item>
       <title>Quick start with Scala and Play Framework</title>
-      <link>/quick-start-with-scala-and-play-framework/</link>
-      <pubDate>Thu, 13 Feb 2014 19:23:23 GMT</pubDate>
+      <link>http://iankent.uk/blog/quick-start-with-scala-and-play-framework/</link>
+      <pubDate>Thu, 13 Feb 2014 19:23:23 +0000</pubDate>
       
-      <guid>/quick-start-with-scala-and-play-framework/</guid>
+      <guid>http://iankent.uk/blog/quick-start-with-scala-and-play-framework/</guid>
       <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -1567,10 +1704,10 @@ exec start serf-agent
     
     <item>
       <title>Globally handling OPTIONS requests in Play Framework</title>
-      <link>/globally-handling-options-requests-in-play-framework/</link>
-      <pubDate>Tue, 11 Feb 2014 21:38:30 GMT</pubDate>
+      <link>http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/</link>
+      <pubDate>Tue, 11 Feb 2014 21:38:30 +0000</pubDate>
       
-      <guid>/globally-handling-options-requests-in-play-framework/</guid>
+      <guid>http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;If you&amp;rsquo;re using AJAX to talk to a Play Framework application, you&amp;rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.&lt;/p&gt;
@@ -1613,7 +1750,7 @@ OPTIONS /*url controllers.Application.options(url: String)
 
 &lt;p&gt;and change your controller options handler to:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def rootOptions = options(&amp;quot;/&amp;quot;)   
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def rootOptions = options(&amp;quot;/&amp;quot;)
 def options(url: String) = Action { request =&amp;gt;
   NoContent.withHeaders(headers : _*)
 }
@@ -1693,11 +1830,11 @@ def getMethods(request: Request[AnyContent]) : List[String] = {
     </item>
     
     <item>
-      <title>Action composition in Play Framework</title>
-      <link>/action-composition-in-play-framework/</link>
-      <pubDate>Mon, 10 Feb 2014 16:32:47 GMT</pubDate>
+      <title>Action Composition in Play Framework</title>
+      <link>http://iankent.uk/blog/action-composition-in-play-framework/</link>
+      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
-      <guid>/action-composition-in-play-framework/</guid>
+      <guid>http://iankent.uk/blog/action-composition-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.&lt;/p&gt;
@@ -1806,7 +1943,7 @@ def index = Interceptor.async(parse.json) { request =&amp;gt; future { Ok } }
 
 &lt;p&gt;For a comparison, here&amp;rsquo;s what the controller would have looked like if we&amp;rsquo;d wrapped the action:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def index = Authenticated { user =&amp;gt; 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def index = Authenticated { user =&amp;gt;
   Action { request =&amp;gt;
     Ok(user.get)
   }
@@ -2040,10 +2177,10 @@ case class AuthenticationResult(valid: Boolean, user: Option[JsObject] = None)
 
 &lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;class Authenticator extends Actor {
   def receive = {
-    case Authenticate(request) =&amp;gt; 
+    case Authenticate(request) =&amp;gt;
       if(request.headers.get(&amp;quot;Authorization&amp;quot;).isDefined)
         sender ! AuthenticationResult(valid = true, user = Json.obj())
-      else 
+      else
         sender ! AuthenticationResult(valid = false)
   }
 }
@@ -2085,6 +2222,132 @@ implicit val timeout = Timeout(1 second)
 &lt;p&gt;Using action builders combined with Scala&amp;rsquo;s concurrency and Akka&amp;rsquo;s distributed framework, it&amp;rsquo;s simple to keep your controller code clean without sacrificing security or scalability across your application.&lt;/p&gt;
 
 &lt;p&gt;Full source code for the Akka example can be &lt;a href=&#34;https://gist.github.com/ian-kent/8941847&#34;&gt;found on GitHub&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MailHog: web application e-mail testing</title>
+      <link>http://iankent.uk/project/mailhog/</link>
+      <pubDate>Thu, 04 Jul 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://iankent.uk/project/mailhog/</guid>
+      <description>
+
+&lt;p&gt;MailHog is a web application e-mail testing tool.&lt;/p&gt;
+
+&lt;p&gt;You can do stuff with it.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure class=&#34;hid&#34;&gt;
+    
+        &lt;img src=&#34;http://iankent.uk/media/hugo.png&#34; alt=&#34;Hugo Website&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Hugo Website
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;Hugo is a static site generator written in Go. It is optimized for
+speed, easy use and configurability. Hugo takes a directory with content and
+templates and renders them into a full html website.&lt;/p&gt;
+
+&lt;p&gt;Hugo makes use of markdown files with front matter for meta data.&lt;br /&gt;
+Written in GoLang for speed, Hugo is significantly faster than most
+other static site generators.&lt;/p&gt;
+
+&lt;p&gt;A typical website of moderate size can be
+rendered in a fraction of a second. A good rule of thumb is that Hugo
+takes around 1 millisecond for each piece of content.
+It&amp;rsquo;s so fast that it will render the site in
+less time than it takes to switch to your browser and reload.&lt;/p&gt;
+
+&lt;p&gt;Hugo is made to be very flexible. Define your own content types. Define
+your own indexes. Build your own templates, shortcodes and more.
+It is written to work well with any
+kind of website including blogs, tumbles and docs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo has his own site&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-hugo:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Installing Hugo&lt;/h2&gt;
+
+&lt;p&gt;Hugo is written in GoLang with support for Windows, Linux, FreeBSD and OSX.&lt;/p&gt;
+
+&lt;p&gt;The latest release can be found at &lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;hugo releases&lt;/a&gt;.
+We currently build for Windows, Linux, FreeBSD and OS X for x64
+and 386 architectures.&lt;/p&gt;
+
+&lt;p&gt;Installation is very easy. Simply download the appropriate version for your
+platform from &lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;hugo releases&lt;/a&gt;.
+Once downloaded it can be run from anywhere. You don&amp;rsquo;t need to install
+it into a global location. This works well for shared hosts and other systems
+where you don&amp;rsquo;t have a privileged account.&lt;/p&gt;
+
+&lt;p&gt;Ideally you should install it somewhere in your path for easy use. &lt;code&gt;/usr/local/bin&lt;/code&gt;
+is the most probable location.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The Hugo executible has no external dependencies.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-from-source:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Installing from source&lt;/h2&gt;
+
+&lt;h3 id=&#34;dependencies:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Dependencies&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Git&lt;/li&gt;
+&lt;li&gt;Go 1.1+&lt;/li&gt;
+&lt;li&gt;Mercurial&lt;/li&gt;
+&lt;li&gt;Bazaar&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;clone-locally-for-contributors:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Clone locally (for contributors):&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/spf13/hugo
+cd hugo
+go get
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Because go expects all of your libraries to be found in either $GOROOT or $GOPATH,
+it&amp;rsquo;s helpful to symlink the project to one of the following paths:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ln -s /path/to/your/hugo $GOPATH/src/github.com/spf13/hugo&lt;/li&gt;
+&lt;li&gt;ln -s /path/to/your/hugo $GOROOT/src/pkg/github.com/spf13/hugo&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;get-directly-from-github:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Get directly from Github:&lt;/h3&gt;
+
+&lt;p&gt;If you only want to build from source, it&amp;rsquo;s even easier.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;go get github.com/spf13/hugo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;building-hugo:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Building Hugo&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /path/to/hugo
+go build -o hugo main.go
+mv hugo /usr/local/bin/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;running-hugo:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Running Hugo&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /path/to/hugo
+go install github.com/spf13/hugo/hugolibs
+go run main.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Complete documentation is available at &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo Documentation&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;license:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;License&lt;/h2&gt;
+
+&lt;p&gt;Hugo is released under the Simple Public License. See &lt;a href=&#34;https://github.com/spf13/hugo/blob/master/LICENSE.md&#34;&gt;LICENSE.md&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     

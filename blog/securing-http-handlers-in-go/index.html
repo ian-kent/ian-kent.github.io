@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Securing HTTP handlers in Go">
+<meta name="keywords" content="Development, Golang, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="Securing HTTP handlers in Go"/>
+<meta property="og:title" content="Securing HTTP handlers in Go : iankent.uk"/>
+<meta property="og:site_name" content="Ian Kent"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://iankent.uk/blog/securing-http-handlers-in-go/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-02-16"/>
+<meta property="article:modified_time" content="2015-02-16"/>
+
+
+
+<meta property="article:tag" content="Development">
+<meta property="article:tag" content="Golang">
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:site" content="@iankent">
+<meta name="twitter:title" content="Securing HTTP handlers in Go : iankent.uk">
+<meta name="twitter:creator" content="@iankent">
+<meta name="twitter:description" content="Securing HTTP handlers in Go">
+<meta name="twitter:image:src" content="">
+<meta name="twitter:domain" content="iankent.uk">
+
+
+    
+    <base href="http://iankent.uk/">
+    <title>Software engineering and other stuff</title>
+    <link rel="canonical" href="http://iankent.uk/blog/securing-http-handlers-in-go/">
+    <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/image.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/menu.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/segment.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/list.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/transition.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+
+      .hidden.menu {
+        display: none;
+      }
+
+      .masthead.segment {
+        min-height: 700px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 3em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+
+      .footer.segment {
+        padding: 5em 0em;
+      }
+
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+      .ui.large.secondary.menu {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+      }
+      .ui.large.secondary.menu .ui.button {
+        margin-left: 0.5em;
+      }
+
+      .ui.vertical.stripe {
+        padding: 2em 0 !important;
+      }
+
+      .ui.inverted.huge.button:hover{
+        color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .ui.inverted.huge.button {
+        padding: 0.3em 0.5em 0.3em 0.4em;
+        margin-right: 0.5em;
+        font-size: 1.9em !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.8) inset !important;
+        letter-spacing: -3px;
+      }
+
+      .ui.inverted.button .icon {
+        margin-left: -12px;
+        margin-right: 4px;
+      }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="/assets/semantic/components/visibility.js"></script>
+    <script src="/assets/semantic/components/sidebar.js"></script>
+    <script src="/assets/semantic/components/transition.js"></script>
+    <script>
+    $(document)
+      .ready(function() {
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        $('.ui.sidebar')
+          .sidebar('attach events', '.toc.item')
+        ;
+
+      })
+    ;
+    </script>
+  </head>
+  <body lang="en">
+
+    
+    <div class="ui inverted top menu fixed segment aligned center">
+      <div class="ui container">
+        <div class="ui large secondary inverted pointing menu">
+          <a class="toc item">
+            <i class="sidebar icon"></i>
+          </a>
+          <a href="/" class="ui inverted huge button">IK</a>
+          <a class="item" href="/">Home</a>
+          <a class="active item" href="/blog/">Blog</a>
+          <a class="item" href="/project/">Projects</a>
+          <div class="right item">
+            <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+            <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ui vertical inverted sidebar menu">
+      <a class="item" href="/">Home</a>
+      <a class="active item" href="/blog/">Blog</a>
+      <a class="item" href="/project/">Projects</a>
+      <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+      <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+    </div>
+
+
+    
+    <div class="pusher">
+      <div class="ui inverted vertical center aligned segment">
+
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu">
+            <a class="toc item">
+              <i class="sidebar icon"></i>
+            </a>
+            <a href="/" class="ui inverted huge button">IK</a>
+            <a class="item" href="/">Home</a>
+            <a class="active item" href="/blog/">Blog</a>
+            <a class="item" href="/project/">Projects</a>
+            <div class="right item">
+              <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+              <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui vertical segment content">
+
+
+<section id="main" class="ui container">
+  <h1 itemprop="name" id="title" class="ui header">Securing HTTP handlers in Go</h1>
+  <div class="ui text">
+        <article itemprop="articleBody" id="content">
+           
+
+<p>So you&rsquo;ve got a Go web application, and you want to secure your handlers&hellip; easy, right?</p>
+
+<pre><code>package user
+
+import(
+    &quot;net/http&quot;
+    &quot;pseudo/data&quot;
+    &quot;github.com/gorilla/pat&quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(changePassword)
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) {
+    identity, err := data.GetUserFromAuth(req.Header.Get(&quot;Authorization&quot;))
+
+    if err != nil {
+        w.WriteHeader(401)
+        return
+    }
+
+    // ...
+}
+</code></pre>
+
+<p>The problem with that? It gets repeated for every handler.</p>
+
+<h3 id="making-it-easier:05871a57143d4ad9d7d6a6ce566813b9">Making it easier</h3>
+
+<p>We can create a helper function which does this bit for us - and we can wrap our handlers using it, centralising authentication and enforcing it at the routing layer.</p>
+
+<pre><code>package user
+
+import(
+    &quot;net/http&quot;
+    &quot;pseudo/data&quot;
+    &quot;github.com/gorilla/pat&quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(isAuthenticated(changePassword))
+}
+
+func isAuthenticated(f func(w http.ResponseWriter, req *http.Request)) func(w http.ResponseWriter, req *http.Request) {
+    return func(w http.ResponseWriter, req *http.Request) {
+        identity, err := data.GetUserFromAuth(req.Header.Get(&quot;Authorization&quot;))
+
+        if err != nil {
+            w.WriteHeader(401)
+            return
+        }
+
+        f(w, req)
+    }
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) {
+    // ...
+}
+</code></pre>
+
+<p>All we&rsquo;ve done is define a function which accepts a handler function, and returns another handler function. The returned function wraps the one we passed in, performing authentication and potentially returning a 401 error to the client.</p>
+
+<p>The request doesn&rsquo;t go anywhere near the handler without authentication. If authentication is successful, we call the inner handler as normal.</p>
+
+<h3 id="but-there-s-a-problem:05871a57143d4ad9d7d6a6ce566813b9">But there&rsquo;s a problem</h3>
+
+<p>Two, actually.</p>
+
+<h4 id="passing-the-identity-around:05871a57143d4ad9d7d6a6ce566813b9">Passing the identity around</h4>
+
+<p>In the example above, we need to change the users password - but which user?</p>
+
+<p>We can pass a header, use a global context variable, or define our own (type-incompatible) implementation of http.Request with an identity field, etc. But they&rsquo;re not very nice solutions.</p>
+
+<h4 id="routing:05871a57143d4ad9d7d6a6ce566813b9">Routing</h4>
+
+<p>This one is more difficult to manage. Since you&rsquo;re now trusting authentication to a wrapper, we need to make sure you don&rsquo;t accidentally change your routing to allow unauthenticated requests through. Risky!</p>
+
+<p>This, for example, would now be a very bad idea:</p>
+
+<pre><code>p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(changePassword)
+</code></pre>
+
+<p>We could add an assertion to every handler, but then there probably wasn&rsquo;t much point centralising the authentication code into a wrapper in the first place.</p>
+
+<h3 id="a-nice-solution:05871a57143d4ad9d7d6a6ce566813b9">A nice solution</h3>
+
+<p>There&rsquo;s a clean solution which solves both of those problems.</p>
+
+<pre><code>package user
+
+import(
+    &quot;net/http&quot;
+    &quot;pseudo/data&quot;
+    &quot;github.com/gorilla/pat&quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(isAuthenticated(changePassword))
+}
+
+type Identity string
+
+func isAuthenticated(f func(w http.ResponseWriter, req *http.Request) func (Identity)) func(w http.ResponseWriter, req *http.Request) {
+    return func(w http.ResponseWriter, req *http.Request) {
+        identity, err := data.GetUserFromAuth(req.Header.Get(&quot;Authorization&quot;))
+
+        if err != nil {
+            w.WriteHeader(401)
+            return
+        }
+
+        f(w, req)(Identity(identity))
+    }
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
+    return func (identity Identity) {
+        // ...
+    }
+}
+</code></pre>
+
+<p>By getting our handlers to return another function, we&rsquo;ve avoided potential routing errors. It also gives us the opportunity to use a closure to pass the identity around.</p>
+
+<p>As a extra safety measure, we&rsquo;ve type aliased Identity - if we add other wrappers in future, we can&rsquo;t mix them up in our routing, and we can&rsquo;t accidentally call the handlers from an unauthenticated part of our code - we have compile time handler safety!</p>
+
+        </article>
+  </div>
+</section>
+
+</div>
+<div class="ui inverted vertical footer segment">
+  <div class="ui container">
+    <div class="ui stackable inverted divided equal height stackable grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">About</h4>
+        <div class="ui inverted link list">
+          <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+          <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+          <a href="mailto:email@iankent.co.uk" class="item"><i class="mail icon"></i> E-mail</a>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui inverted header">Services</h4>
+        <div class="ui inverted link list">
+          <a href="#" class="item">Banana Pre-Order</a>
+          <a href="#" class="item">DNA FAQ</a>
+          <a href="#" class="item">How To Access</a>
+          <a href="#" class="item">Favorite X-Men</a>
+        </div>
+      </div>
+      <div class="seven wide column">
+        <h4 class="ui inverted header">Footer Header</h4>
+        <p>&copy; Ian Kent, 2014 - 2015</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+
+</html>
+

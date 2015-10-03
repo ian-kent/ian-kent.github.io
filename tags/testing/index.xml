@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Testing on Ian Kent</title>
-    <link>/tags/testing/</link>
-    <description>Recent content in Testing on Ian Kent</description>
+    <title>Testing on Software engineering and other stuff</title>
+    <link>http://iankent.uk/tags/testing/</link>
+    <description>Recent content in Testing on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-    
-    <lastBuildDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</lastBuildDate>
-    <atom:link href="/tags/testing/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language>
+    <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
+    <lastBuildDate>Sun, 20 Apr 2014 16:36:34 +0000</lastBuildDate>
+    <atom:link href="http://iankent.uk/tags/testing/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>/introducing-go-mailhog/</link>
-      <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
+      <link>http://iankent.uk/blog/introducing-go-mailhog/</link>
+      <pubDate>Sun, 20 Apr 2014 16:36:34 +0000</pubDate>
       
-      <guid>/introducing-go-mailhog/</guid>
+      <guid>http://iankent.uk/blog/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
@@ -35,8 +34,7 @@
 
 &lt;p&gt;To view messages, point your browser at &lt;code&gt;http://localhost:8025&lt;/code&gt; or send a GET request to &lt;code&gt;http://localhost:8025/api/v1/messages&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;
-&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

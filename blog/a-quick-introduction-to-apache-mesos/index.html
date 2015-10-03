@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="keywords" content="Cloud, IaaS, Mesos, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content=""/>
+<meta property="og:title" content="A quick introduction to Apache Mesos : iankent.uk"/>
+<meta property="og:site_name" content="Ian Kent"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-02-26"/>
+<meta property="article:modified_time" content="2014-02-26"/>
+
+
+
+<meta property="article:tag" content="Cloud">
+<meta property="article:tag" content="IaaS">
+<meta property="article:tag" content="Mesos">
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:site" content="@iankent">
+<meta name="twitter:title" content="A quick introduction to Apache Mesos : iankent.uk">
+<meta name="twitter:creator" content="@iankent">
+<meta name="twitter:description" content="">
+<meta name="twitter:image:src" content="">
+<meta name="twitter:domain" content="iankent.uk">
+
+
+    
+    <base href="http://iankent.uk/">
+    <title>Software engineering and other stuff</title>
+    <link rel="canonical" href="http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/">
+    <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/image.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/menu.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/segment.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/list.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/transition.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+
+      .hidden.menu {
+        display: none;
+      }
+
+      .masthead.segment {
+        min-height: 700px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 3em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+
+      .footer.segment {
+        padding: 5em 0em;
+      }
+
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+      .ui.large.secondary.menu {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+      }
+      .ui.large.secondary.menu .ui.button {
+        margin-left: 0.5em;
+      }
+
+      .ui.vertical.stripe {
+        padding: 2em 0 !important;
+      }
+
+      .ui.inverted.huge.button:hover{
+        color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .ui.inverted.huge.button {
+        padding: 0.3em 0.5em 0.3em 0.4em;
+        margin-right: 0.5em;
+        font-size: 1.9em !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.8) inset !important;
+        letter-spacing: -3px;
+      }
+
+      .ui.inverted.button .icon {
+        margin-left: -12px;
+        margin-right: 4px;
+      }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="/assets/semantic/components/visibility.js"></script>
+    <script src="/assets/semantic/components/sidebar.js"></script>
+    <script src="/assets/semantic/components/transition.js"></script>
+    <script>
+    $(document)
+      .ready(function() {
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        $('.ui.sidebar')
+          .sidebar('attach events', '.toc.item')
+        ;
+
+      })
+    ;
+    </script>
+  </head>
+  <body lang="en">
+
+    
+    <div class="ui inverted top menu fixed segment aligned center">
+      <div class="ui container">
+        <div class="ui large secondary inverted pointing menu">
+          <a class="toc item">
+            <i class="sidebar icon"></i>
+          </a>
+          <a href="/" class="ui inverted huge button">IK</a>
+          <a class="item" href="/">Home</a>
+          <a class="active item" href="/blog/">Blog</a>
+          <a class="item" href="/project/">Projects</a>
+          <div class="right item">
+            <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+            <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ui vertical inverted sidebar menu">
+      <a class="item" href="/">Home</a>
+      <a class="active item" href="/blog/">Blog</a>
+      <a class="item" href="/project/">Projects</a>
+      <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+      <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+    </div>
+
+
+    
+    <div class="pusher">
+      <div class="ui inverted vertical center aligned segment">
+
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu">
+            <a class="toc item">
+              <i class="sidebar icon"></i>
+            </a>
+            <a href="/" class="ui inverted huge button">IK</a>
+            <a class="item" href="/">Home</a>
+            <a class="active item" href="/blog/">Blog</a>
+            <a class="item" href="/project/">Projects</a>
+            <div class="right item">
+              <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+              <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui vertical segment content">
+
+
+<section id="main" class="ui container">
+  <h1 itemprop="name" id="title" class="ui header">A quick introduction to Apache Mesos</h1>
+  <div class="ui text">
+        <article itemprop="articleBody" id="content">
+           
+
+<p><a href="http://mesos.apache.org/">Apache Mesos</a> is a centralised fault-tolerant cluster manager. It&rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.</p>
+
+<p>In some ways, Mesos provides the opposite to virtualisation:</p>
+
+<ul>
+<li><p>Virtualisation splits a single physical resource into multiple virtual resources</p></li>
+
+<li><p>Mesos joins multiple physical resources into a single virtual resource</p></li>
+</ul>
+
+<p>It schedules CPU and memory resources across the cluster in much the same way the Linux Kernel schedules local resources.</p>
+
+<p>A Mesos cluster is made up of four major components:</p>
+
+<ul>
+<li><p>ZooKeepers</p></li>
+
+<li><p>Mesos masters</p></li>
+
+<li><p>Mesos slaves</p></li>
+
+<li><p>Frameworks</p></li>
+</ul>
+
+<h3 id="zookeeper:d12db87a3f4ce64d7023ff8451a41464">ZooKeeper</h3>
+
+<p><a href="http://zookeeper.apache.org/">Apache ZooKeeper</a> is a centralised configuration manager, used by distributed applications such as Mesos to coordinate activity across a cluster.</p>
+
+<p>Mesos uses ZooKeeper to elect a leading master and for slaves to join the cluster.</p>
+
+<h3 id="mesos-masters:d12db87a3f4ce64d7023ff8451a41464">Mesos masters</h3>
+
+<p>A Mesos master is a Mesos instance in control of the cluster.</p>
+
+<p>A cluster will typically have multiple Mesos masters to provide fault-tolerance, with one instance elected the leading master.</p>
+
+<h3 id="mesos-slaves:d12db87a3f4ce64d7023ff8451a41464">Mesos slaves</h3>
+
+<p>A Mesos slave is a Mesos instance which offers resources to the cluster.</p>
+
+<p>They are the &lsquo;worker&rsquo; instances - tasks are allocated to the slaves by the Mesos master.</p>
+
+<h3 id="frameworks:d12db87a3f4ce64d7023ff8451a41464">Frameworks</h3>
+
+<p>On its own, Mesos only provides the basic &ldquo;kernel&rdquo; layer of your cluster. It lets other applications request resources in the cluster to perform tasks, but does nothing itself.</p>
+
+<p>Frameworks bridge the gap between the Mesos layer and your applications. They are higher level abstractions which simplify the process of launching tasks on the cluster.</p>
+
+<h4 id="chronos:d12db87a3f4ce64d7023ff8451a41464">Chronos</h4>
+
+<p><a href="https://github.com/airbnb/chronos">Chronos</a> is a cron-like fault-tolerant scheduler for a Mesos cluster.</p>
+
+<p>You can use it to schedule jobs, receive failure and completion notifications, and trigger other dependent jobs.</p>
+
+<h4 id="marathon:d12db87a3f4ce64d7023ff8451a41464">Marathon</h4>
+
+<p><a href="https://github.com/mesosphere/marathon">Marathon</a> is the equivalent of the Linux upstart or init daemons, designed for long-running applications.</p>
+
+<p>You can use it to start, stop and scale applications across the cluster.</p>
+
+<h4 id="others:d12db87a3f4ce64d7023ff8451a41464">Others</h4>
+
+<p>There are a few other frameworks:</p>
+
+<ul>
+<li><p><a href="http://aurora.apache.org/">Aurora</a> - service scheduler</p></li>
+
+<li><p><a href="http://hadoop.apache.org/">Hadoop</a> - data processing</p></li>
+
+<li><p><a href="https://github.com/jenkinsci/mesos-plugin">Jenkins</a> - Jenkins slave manager</p></li>
+
+<li><p><a href="http://spark.apache.org/">Spark</a> - data processing</p></li>
+
+<li><p><a href="http://www.adaptivecomputing.com/products/open-source/torque/">Torque</a> - resource manager</p></li>
+</ul>
+
+<p>You can also <a href="http://mesos.apache.org/documentation/latest/">write your own framework</a>, using Java, Python or C++.</p>
+
+<h2 id="the-quick-start-guide:d12db87a3f4ce64d7023ff8451a41464">The quick start guide</h2>
+
+<p>If you want to get a Mesos cluster up and running, you have a few options:</p>
+
+<h3 id="using-vagrant:d12db87a3f4ce64d7023ff8451a41464">Using Vagrant</h3>
+
+<p><a href="http://www.vagrantup.com">Vagrant</a> and the <a href="https://github.com/everpeace/vagrant-mesos">vagrant-mesos</a> Vagrantfile can help you quickly build:</p>
+
+<ul>
+<li><p>a standalone Mesos instance</p></li>
+
+<li><p>a multi-machine Mesos cluster of ZooKeepers, masters and slaves</p></li>
+</ul>
+
+<p>Unfortunately, the network configuration is a bit difficult to work with - it uses a private network between the VMs, and SSH tunnelling to provide access to the cluster.</p>
+
+<h3 id="using-mesosphere-and-amazon-web-services:d12db87a3f4ce64d7023ff8451a41464">Using Mesosphere and Amazon Web Services</h3>
+
+<p><a href="http://mesosphere.io/">Mesosphere</a> provide <a href="https://elastic.mesosphere.io/">Elastic Mesosphere</a>, which can quickly launch a Mesos cluster using <a href="http://aws.amazon.com/ec2/">Amazon EC2</a>.</p>
+
+<p>This is far easier to work with than the Vagrant build, but it isn&rsquo;t free - around $1.50 an hour for 6 instances or $4.50 for 18.</p>
+
+<h3 id="a-simpler-vagrant-build:d12db87a3f4ce64d7023ff8451a41464">A simpler Vagrant build</h3>
+
+<p>I&rsquo;ve put together some Vagrantfiles to build individual components of a Mesos cluster. It&rsquo;s a work in progress, but it can already build a working Mesos cluster without the networking issues. It uses bridged networking, with dynamically assigned IPs, so all instances can be accessed directly through your local network.</p>
+
+<p>You&rsquo;ll need the following GitHub repositories:</p>
+
+<ul>
+<li><p><a href="https://github.com/ian-kent/vagrant-zookeeper">ian-kent/vagrant-zookeeper</a></p></li>
+
+<li><p><a href="https://github.com/ian-kent/vagrant-mesos-master">ian-kent/vagrant-mesos-master</a></p></li>
+
+<li><p><a href="https://github.com/ian-kent/vagrant-mesos-slave">ian-kent/vagrant-mesos-slave</a></p></li>
+</ul>
+
+<p>At the moment, a cluster is limited to one ZooKeeper, but can support multiple Mesos masters and slaves.</p>
+
+<p>Each of the instances is also built with <a href="http://serfdom.io">Serf</a> to provide decentralised service discovery. You can use <code>serf members</code> from any instance to list all other instances.</p>
+
+<p>To help test deployments, there&rsquo;s also a MongoDB build with Serf installed:</p>
+
+<ul>
+<li><a href="https://github.com/ian-kent/vagrant-mongodb">ian-kent/vagrant-mongodb</a></li>
+</ul>
+
+<p>Like the ZooKeeper instances, the MongoDB instance joins the same Serf cluster but isn&rsquo;t part of the Mesos cluster.</p>
+
+<h2 id="once-your-cluster-is-running:d12db87a3f4ce64d7023ff8451a41464">Once your cluster is running</h2>
+
+<p>You&rsquo;ll need to install a framework.</p>
+
+<p>Mesosphere lets you choose to install Marathon on Amazon EC2, so that could be a good place to start.</p>
+
+<p>Otherwise, manually installing and configuring Marathon or another framework is easy. The quick and dirty way is to install them on the Mesos masters, but it would be better if they had their own VMs.</p>
+
+<p>With Marathon or Aurora, you can even run other frameworks in the Mesos cluster for scalability and fault-tolerance.</p>
+
+        </article>
+  </div>
+</section>
+
+</div>
+<div class="ui inverted vertical footer segment">
+  <div class="ui container">
+    <div class="ui stackable inverted divided equal height stackable grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">About</h4>
+        <div class="ui inverted link list">
+          <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+          <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+          <a href="mailto:email@iankent.co.uk" class="item"><i class="mail icon"></i> E-mail</a>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui inverted header">Services</h4>
+        <div class="ui inverted link list">
+          <a href="#" class="item">Banana Pre-Order</a>
+          <a href="#" class="item">DNA FAQ</a>
+          <a href="#" class="item">How To Access</a>
+          <a href="#" class="item">Favorite X-Men</a>
+        </div>
+      </div>
+      <div class="seven wide column">
+        <h4 class="ui inverted header">Footer Header</h4>
+        <p>&copy; Ian Kent, 2014 - 2015</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+
+</html>
+

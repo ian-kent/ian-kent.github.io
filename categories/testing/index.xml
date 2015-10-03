@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Testing on Ian Kent</title>
-    <link>/categories/testing/</link>
+    <link>http://localhost:1313/categories/testing/</link>
     <description>Recent content in Testing on Ian Kent</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
     
     <lastBuildDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</lastBuildDate>
-    <atom:link href="/categories/testing/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/testing/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>/introducing-go-mailhog/</link>
+      <link>http://localhost:1313/introducing-go-mailhog/</link>
       <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
       
-      <guid>/introducing-go-mailhog/</guid>
+      <guid>http://localhost:1313/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
@@ -42,10 +42,10 @@
     
     <item>
       <title>The automation what-for</title>
-      <link>/the-automation-what-for/</link>
+      <link>http://localhost:1313/the-automation-what-for/</link>
       <pubDate>Tue, 25 Feb 2014 21:23:04 GMT</pubDate>
       
-      <guid>/the-automation-what-for/</guid>
+      <guid>http://localhost:1313/the-automation-what-for/</guid>
       <description>
 
 &lt;p&gt;Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&amp;rsquo;ve invested 5 years in writing automated test cases.&lt;/p&gt;

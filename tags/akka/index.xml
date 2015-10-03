@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Akka on Ian Kent</title>
-    <link>/tags/akka/</link>
-    <description>Recent content in Akka on Ian Kent</description>
+    <title>Akka on Software engineering and other stuff</title>
+    <link>http://iankent.uk/tags/akka/</link>
+    <description>Recent content in Akka on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-    
-    <lastBuildDate>Mon, 10 Feb 2014 16:32:47 GMT</lastBuildDate>
-    <atom:link href="/tags/akka/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-gb</language>
+    <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 10 Feb 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://iankent.uk/tags/akka/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Action composition in Play Framework</title>
-      <link>/action-composition-in-play-framework/</link>
-      <pubDate>Mon, 10 Feb 2014 16:32:47 GMT</pubDate>
+      <title>Action Composition in Play Framework</title>
+      <link>http://iankent.uk/blog/action-composition-in-play-framework/</link>
+      <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
-      <guid>/action-composition-in-play-framework/</guid>
+      <guid>http://iankent.uk/blog/action-composition-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.&lt;/p&gt;
@@ -125,7 +124,7 @@ def index = Interceptor.async(parse.json) { request =&amp;gt; future { Ok } }
 
 &lt;p&gt;For a comparison, here&amp;rsquo;s what the controller would have looked like if we&amp;rsquo;d wrapped the action:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def index = Authenticated { user =&amp;gt; 
+&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;def index = Authenticated { user =&amp;gt;
   Action { request =&amp;gt;
     Ok(user.get)
   }
@@ -359,10 +358,10 @@ case class AuthenticationResult(valid: Boolean, user: Option[JsObject] = None)
 
 &lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;class Authenticator extends Actor {
   def receive = {
-    case Authenticate(request) =&amp;gt; 
+    case Authenticate(request) =&amp;gt;
       if(request.headers.get(&amp;quot;Authorization&amp;quot;).isDefined)
         sender ! AuthenticationResult(valid = true, user = Json.obj())
-      else 
+      else
         sender ! AuthenticationResult(valid = false)
   }
 }

@@ -1,22 +1,160 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Golang on Ian Kent</title>
-    <link>/tags/golang/</link>
-    <description>Recent content in Golang on Ian Kent</description>
+    <title>Golang on Software engineering and other stuff</title>
+    <link>http://iankent.uk/tags/golang/</link>
+    <description>Recent content in Golang on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en-gb</language>
+    <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 16 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://iankent.uk/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <lastBuildDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</lastBuildDate>
-    <atom:link href="/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Securing HTTP handlers in Go</title>
+      <link>http://iankent.uk/blog/securing-http-handlers-in-go/</link>
+      <pubDate>Mon, 16 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://iankent.uk/blog/securing-http-handlers-in-go/</guid>
+      <description>
+
+&lt;p&gt;So you&amp;rsquo;ve got a Go web application, and you want to secure your handlers&amp;hellip; easy, right?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package user
+
+import(
+    &amp;quot;net/http&amp;quot;
+    &amp;quot;pseudo/data&amp;quot;
+    &amp;quot;github.com/gorilla/pat&amp;quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(changePassword)
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) {
+    identity, err := data.GetUserFromAuth(req.Header.Get(&amp;quot;Authorization&amp;quot;))
+
+    if err != nil {
+        w.WriteHeader(401)
+        return
+    }
+
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The problem with that? It gets repeated for every handler.&lt;/p&gt;
+
+&lt;h3 id=&#34;making-it-easier:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;Making it easier&lt;/h3&gt;
+
+&lt;p&gt;We can create a helper function which does this bit for us - and we can wrap our handlers using it, centralising authentication and enforcing it at the routing layer.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package user
+
+import(
+    &amp;quot;net/http&amp;quot;
+    &amp;quot;pseudo/data&amp;quot;
+    &amp;quot;github.com/gorilla/pat&amp;quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(isAuthenticated(changePassword))
+}
+
+func isAuthenticated(f func(w http.ResponseWriter, req *http.Request)) func(w http.ResponseWriter, req *http.Request) {
+    return func(w http.ResponseWriter, req *http.Request) {
+        identity, err := data.GetUserFromAuth(req.Header.Get(&amp;quot;Authorization&amp;quot;))
+
+        if err != nil {
+            w.WriteHeader(401)
+            return
+        }
+
+        f(w, req)
+    }
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) {
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All we&amp;rsquo;ve done is define a function which accepts a handler function, and returns another handler function. The returned function wraps the one we passed in, performing authentication and potentially returning a 401 error to the client.&lt;/p&gt;
+
+&lt;p&gt;The request doesn&amp;rsquo;t go anywhere near the handler without authentication. If authentication is successful, we call the inner handler as normal.&lt;/p&gt;
+
+&lt;h3 id=&#34;but-there-s-a-problem:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;But there&amp;rsquo;s a problem&lt;/h3&gt;
+
+&lt;p&gt;Two, actually.&lt;/p&gt;
+
+&lt;h4 id=&#34;passing-the-identity-around:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;Passing the identity around&lt;/h4&gt;
+
+&lt;p&gt;In the example above, we need to change the users password - but which user?&lt;/p&gt;
+
+&lt;p&gt;We can pass a header, use a global context variable, or define our own (type-incompatible) implementation of http.Request with an identity field, etc. But they&amp;rsquo;re not very nice solutions.&lt;/p&gt;
+
+&lt;h4 id=&#34;routing:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;Routing&lt;/h4&gt;
+
+&lt;p&gt;This one is more difficult to manage. Since you&amp;rsquo;re now trusting authentication to a wrapper, we need to make sure you don&amp;rsquo;t accidentally change your routing to allow unauthenticated requests through. Risky!&lt;/p&gt;
+
+&lt;p&gt;This, for example, would now be a very bad idea:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(changePassword)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We could add an assertion to every handler, but then there probably wasn&amp;rsquo;t much point centralising the authentication code into a wrapper in the first place.&lt;/p&gt;
+
+&lt;h3 id=&#34;a-nice-solution:05871a57143d4ad9d7d6a6ce566813b9&#34;&gt;A nice solution&lt;/h3&gt;
+
+&lt;p&gt;There&amp;rsquo;s a clean solution which solves both of those problems.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;package user
+
+import(
+    &amp;quot;net/http&amp;quot;
+    &amp;quot;pseudo/data&amp;quot;
+    &amp;quot;github.com/gorilla/pat&amp;quot;
+)
+
+func routes(p *pat.Router) {
+    p.Path(&amp;quot;/password&amp;quot;).Methods(&amp;quot;POST&amp;quot;).HandlerFunc(isAuthenticated(changePassword))
+}
+
+type Identity string
+
+func isAuthenticated(f func(w http.ResponseWriter, req *http.Request) func (Identity)) func(w http.ResponseWriter, req *http.Request) {
+    return func(w http.ResponseWriter, req *http.Request) {
+        identity, err := data.GetUserFromAuth(req.Header.Get(&amp;quot;Authorization&amp;quot;))
+
+        if err != nil {
+            w.WriteHeader(401)
+            return
+        }
+
+        f(w, req)(Identity(identity))
+    }
+}
+
+func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
+    return func (identity Identity) {
+        // ...
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By getting our handlers to return another function, we&amp;rsquo;ve avoided potential routing errors. It also gives us the opportunity to use a closure to pass the identity around.&lt;/p&gt;
+
+&lt;p&gt;As a extra safety measure, we&amp;rsquo;ve type aliased Identity - if we add other wrappers in future, we can&amp;rsquo;t mix them up in our routing, and we can&amp;rsquo;t accidentally call the handlers from an unauthenticated part of our code - we have compile time handler safety!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>/introducing-go-mailhog/</link>
-      <pubDate>Sun, 20 Apr 2014 16:36:34 &#43;0000</pubDate>
+      <link>http://iankent.uk/blog/introducing-go-mailhog/</link>
+      <pubDate>Sun, 20 Apr 2014 16:36:34 +0000</pubDate>
       
-      <guid>/introducing-go-mailhog/</guid>
+      <guid>http://iankent.uk/blog/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
@@ -35,8 +173,133 @@
 
 &lt;p&gt;To view messages, point your browser at &lt;code&gt;http://localhost:8025&lt;/code&gt; or send a GET request to &lt;code&gt;http://localhost:8025/api/v1/messages&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;
-&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MailHog: web application e-mail testing</title>
+      <link>http://iankent.uk/project/mailhog/</link>
+      <pubDate>Thu, 04 Jul 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://iankent.uk/project/mailhog/</guid>
+      <description>
+
+&lt;p&gt;MailHog is a web application e-mail testing tool.&lt;/p&gt;
+
+&lt;p&gt;You can do stuff with it.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure class=&#34;hid&#34;&gt;
+    
+        &lt;img src=&#34;http://iankent.uk/media/hugo.png&#34; alt=&#34;Hugo Website&#34; /&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Hugo Website
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;Hugo is a static site generator written in Go. It is optimized for
+speed, easy use and configurability. Hugo takes a directory with content and
+templates and renders them into a full html website.&lt;/p&gt;
+
+&lt;p&gt;Hugo makes use of markdown files with front matter for meta data.&lt;br /&gt;
+Written in GoLang for speed, Hugo is significantly faster than most
+other static site generators.&lt;/p&gt;
+
+&lt;p&gt;A typical website of moderate size can be
+rendered in a fraction of a second. A good rule of thumb is that Hugo
+takes around 1 millisecond for each piece of content.
+It&amp;rsquo;s so fast that it will render the site in
+less time than it takes to switch to your browser and reload.&lt;/p&gt;
+
+&lt;p&gt;Hugo is made to be very flexible. Define your own content types. Define
+your own indexes. Build your own templates, shortcodes and more.
+It is written to work well with any
+kind of website including blogs, tumbles and docs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo has his own site&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-hugo:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Installing Hugo&lt;/h2&gt;
+
+&lt;p&gt;Hugo is written in GoLang with support for Windows, Linux, FreeBSD and OSX.&lt;/p&gt;
+
+&lt;p&gt;The latest release can be found at &lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;hugo releases&lt;/a&gt;.
+We currently build for Windows, Linux, FreeBSD and OS X for x64
+and 386 architectures.&lt;/p&gt;
+
+&lt;p&gt;Installation is very easy. Simply download the appropriate version for your
+platform from &lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;hugo releases&lt;/a&gt;.
+Once downloaded it can be run from anywhere. You don&amp;rsquo;t need to install
+it into a global location. This works well for shared hosts and other systems
+where you don&amp;rsquo;t have a privileged account.&lt;/p&gt;
+
+&lt;p&gt;Ideally you should install it somewhere in your path for easy use. &lt;code&gt;/usr/local/bin&lt;/code&gt;
+is the most probable location.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The Hugo executible has no external dependencies.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-from-source:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Installing from source&lt;/h2&gt;
+
+&lt;h3 id=&#34;dependencies:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Dependencies&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Git&lt;/li&gt;
+&lt;li&gt;Go 1.1+&lt;/li&gt;
+&lt;li&gt;Mercurial&lt;/li&gt;
+&lt;li&gt;Bazaar&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;clone-locally-for-contributors:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Clone locally (for contributors):&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/spf13/hugo
+cd hugo
+go get
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Because go expects all of your libraries to be found in either $GOROOT or $GOPATH,
+it&amp;rsquo;s helpful to symlink the project to one of the following paths:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ln -s /path/to/your/hugo $GOPATH/src/github.com/spf13/hugo&lt;/li&gt;
+&lt;li&gt;ln -s /path/to/your/hugo $GOROOT/src/pkg/github.com/spf13/hugo&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;get-directly-from-github:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Get directly from Github:&lt;/h3&gt;
+
+&lt;p&gt;If you only want to build from source, it&amp;rsquo;s even easier.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;go get github.com/spf13/hugo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;building-hugo:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Building Hugo&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /path/to/hugo
+go build -o hugo main.go
+mv hugo /usr/local/bin/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;running-hugo:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;Running Hugo&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /path/to/hugo
+go install github.com/spf13/hugo/hugolibs
+go run main.go
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Complete documentation is available at &lt;a href=&#34;http://hugo.spf13.com&#34;&gt;Hugo Documentation&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;license:32c3b58e5a097b46d3b03faa66c1a06c&#34;&gt;License&lt;/h2&gt;
+
+&lt;p&gt;Hugo is released under the Simple Public License. See &lt;a href=&#34;https://github.com/spf13/hugo/blob/master/LICENSE.md&#34;&gt;LICENSE.md&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     

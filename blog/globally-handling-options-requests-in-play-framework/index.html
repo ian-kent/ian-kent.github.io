@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="keywords" content="AJAX, CORS, Play framework, Scala, ">
+
+ 
+<meta property="og:type" content="article"/>
+<meta property="og:description" content=""/>
+<meta property="og:title" content="Globally handling OPTIONS requests in Play Framework : iankent.uk"/>
+<meta property="og:site_name" content="Ian Kent"/>
+<meta property="og:image" content="" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="" />
+<meta property="og:image:height" content="" />
+<meta property="og:url" content="http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-02-11"/>
+<meta property="article:modified_time" content="2014-02-11"/>
+
+
+
+<meta property="article:tag" content="AJAX">
+<meta property="article:tag" content="CORS">
+<meta property="article:tag" content="Play framework">
+<meta property="article:tag" content="Scala">
+
+
+
+
+<meta name="twitter:card" content="summary">
+
+<meta name="twitter:site" content="@iankent">
+<meta name="twitter:title" content="Globally handling OPTIONS requests in Play Framework : iankent.uk">
+<meta name="twitter:creator" content="@iankent">
+<meta name="twitter:description" content="">
+<meta name="twitter:image:src" content="">
+<meta name="twitter:domain" content="iankent.uk">
+
+
+    
+    <base href="http://iankent.uk/">
+    <title>Software engineering and other stuff</title>
+    <link rel="canonical" href="http://iankent.uk/blog/globally-handling-options-requests-in-play-framework/">
+    <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/grid.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/image.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/menu.css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/divider.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/segment.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/list.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/icon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/assets/semantic/components/transition.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+
+      .hidden.menu {
+        display: none;
+      }
+
+      .masthead.segment {
+        min-height: 700px;
+        padding: 1em 0em;
+      }
+      .masthead .logo.item img {
+        margin-right: 1em;
+      }
+      .masthead .ui.menu .ui.button {
+        margin-left: 0.5em;
+      }
+      .masthead h1.ui.header {
+        margin-top: 3em;
+        margin-bottom: 0em;
+        font-size: 4em;
+        font-weight: normal;
+      }
+      .masthead h2 {
+        font-size: 1.7em;
+        font-weight: normal;
+      }
+
+      .ui.vertical.stripe {
+        padding: 8em 0em;
+      }
+      .ui.vertical.stripe h3 {
+        font-size: 2em;
+      }
+      .ui.vertical.stripe .button + h3,
+      .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+      }
+      .ui.vertical.stripe .floated.image {
+        clear: both;
+      }
+      .ui.vertical.stripe p {
+        font-size: 1.33em;
+      }
+      .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+      }
+
+      .quote.stripe.segment {
+        padding: 0em;
+      }
+      .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+      }
+
+      .footer.segment {
+        padding: 5em 0em;
+      }
+
+      .secondary.pointing.menu .toc.item {
+        display: none;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .ui.fixed.menu {
+          display: none !important;
+        }
+        .secondary.pointing.menu .item,
+        .secondary.pointing.menu .menu {
+          display: none;
+        }
+        .secondary.pointing.menu .toc.item {
+          display: block;
+        }
+        .masthead.segment {
+          min-height: 350px;
+        }
+        .masthead h1.ui.header {
+          font-size: 2em;
+          margin-top: 1.5em;
+        }
+        .masthead h2 {
+          margin-top: 0.5em;
+          font-size: 1.5em;
+        }
+      }
+
+      .ui.large.secondary.menu {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+      }
+      .ui.large.secondary.menu .ui.button {
+        margin-left: 0.5em;
+      }
+
+      .ui.vertical.stripe {
+        padding: 2em 0 !important;
+      }
+
+      .ui.inverted.huge.button:hover{
+        color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .ui.inverted.huge.button {
+        padding: 0.3em 0.5em 0.3em 0.4em;
+        margin-right: 0.5em;
+        font-size: 1.9em !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.8) inset !important;
+        letter-spacing: -3px;
+      }
+
+      .ui.inverted.button .icon {
+        margin-left: -12px;
+        margin-right: 4px;
+      }
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="/assets/semantic/components/visibility.js"></script>
+    <script src="/assets/semantic/components/sidebar.js"></script>
+    <script src="/assets/semantic/components/transition.js"></script>
+    <script>
+    $(document)
+      .ready(function() {
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        $('.ui.sidebar')
+          .sidebar('attach events', '.toc.item')
+        ;
+
+      })
+    ;
+    </script>
+  </head>
+  <body lang="en">
+
+    
+    <div class="ui inverted top menu fixed segment aligned center">
+      <div class="ui container">
+        <div class="ui large secondary inverted pointing menu">
+          <a class="toc item">
+            <i class="sidebar icon"></i>
+          </a>
+          <a href="/" class="ui inverted huge button">IK</a>
+          <a class="item" href="/">Home</a>
+          <a class="active item" href="/blog/">Blog</a>
+          <a class="item" href="/project/">Projects</a>
+          <div class="right item">
+            <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+            <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="ui vertical inverted sidebar menu">
+      <a class="item" href="/">Home</a>
+      <a class="active item" href="/blog/">Blog</a>
+      <a class="item" href="/project/">Projects</a>
+      <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+      <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+    </div>
+
+
+    
+    <div class="pusher">
+      <div class="ui inverted vertical center aligned segment">
+
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu">
+            <a class="toc item">
+              <i class="sidebar icon"></i>
+            </a>
+            <a href="/" class="ui inverted huge button">IK</a>
+            <a class="item" href="/">Home</a>
+            <a class="active item" href="/blog/">Blog</a>
+            <a class="item" href="/project/">Projects</a>
+            <div class="right item">
+              <a href="https://github.com/ian-kent" class="ui inverted button"><i class="github icon"></i> GitHub</a>
+              <a href="https://twitter.com/iankent" class="ui inverted button"><i class="twitter icon"></i> Twitter</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui vertical segment content">
+
+
+<section id="main" class="ui container">
+  <h1 itemprop="name" id="title" class="ui header">Globally handling OPTIONS requests in Play Framework</h1>
+  <div class="ui text">
+        <article itemprop="articleBody" id="content">
+           
+
+<p>If you&rsquo;re using AJAX to talk to a Play Framework application, you&rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.</p>
+
+<p>In a controller, we can easily define a handler to accept OPTIONS requests:</p>
+
+<pre><code>&lt;code&gt;def headers = List(
+  &quot;Access-Control-Allow-Origin&quot; -&gt; &quot;*&quot;,
+  &quot;Access-Control-Allow-Methods&quot; -&gt; &quot;GET, POST, OPTIONS, DELETE, PUT&quot;,
+  &quot;Access-Control-Max-Age&quot; -&gt; &quot;3600&quot;,
+  &quot;Access-Control-Allow-Headers&quot; -&gt; &quot;Origin, Content-Type, Accept, Authorization&quot;,
+  &quot;Access-Control-Allow-Credentials&quot; -&gt; &quot;true&quot;
+)
+
+def options = Action { request =&gt;
+  NoContent.withHeaders(headers : _*)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>And we can call our new options handler from our routes file, but this has a few problems. We either need to implement an options handler for every route, or we send the same response whatever route we have, even if it doesn&rsquo;t exist.</p>
+
+<h3 id="per-route:690e640b2fe5a8e8798609567de62b3e">Per-route</h3>
+
+<p>If you want to respond on a per-route basis, that typically requires one additional line in your routes file for every route you define:</p>
+
+<pre><code>&lt;code&gt;GET / controllers.Application.index
+OPTIONS / controllers.Application.options
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="globally:690e640b2fe5a8e8798609567de62b3e">Globally</h3>
+
+<p>Or, if you don&rsquo;t mind sending the same headers back for every OPTIONS request (even if the route doesn&rsquo;t really exist), there&rsquo;s a cheat:</p>
+
+<pre><code>&lt;code&gt;OPTIONS / controllers.Application.rootOptions
+OPTIONS /*url controllers.Application.options(url: String)
+&lt;/code&gt;
+</code></pre>
+
+<p>and change your controller options handler to:</p>
+
+<pre><code>&lt;code&gt;def rootOptions = options(&quot;/&quot;)
+def options(url: String) = Action { request =&gt;
+  NoContent.withHeaders(headers : _*)
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>You can still override the global OPTIONS per-route by adding additional routes before the wildcard, for example:</p>
+
+<pre><code>&lt;code&gt;OPTIONS /foo controllers.Application.someCustomOptions
+OPTIONS / controllers.Application.rootOptions
+OPTIONS /*url controllers.Application.options(url: String)
+&lt;/code&gt;
+</code></pre>
+
+<h3 id="or-we-can-abuse-play-framework-the-best-way:690e640b2fe5a8e8798609567de62b3e">Or we can abuse Play Framework - the best way!</h3>
+
+<p>Play Framework doesn&rsquo;t like to expose its routing, making it difficult to inspect the routing table once its been created. But it is possible! Doing that, we can globally handle OPTIONS requests but dynamically respond based on URL (or even other request parameters).</p>
+
+<p>For this example, we&rsquo;ll work out the <code>Allow</code> header so we can return a 204 response if the route would normally exist, but a 404 response if it wouldn&rsquo;t.</p>
+
+<p>This is the example routes file:</p>
+
+<pre><code>&lt;code&gt;GET /           controllers.Application.index
+GET /foo        controllers.Application.foo
+OPTIONS /       controllers.Application.rootOptions
+OPTIONS /*url   controllers.Application.options(url: String)
+&lt;/code&gt;
+</code></pre>
+
+<p>When sending OPTIONS requests, we want to respond with 204 and <code>Allow: GET, OPTIONS</code> for <code>/</code> and <code>/foo</code>, but respond with 404 for everything else.</p>
+
+<h4 id="getting-the-methods-available-for-a-url:690e640b2fe5a8e8798609567de62b3e">Getting the methods available for a URL</h4>
+
+<p>Play Framework gives us a convenient function - <code>handlerFor</code> - which is normally used to route requests to a handler. For this to work, you&rsquo;ll need to add an import:</p>
+
+<pre><code>&lt;code&gt;import play.api.Play.current
+&lt;/code&gt;
+</code></pre>
+
+<p>We can then define a <code>getMethods</code> function, which given a request will return a list of available methods. It does this by asking Play Framework to route new requests with modified method parameters. If a handler is found, the method is added to the list. The list is also cached for future requests.</p>
+
+<pre><code>&lt;code&gt;val methodList = List(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;PATCH&quot;)
+def getMethods(request: Request[AnyContent]) : List[String] = {
+  Cache.getOrElse[List[String]](&quot;options.url.&quot; + request.uri) {
+    for(m &lt;- methodList; if Play.application.routes.get.handlerFor(new RequestHeader {
+      val remoteAddress = request.remoteAddress
+      val headers = request.headers
+      val queryString = request.queryString
+      val version = request.version
+      val method = m
+      val path = request.path
+      val uri = request.uri
+      val tags = request.tags
+      val id: Long = request.id
+    }).isDefined) yield m
+  }
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>We can then update our options action to use the new method list:</p>
+
+<pre><code>&lt;code&gt;def options(url: String) = Action { request =&gt;
+  val methods = List(&quot;OPTIONS&quot;) ++ getMethods(request)
+  if(methods.length &gt; 1)
+    NoContent.withHeaders(List(&quot;Allow&quot; -&gt; methods.mkString(&quot;, &quot;)) : _*)
+  else
+    NotFound
+}
+&lt;/code&gt;
+</code></pre>
+
+<p>We add OPTIONS back in, and if we have more than one method we return the Allow header, otherwise a 404 response.</p>
+
+<p>We could instead cache the entire response for a given URI, but caching just the method list gives us the flexibility to set other headers which may be more dynamic, for example Last-Modified. Even the current caching might be too restrictive if the available methods depends on other request parameters.</p>
+
+        </article>
+  </div>
+</section>
+
+</div>
+<div class="ui inverted vertical footer segment">
+  <div class="ui container">
+    <div class="ui stackable inverted divided equal height stackable grid">
+      <div class="three wide column">
+        <h4 class="ui inverted header">About</h4>
+        <div class="ui inverted link list">
+          <a href="https://github.com/ian-kent" class="item"><i class="github icon"></i> GitHub</a>
+          <a href="https://twitter.com/iankent" class="item"><i class="twitter icon"></i> Twitter</a>
+          <a href="mailto:email@iankent.co.uk" class="item"><i class="mail icon"></i> E-mail</a>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui inverted header">Services</h4>
+        <div class="ui inverted link list">
+          <a href="#" class="item">Banana Pre-Order</a>
+          <a href="#" class="item">DNA FAQ</a>
+          <a href="#" class="item">How To Access</a>
+          <a href="#" class="item">Favorite X-Men</a>
+        </div>
+      </div>
+      <div class="seven wide column">
+        <h4 class="ui inverted header">Footer Header</h4>
+        <p>&copy; Ian Kent, 2014 - 2015</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+
+</html>
+
