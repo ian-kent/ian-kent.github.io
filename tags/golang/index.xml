@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Golang on Software engineering and other stuff</title>
-    <link>http://iankent.uk/tags/golang/</link>
+    <link>http://ian-kent.github.io/tags/golang/</link>
     <description>Recent content in Golang on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Mon, 16 Feb 2015 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Securing HTTP handlers in Go</title>
-      <link>http://iankent.uk/blog/securing-http-handlers-in-go/</link>
+      <link>http://ian-kent.github.io/blog/securing-http-handlers-in-go/</link>
       <pubDate>Mon, 16 Feb 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/securing-http-handlers-in-go/</guid>
+      <guid>http://ian-kent.github.io/blog/securing-http-handlers-in-go/</guid>
       <description>
 
 &lt;p&gt;So you&amp;rsquo;ve got a Go web application, and you want to secure your handlers&amp;hellip; easy, right?&lt;/p&gt;
@@ -151,10 +151,10 @@ func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
     
     <item>
       <title>Introducing Go-MailHog</title>
-      <link>http://iankent.uk/blog/introducing-go-mailhog/</link>
+      <link>http://ian-kent.github.io/blog/introducing-go-mailhog/</link>
       <pubDate>Sun, 20 Apr 2014 16:36:34 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/introducing-go-mailhog/</guid>
+      <guid>http://ian-kent.github.io/blog/introducing-go-mailhog/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://github.com/ian-kent/Go-MailHog&#34;&gt;Go-MailHog&lt;/a&gt; is a lightweight portable application which acts like a SMTP server.&lt;/p&gt;
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
@@ -179,10 +179,10 @@ func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
     
     <item>
       <title>MailHog: web application e-mail testing</title>
-      <link>http://iankent.uk/project/mailhog/</link>
+      <link>http://ian-kent.github.io/project/mailhog/</link>
       <pubDate>Thu, 04 Jul 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://iankent.uk/project/mailhog/</guid>
+      <guid>http://ian-kent.github.io/project/mailhog/</guid>
       <description>
 
 &lt;p&gt;MailHog is a web application e-mail testing tool.&lt;/p&gt;
@@ -192,7 +192,7 @@ func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
 &lt;p&gt;
 &lt;figure class=&#34;hid&#34;&gt;
     
-        &lt;img src=&#34;http://iankent.uk/media/hugo.png&#34; alt=&#34;Hugo Website&#34; /&gt;
+        &lt;img src=&#34;http://ian-kent.github.io/media/hugo.png&#34; alt=&#34;Hugo Website&#34; /&gt;
     
     
     &lt;figcaption&gt;

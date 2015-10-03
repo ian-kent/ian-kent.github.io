@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mesos on Software engineering and other stuff</title>
-    <link>http://iankent.uk/tags/mesos/</link>
+    <link>http://ian-kent.github.io/tags/mesos/</link>
     <description>Recent content in Mesos on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Thu, 27 Feb 2014 22:53:03 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/tags/mesos/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/tags/mesos/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Getting started with HashiCorp Serf</title>
-      <link>http://iankent.uk/blog/getting-started-with-hashicorp-serf/</link>
+      <link>http://ian-kent.github.io/blog/getting-started-with-hashicorp-serf/</link>
       <pubDate>Thu, 27 Feb 2014 22:53:03 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/getting-started-with-hashicorp-serf/</guid>
+      <guid>http://ian-kent.github.io/blog/getting-started-with-hashicorp-serf/</guid>
       <description>
 
 &lt;p&gt;In my &lt;a href=&#34;http://iankent.co.uk/2014/02/26/a-quick-introduction-to-apache-mesos/&#34;&gt;post about Apache Mesos&lt;/a&gt; I briefly mentioned Serf.&lt;/p&gt;
@@ -364,10 +364,10 @@ exec start serf-agent
     
     <item>
       <title>A quick introduction to Apache Mesos</title>
-      <link>http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/</link>
+      <link>http://ian-kent.github.io/blog/a-quick-introduction-to-apache-mesos/</link>
       <pubDate>Wed, 26 Feb 2014 19:01:35 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/a-quick-introduction-to-apache-mesos/</guid>
+      <guid>http://ian-kent.github.io/blog/a-quick-introduction-to-apache-mesos/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://mesos.apache.org/&#34;&gt;Apache Mesos&lt;/a&gt; is a centralised fault-tolerant cluster manager. It&amp;rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.&lt;/p&gt;

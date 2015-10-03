@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Reactive on Software engineering and other stuff</title>
-    <link>http://iankent.uk/tags/reactive/</link>
+    <link>http://ian-kent.github.io/tags/reactive/</link>
     <description>Recent content in Reactive on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Sun, 23 Feb 2014 11:53:37 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/tags/reactive/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/tags/reactive/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Building a scalable sequence generator (in Scala)</title>
-      <link>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</link>
+      <link>http://ian-kent.github.io/blog/building-a-scalable-sequence-generator-in-scala/</link>
       <pubDate>Sun, 23 Feb 2014 11:53:37 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/building-a-scalable-sequence-generator-in-scala/</guid>
+      <guid>http://ian-kent.github.io/blog/building-a-scalable-sequence-generator-in-scala/</guid>
       <description>
 
 &lt;p&gt;Building a scalable sequence generator was more difficult than I&amp;rsquo;d anticipated.&lt;/p&gt;

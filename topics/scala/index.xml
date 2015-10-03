@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Scala on Software engineering and other stuff</title>
-    <link>http://iankent.uk/topics/scala/</link>
+    <link>http://ian-kent.github.io/topics/scala/</link>
     <description>Recent content in Scala on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Mon, 16 Feb 2015 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/topics/scala/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/topics/scala/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Securing HTTP handlers in Go</title>
-      <link>http://iankent.uk/blog/securing-http-handlers-in-go/</link>
+      <link>http://ian-kent.github.io/blog/securing-http-handlers-in-go/</link>
       <pubDate>Mon, 16 Feb 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/securing-http-handlers-in-go/</guid>
+      <guid>http://ian-kent.github.io/blog/securing-http-handlers-in-go/</guid>
       <description>
 
 &lt;p&gt;So you&amp;rsquo;ve got a Go web application, and you want to secure your handlers&amp;hellip; easy, right?&lt;/p&gt;
@@ -151,10 +151,10 @@ func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
     
     <item>
       <title>Action Composition in Play Framework</title>
-      <link>http://iankent.uk/blog/action-composition-in-play-framework/</link>
+      <link>http://ian-kent.github.io/blog/action-composition-in-play-framework/</link>
       <pubDate>Mon, 10 Feb 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/action-composition-in-play-framework/</guid>
+      <guid>http://ian-kent.github.io/blog/action-composition-in-play-framework/</guid>
       <description>
 
 &lt;p&gt;Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.&lt;/p&gt;

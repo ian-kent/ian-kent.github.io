@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vagrant on Software engineering and other stuff</title>
-    <link>http://iankent.uk/tags/vagrant/</link>
+    <link>http://ian-kent.github.io/tags/vagrant/</link>
     <description>Recent content in Vagrant on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Fri, 14 Feb 2014 14:43:20 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/tags/vagrant/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/tags/vagrant/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Quick start with Perl and Mojolicious</title>
-      <link>http://iankent.uk/blog/quick-start-with-perl-and-mojolicious/</link>
+      <link>http://ian-kent.github.io/blog/quick-start-with-perl-and-mojolicious/</link>
       <pubDate>Fri, 14 Feb 2014 14:43:20 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/quick-start-with-perl-and-mojolicious/</guid>
+      <guid>http://ian-kent.github.io/blog/quick-start-with-perl-and-mojolicious/</guid>
       <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -56,10 +56,10 @@
     
     <item>
       <title>Quick start with Scala and Play Framework</title>
-      <link>http://iankent.uk/blog/quick-start-with-scala-and-play-framework/</link>
+      <link>http://ian-kent.github.io/blog/quick-start-with-scala-and-play-framework/</link>
       <pubDate>Thu, 13 Feb 2014 19:23:23 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/quick-start-with-scala-and-play-framework/</guid>
+      <guid>http://ian-kent.github.io/blog/quick-start-with-scala-and-play-framework/</guid>
       <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;

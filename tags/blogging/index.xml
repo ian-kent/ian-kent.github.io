@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blogging on Software engineering and other stuff</title>
-    <link>http://iankent.uk/tags/blogging/</link>
+    <link>http://ian-kent.github.io/tags/blogging/</link>
     <description>Recent content in Blogging on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Thu, 04 Jul 2013 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/tags/blogging/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/tags/blogging/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>MailHog: web application e-mail testing</title>
-      <link>http://iankent.uk/project/mailhog/</link>
+      <link>http://ian-kent.github.io/project/mailhog/</link>
       <pubDate>Thu, 04 Jul 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://iankent.uk/project/mailhog/</guid>
+      <guid>http://ian-kent.github.io/project/mailhog/</guid>
       <description>
 
 &lt;p&gt;MailHog is a web application e-mail testing tool.&lt;/p&gt;
@@ -25,7 +25,7 @@
 &lt;p&gt;
 &lt;figure class=&#34;hid&#34;&gt;
     
-        &lt;img src=&#34;http://iankent.uk/media/hugo.png&#34; alt=&#34;Hugo Website&#34; /&gt;
+        &lt;img src=&#34;http://ian-kent.github.io/media/hugo.png&#34; alt=&#34;Hugo Website&#34; /&gt;
     
     
     &lt;figcaption&gt;

@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Agile on Software engineering and other stuff</title>
-    <link>http://iankent.uk/tags/agile/</link>
+    <link>http://ian-kent.github.io/tags/agile/</link>
     <description>Recent content in Agile on Software engineering and other stuff</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright (c) 2014 - 2015, Ian Kent; all rights reserved.</copyright>
     <lastBuildDate>Mon, 08 Sep 2014 20:49:30 +0000</lastBuildDate>
-    <atom:link href="http://iankent.uk/tags/agile/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://ian-kent.github.io/tags/agile/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Management and the frozen lake (and how coffee helps)</title>
-      <link>http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/</link>
+      <link>http://ian-kent.github.io/blog/management-and-the-frozen-lake-and-how-coffee-helps/</link>
       <pubDate>Mon, 08 Sep 2014 20:49:30 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
+      <guid>http://ian-kent.github.io/blog/management-and-the-frozen-lake-and-how-coffee-helps/</guid>
       <description>
 
 &lt;p&gt;It’s winter, and you’ve gone out for a walk. You’ve already passed the shops and an occasional snowman. You smile, briefly, but carry on. In front of you there should be a lake - you’re convinced there should be a lake - but it looks frosty, dull, and blends into its surroundings. You doubt yourself, perhaps it isn’t a lake after all?&lt;/p&gt;
@@ -144,10 +144,10 @@
     
     <item>
       <title>The automation what-for</title>
-      <link>http://iankent.uk/blog/the-automation-what-for/</link>
+      <link>http://ian-kent.github.io/blog/the-automation-what-for/</link>
       <pubDate>Tue, 25 Feb 2014 21:23:04 +0000</pubDate>
       
-      <guid>http://iankent.uk/blog/the-automation-what-for/</guid>
+      <guid>http://ian-kent.github.io/blog/the-automation-what-for/</guid>
       <description>
 
 &lt;p&gt;Today, our developers and testers were asked to justify the use of test automation - a surprising question after we&amp;rsquo;ve invested 5 years in writing automated test cases.&lt;/p&gt;
