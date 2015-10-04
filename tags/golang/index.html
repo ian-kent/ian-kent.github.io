@@ -44,9 +44,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Golang</title>
     <link rel="canonical" href="http://ian-kent.github.io/tags/golang/">
     <link href="http://ian-kent.github.io/tags/golang/index.xml" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -68,7 +69,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -183,6 +191,10 @@
       .ui.inverted.button .icon {
         margin-left: -12px;
         margin-right: 4px;
+      }
+
+      .highlight pre {
+        padding: 0.2em;
       }
 
     </style>
@@ -302,7 +314,7 @@
     </div>
 
     <div>
-      Go-MailHog is a lightweight portable application which acts like a SMTP server. It was inspired by MailCatcher, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby. | edit: it was Ruby, not Python - but painful nonetheless! It was originally written in Perl based on code from M3MTA, but it&rsquo;s been rewritten in Go for portability, and now runs on any supported platform without installation.
+      Go-MailHog is a lightweight portable application which acts like a SMTP server. It was inspired by MailCatcher, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby. edit: it was Ruby, not Python - but painful nonetheless! It was originally written in Perl based on code from M3MTA, but it&rsquo;s been rewritten in Go for portability, and now runs on any supported platform without installation.
     </div>
 
     
@@ -320,9 +332,13 @@
     </div>
 
     <div>
-      <p>MailHog is a web application e-mail testing tool.</p>
+      <p>MailHog is an email testing tool for developers:</p>
 
-<p>You can do stuff with it.</p>
+<ul>
+<li>Configure your application to use MailHog for SMTP delivery</li>
+<li>View messages in the web UI, or retrieve them with the JSON API</li>
+<li>Optionally release messages to real SMTP servers for delivery</li>
+</ul>
 
     </div>
 

@@ -48,9 +48,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Securing HTTP handlers in Go</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/securing-http-handlers-in-go/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -72,7 +73,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -189,6 +197,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -277,37 +289,38 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Securing HTTP handlers in Go</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p>So you&rsquo;ve got a Go web application, and you want to secure your handlers&hellip; easy, right?</p>
 
-<pre><code>package user
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f92672">package</span> <span style="color: #a6e22e">user</span>
 
-import(
-    &quot;net/http&quot;
-    &quot;pseudo/data&quot;
-    &quot;github.com/gorilla/pat&quot;
-)
+<span style="color: #f92672">import</span><span style="color: #f8f8f2">(</span>
+    <span style="color: #e6db74">&quot;net/http&quot;</span>
+    <span style="color: #e6db74">&quot;pseudo/data&quot;</span>
+    <span style="color: #e6db74">&quot;github.com/gorilla/pat&quot;</span>
+<span style="color: #f8f8f2">)</span>
 
-func routes(p *pat.Router) {
-    p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(changePassword)
-}
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">routes</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">p</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">pat</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Router</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #a6e22e">p</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Path</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;/password&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">Methods</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;POST&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">HandlerFunc</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">}</span>
 
-func changePassword(w http.ResponseWriter, req *http.Request) {
-    identity, err := data.GetUserFromAuth(req.Header.Get(&quot;Authorization&quot;))
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #a6e22e">identity</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">err</span> <span style="color: #f92672">:=</span> <span style="color: #a6e22e">data</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">GetUserFromAuth</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">req</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Header</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Get</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;Authorization&quot;</span><span style="color: #f8f8f2">))</span>
 
-    if err != nil {
-        w.WriteHeader(401)
-        return
-    }
+    <span style="color: #66d9ef">if</span> <span style="color: #a6e22e">err</span> <span style="color: #f92672">!=</span> <span style="color: #66d9ef">nil</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #a6e22e">w</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WriteHeader</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">401</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #66d9ef">return</span>
+    <span style="color: #f8f8f2">}</span>
 
-    // ...
-}
-</code></pre>
+    <span style="color: #75715e">// ...</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>The problem with that? It gets repeated for every handler.</p>
 
@@ -315,35 +328,36 @@ func changePassword(w http.ResponseWriter, req *http.Request) {
 
 <p>We can create a helper function which does this bit for us - and we can wrap our handlers using it, centralising authentication and enforcing it at the routing layer.</p>
 
-<pre><code>package user
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f92672">package</span> <span style="color: #a6e22e">user</span>
 
-import(
-    &quot;net/http&quot;
-    &quot;pseudo/data&quot;
-    &quot;github.com/gorilla/pat&quot;
-)
+<span style="color: #f92672">import</span><span style="color: #f8f8f2">(</span>
+    <span style="color: #e6db74">&quot;net/http&quot;</span>
+    <span style="color: #e6db74">&quot;pseudo/data&quot;</span>
+    <span style="color: #e6db74">&quot;github.com/gorilla/pat&quot;</span>
+<span style="color: #f8f8f2">)</span>
 
-func routes(p *pat.Router) {
-    p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(isAuthenticated(changePassword))
-}
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">routes</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">p</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">pat</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Router</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #a6e22e">p</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Path</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;/password&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">Methods</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;POST&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">HandlerFunc</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">isAuthenticated</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">))</span>
+<span style="color: #f8f8f2">}</span>
 
-func isAuthenticated(f func(w http.ResponseWriter, req *http.Request)) func(w http.ResponseWriter, req *http.Request) {
-    return func(w http.ResponseWriter, req *http.Request) {
-        identity, err := data.GetUserFromAuth(req.Header.Get(&quot;Authorization&quot;))
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">isAuthenticated</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">f</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">))</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #a6e22e">identity</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">err</span> <span style="color: #f92672">:=</span> <span style="color: #a6e22e">data</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">GetUserFromAuth</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">req</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Header</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Get</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;Authorization&quot;</span><span style="color: #f8f8f2">))</span>
 
-        if err != nil {
-            w.WriteHeader(401)
-            return
-        }
+        <span style="color: #66d9ef">if</span> <span style="color: #a6e22e">err</span> <span style="color: #f92672">!=</span> <span style="color: #66d9ef">nil</span> <span style="color: #f8f8f2">{</span>
+            <span style="color: #a6e22e">w</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WriteHeader</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">401</span><span style="color: #f8f8f2">)</span>
+            <span style="color: #66d9ef">return</span>
+        <span style="color: #f8f8f2">}</span>
 
-        f(w, req)
-    }
-}
+        <span style="color: #a6e22e">f</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span><span style="color: #f8f8f2">)</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
 
-func changePassword(w http.ResponseWriter, req *http.Request) {
-    // ...
-}
-</code></pre>
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #75715e">// ...</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>All we&rsquo;ve done is define a function which accepts a handler function, and returns another handler function. The returned function wraps the one we passed in, performing authentication and potentially returning a 401 error to the client.</p>
 
@@ -365,8 +379,9 @@ func changePassword(w http.ResponseWriter, req *http.Request) {
 
 <p>This, for example, would now be a very bad idea:</p>
 
-<pre><code>p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(changePassword)
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #a6e22e">p</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Path</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;/password&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">Methods</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;POST&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">HandlerFunc</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">)</span>
+</pre></div>
+</p>
 
 <p>We could add an assertion to every handler, but then there probably wasn&rsquo;t much point centralising the authentication code into a wrapper in the first place.</p>
 
@@ -374,46 +389,47 @@ func changePassword(w http.ResponseWriter, req *http.Request) {
 
 <p>There&rsquo;s a clean solution which solves both of those problems.</p>
 
-<pre><code>package user
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f92672">package</span> <span style="color: #a6e22e">user</span>
 
-import(
-    &quot;net/http&quot;
-    &quot;pseudo/data&quot;
-    &quot;github.com/gorilla/pat&quot;
-)
+<span style="color: #f92672">import</span><span style="color: #f8f8f2">(</span>
+    <span style="color: #e6db74">&quot;net/http&quot;</span>
+    <span style="color: #e6db74">&quot;pseudo/data&quot;</span>
+    <span style="color: #e6db74">&quot;github.com/gorilla/pat&quot;</span>
+<span style="color: #f8f8f2">)</span>
 
-func routes(p *pat.Router) {
-    p.Path(&quot;/password&quot;).Methods(&quot;POST&quot;).HandlerFunc(isAuthenticated(changePassword))
-}
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">routes</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">p</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">pat</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Router</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #a6e22e">p</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Path</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;/password&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">Methods</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;POST&quot;</span><span style="color: #f8f8f2">).</span><span style="color: #a6e22e">HandlerFunc</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">isAuthenticated</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">))</span>
+<span style="color: #f8f8f2">}</span>
 
-type Identity string
+<span style="color: #66d9ef">type</span> <span style="color: #a6e22e">Identity</span> <span style="color: #66d9ef">string</span>
 
-func isAuthenticated(f func(w http.ResponseWriter, req *http.Request) func (Identity)) func(w http.ResponseWriter, req *http.Request) {
-    return func(w http.ResponseWriter, req *http.Request) {
-        identity, err := data.GetUserFromAuth(req.Header.Get(&quot;Authorization&quot;))
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">isAuthenticated</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">f</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #66d9ef">func</span> <span style="color: #f8f8f2">(</span><span style="color: #a6e22e">Identity</span><span style="color: #f8f8f2">))</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #a6e22e">identity</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">err</span> <span style="color: #f92672">:=</span> <span style="color: #a6e22e">data</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">GetUserFromAuth</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">req</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Header</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Get</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;Authorization&quot;</span><span style="color: #f8f8f2">))</span>
 
-        if err != nil {
-            w.WriteHeader(401)
-            return
-        }
+        <span style="color: #66d9ef">if</span> <span style="color: #a6e22e">err</span> <span style="color: #f92672">!=</span> <span style="color: #66d9ef">nil</span> <span style="color: #f8f8f2">{</span>
+            <span style="color: #a6e22e">w</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">WriteHeader</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">401</span><span style="color: #f8f8f2">)</span>
+            <span style="color: #66d9ef">return</span>
+        <span style="color: #f8f8f2">}</span>
 
-        f(w, req)(Identity(identity))
-    }
-}
+        <span style="color: #a6e22e">f</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span><span style="color: #f8f8f2">)(</span><span style="color: #a6e22e">Identity</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">identity</span><span style="color: #f8f8f2">))</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
 
-func changePassword(w http.ResponseWriter, req *http.Request) func(Identity) {
-    return func (identity Identity) {
-        // ...
-    }
-}
-</code></pre>
+<span style="color: #66d9ef">func</span> <span style="color: #a6e22e">changePassword</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">w</span> <span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">ResponseWriter</span><span style="color: #f8f8f2">,</span> <span style="color: #a6e22e">req</span> <span style="color: #f92672">*</span><span style="color: #a6e22e">http</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">Request</span><span style="color: #f8f8f2">)</span> <span style="color: #66d9ef">func</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">Identity</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">func</span> <span style="color: #f8f8f2">(</span><span style="color: #a6e22e">identity</span> <span style="color: #a6e22e">Identity</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #75715e">// ...</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>By getting our handlers to return another function, we&rsquo;ve avoided potential routing errors. It also gives us the opportunity to use a closure to pass the identity around.</p>
 
 <p>As a extra safety measure, we&rsquo;ve type aliased Identity - if we add other wrappers in future, we can&rsquo;t mix them up in our routing, and we can&rsquo;t accidentally call the handlers from an unauthenticated part of our code - we have compile time handler safety!</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

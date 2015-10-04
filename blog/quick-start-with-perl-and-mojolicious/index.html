@@ -49,9 +49,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Quick start with Perl and Mojolicious</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/quick-start-with-perl-and-mojolicious/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -73,7 +74,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -190,6 +198,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -278,48 +290,38 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Quick start with Perl and Mojolicious</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           <p>To get started with <a href="http://www.mojolicio.us">Mojolicious</a>, just as quick and dirty as with <a href="//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/">Scala and Play Framework</a>, you need only these:</p>
+    <p>To get started with <a href="http://www.mojolicio.us">Mojolicious</a>, just as quick and dirty as with <a href="//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/">Scala and Play Framework</a>, you need only these:</p>
 
 <ul>
-<li><p><a href="http://vagrantup.com">Vagrant</a></p></li>
-
-<li><p><a href="https://www.virtualbox.org/">VirtualBox</a></p></li>
-
-<li><p><a href="http://git-scm.com/download/win">Git for Windows</a></p></li>
+<li><a href="http://vagrantup.com">Vagrant</a></li>
+<li><a href="https://www.virtualbox.org/">VirtualBox</a></li>
+<li><a href="http://git-scm.com/download/win">Git for Windows</a></li>
 </ul>
 
 <p>Once they&rsquo;re all installed, its this easy:</p>
 
 <ul>
-<li><p>Open Git Bash</p></li>
-
-<li><p>Clone my <a href="https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb">Mojolicious/Perl vagrant repository</a>: <code>git clone https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb.git mojoserver</code></p></li>
-
-<li><p>Change directory: <code>cd mojoserver</code></p></li>
-
-<li><p>Start the virtual machine: <code>vagrant up</code> (might take a while, installing Perl is slow!)</p></li>
-
-<li><p>Once it&rsquo;s complete, connect using SSH: <code>vagrant ssh</code></p></li>
-
-<li><p>Create a new Mojolicious app: <code>mojo generate app MyApp</code></p></li>
-
-<li><p>Change directory: <code>cd my_app</code></p></li>
-
-<li><p>Start your application: <code>./script/my_app daemon</code></p></li>
-
-<li><p>View your new Mojolicious site in a browser: <code>http://localhost:3000</code></p></li>
+<li>Open Git Bash</li>
+<li>Clone my <a href="https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb">Mojolicious/Perl vagrant repository</a>: <code>git clone https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb.git mojoserver</code></li>
+<li>Change directory: <code>cd mojoserver</code></li>
+<li>Start the virtual machine: <code>vagrant up</code> (might take a while, installing Perl is slow!)</li>
+<li>Once it&rsquo;s complete, connect using SSH: <code>vagrant ssh</code></li>
+<li>Create a new Mojolicious app: <code>mojo generate app MyApp</code></li>
+<li>Change directory: <code>cd my_app</code></li>
+<li>Start your application: <code>./script/my_app daemon</code></li>
+<li>View your new Mojolicious site in a browser: <code>http://localhost:3000</code></li>
 </ul>
 
 <p>It installs the latest version of <a href="http://mojolicio.us">Mojolicious</a> and <a href="http://mojolicio.us/perldoc/Mango">Mango</a> along with Perl 5.18.2 and <a href="http://cpanmin.us">cpanminus</a> using Perlbrew.</p>
 
 <p>To help you get started, the Vagrantfile also installs <a href="http://www.mongodb.org/">MongoDB</a> and sets up port forwarding for port 3000 and 8080 (Mojolicious with Morbo and Hypnotoad) and port 27017 (MongoDB)</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

@@ -49,9 +49,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Quick start with Scala and Play Framework</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/quick-start-with-scala-and-play-framework/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -73,7 +74,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -190,6 +198,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -278,48 +290,38 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Quick start with Scala and Play Framework</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           <p>For the quick and dirty way to get <a href="http://www.playframework.com/">Play Framework</a> up and running, you need only these:</p>
+    <p>For the quick and dirty way to get <a href="http://www.playframework.com/">Play Framework</a> up and running, you need only these:</p>
 
 <ul>
-<li><p><a href="http://vagrantup.com">Vagrant</a></p></li>
-
-<li><p><a href="https://www.virtualbox.org/">VirtualBox</a></p></li>
-
-<li><p><a href="http://git-scm.com/download/win">Git for Windows</a></p></li>
+<li><a href="http://vagrantup.com">Vagrant</a></li>
+<li><a href="https://www.virtualbox.org/">VirtualBox</a></li>
+<li><a href="http://git-scm.com/download/win">Git for Windows</a></li>
 </ul>
 
 <p>Once they&rsquo;re all installed, its this easy:</p>
 
 <ul>
-<li><p>Open Git Bash</p></li>
-
-<li><p>Clone my <a href="https://github.com/ian-kent/vagrant-scala-play-mongodb">Play/Scala vagrant repository</a>: <code>git clone https://github.com/ian-kent/vagrant-scala-play-mongodb.git playserver</code></p></li>
-
-<li><p>Change directory: <code>cd playserver</code></p></li>
-
-<li><p>Start the virtual machine: <code>vagrant up</code></p></li>
-
-<li><p>Once it&rsquo;s complete, connect using SSH: <code>vagrant ssh</code></p></li>
-
-<li><p>Create a new play app: <code>play new MyApp</code></p></li>
-
-<li><p>Change directory: <code>cd MyApp</code></p></li>
-
-<li><p>Start your application: <code>play run</code></p></li>
-
-<li><p>View your new Play site in a browser: <code>http://localhost:9000</code></p></li>
+<li>Open Git Bash</li>
+<li>Clone my <a href="https://github.com/ian-kent/vagrant-scala-play-mongodb">Play/Scala vagrant repository</a>: <code>git clone https://github.com/ian-kent/vagrant-scala-play-mongodb.git playserver</code></li>
+<li>Change directory: <code>cd playserver</code></li>
+<li>Start the virtual machine: <code>vagrant up</code></li>
+<li>Once it&rsquo;s complete, connect using SSH: <code>vagrant ssh</code></li>
+<li>Create a new play app: <code>play new MyApp</code></li>
+<li>Change directory: <code>cd MyApp</code></li>
+<li>Start your application: <code>play run</code></li>
+<li>View your new Play site in a browser: <code>http://localhost:9000</code></li>
 </ul>
 
 <p>If you want to edit your Play project in <a href="http://www.jetbrains.com/idea/">IntelliJ Idea</a>, create the project files from the command line using <code>play gen-idea</code>.</p>
 
 <p>To help you get started, the Vagrantfile also installs <a href="http://www.mongodb.org/">MongoDB</a> and sets up port forwarding for port 9000 (Play) and port 27017 (MongoDB)</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

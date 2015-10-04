@@ -49,9 +49,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>A quick introduction to Apache Mesos</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/a-quick-introduction-to-apache-mesos/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -73,7 +74,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -190,6 +198,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -278,20 +290,19 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">A quick introduction to Apache Mesos</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p><a href="http://mesos.apache.org/">Apache Mesos</a> is a centralised fault-tolerant cluster manager. It&rsquo;s designed for distributed computing environments to provide resource isolation and management across a cluster of slave nodes.</p>
 
 <p>In some ways, Mesos provides the opposite to virtualisation:</p>
 
 <ul>
-<li><p>Virtualisation splits a single physical resource into multiple virtual resources</p></li>
-
-<li><p>Mesos joins multiple physical resources into a single virtual resource</p></li>
+<li>Virtualisation splits a single physical resource into multiple virtual resources</li>
+<li>Mesos joins multiple physical resources into a single virtual resource</li>
 </ul>
 
 <p>It schedules CPU and memory resources across the cluster in much the same way the Linux Kernel schedules local resources.</p>
@@ -299,13 +310,10 @@
 <p>A Mesos cluster is made up of four major components:</p>
 
 <ul>
-<li><p>ZooKeepers</p></li>
-
-<li><p>Mesos masters</p></li>
-
-<li><p>Mesos slaves</p></li>
-
-<li><p>Frameworks</p></li>
+<li>ZooKeepers</li>
+<li>Mesos masters</li>
+<li>Mesos slaves</li>
+<li>Frameworks</li>
 </ul>
 
 <h3 id="zookeeper:d12db87a3f4ce64d7023ff8451a41464">ZooKeeper</h3>
@@ -349,15 +357,11 @@
 <p>There are a few other frameworks:</p>
 
 <ul>
-<li><p><a href="http://aurora.apache.org/">Aurora</a> - service scheduler</p></li>
-
-<li><p><a href="http://hadoop.apache.org/">Hadoop</a> - data processing</p></li>
-
-<li><p><a href="https://github.com/jenkinsci/mesos-plugin">Jenkins</a> - Jenkins slave manager</p></li>
-
-<li><p><a href="http://spark.apache.org/">Spark</a> - data processing</p></li>
-
-<li><p><a href="http://www.adaptivecomputing.com/products/open-source/torque/">Torque</a> - resource manager</p></li>
+<li><a href="http://aurora.apache.org/">Aurora</a> - service scheduler</li>
+<li><a href="http://hadoop.apache.org/">Hadoop</a> - data processing</li>
+<li><a href="https://github.com/jenkinsci/mesos-plugin">Jenkins</a> - Jenkins slave manager</li>
+<li><a href="http://spark.apache.org/">Spark</a> - data processing</li>
+<li><a href="http://www.adaptivecomputing.com/products/open-source/torque/">Torque</a> - resource manager</li>
 </ul>
 
 <p>You can also <a href="http://mesos.apache.org/documentation/latest/">write your own framework</a>, using Java, Python or C++.</p>
@@ -371,9 +375,8 @@
 <p><a href="http://www.vagrantup.com">Vagrant</a> and the <a href="https://github.com/everpeace/vagrant-mesos">vagrant-mesos</a> Vagrantfile can help you quickly build:</p>
 
 <ul>
-<li><p>a standalone Mesos instance</p></li>
-
-<li><p>a multi-machine Mesos cluster of ZooKeepers, masters and slaves</p></li>
+<li>a standalone Mesos instance</li>
+<li>a multi-machine Mesos cluster of ZooKeepers, masters and slaves</li>
 </ul>
 
 <p>Unfortunately, the network configuration is a bit difficult to work with - it uses a private network between the VMs, and SSH tunnelling to provide access to the cluster.</p>
@@ -391,11 +394,9 @@
 <p>You&rsquo;ll need the following GitHub repositories:</p>
 
 <ul>
-<li><p><a href="https://github.com/ian-kent/vagrant-zookeeper">ian-kent/vagrant-zookeeper</a></p></li>
-
-<li><p><a href="https://github.com/ian-kent/vagrant-mesos-master">ian-kent/vagrant-mesos-master</a></p></li>
-
-<li><p><a href="https://github.com/ian-kent/vagrant-mesos-slave">ian-kent/vagrant-mesos-slave</a></p></li>
+<li><a href="https://github.com/ian-kent/vagrant-zookeeper">ian-kent/vagrant-zookeeper</a></li>
+<li><a href="https://github.com/ian-kent/vagrant-mesos-master">ian-kent/vagrant-mesos-master</a></li>
+<li><a href="https://github.com/ian-kent/vagrant-mesos-slave">ian-kent/vagrant-mesos-slave</a></li>
 </ul>
 
 <p>At the moment, a cluster is limited to one ZooKeeper, but can support multiple Mesos masters and slaves.</p>
@@ -420,8 +421,8 @@
 
 <p>With Marathon or Aurora, you can even run other frameworks in the Mesos cluster for scalability and fault-tolerance.</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

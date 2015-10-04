@@ -23,11 +23,9 @@
 &lt;h3 id=&#34;the-challenge:1488174a7a6bea43933aad3fecc4c536&#34;&gt;The challenge&lt;/h3&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Build a scalable sequence generator (must scale out and provide resilience)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Master sequence number is stored in MongoDB, updated atomically using find and modify&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Sequence numbers must never be repeated (but strict ordering isn&amp;rsquo;t required)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Build a scalable sequence generator (must scale out and provide resilience)&lt;/li&gt;
+&lt;li&gt;Master sequence number is stored in MongoDB, updated atomically using find and modify&lt;/li&gt;
+&lt;li&gt;Sequence numbers must never be repeated (but strict ordering isn&amp;rsquo;t required)&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&#34;the-problem:1488174a7a6bea43933aad3fecc4c536&#34;&gt;The problem&lt;/h3&gt;
@@ -35,9 +33,8 @@
 &lt;p&gt;Since the sequence number is a single value stored in a single document in a single collection, the document gets locked on every request. MongoDB can&amp;rsquo;t help with scaling:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Starting multiple instances of our sequence generator doesn&amp;rsquo;t help, they all need to lock the same document&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Multiple MongoDB nodes doesn&amp;rsquo;t help - we&amp;rsquo;d need &lt;a href=&#34;http://docs.mongodb.org/manual/core/write-concern/#replica-acknowledged&#34;&gt;replica acknowledged write concern&lt;/a&gt; to avoid duplicate sequence numbers&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Starting multiple instances of our sequence generator doesn&amp;rsquo;t help, they all need to lock the same document&lt;/li&gt;
+&lt;li&gt;Multiple MongoDB nodes doesn&amp;rsquo;t help - we&amp;rsquo;d need &lt;a href=&#34;http://docs.mongodb.org/manual/core/write-concern/#replica-acknowledged&#34;&gt;replica acknowledged write concern&lt;/a&gt; to avoid duplicate sequence numbers&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&#34;the-solution:1488174a7a6bea43933aad3fecc4c536&#34;&gt;The solution&lt;/h3&gt;
@@ -52,36 +49,36 @@
 
 &lt;p&gt;An implementation might look a bit like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;object UnscalableSequenceGenerator extends App {
-  // the master sequence number
-  var seq = 0
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;object&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;UnscalableSequenceGenerator&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;App&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #75715e&#34;&gt;// the master sequence number&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;
 
-  def nextSeq : Future[Int] = future { blocking {
-    // pretend we&#39;re doing a find and modify asynchronously
-    Thread.sleep(30)
-    this.synchronized {
-      seq = seq + 1
-      seq
-    }
-  } }
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;Future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;future&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;blocking&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;// pretend we&amp;#39;re doing a find and modify asynchronously&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;Thread&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sleep&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;30&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;synchronized&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  // simulate calling our HTTP service 100 times
-  for(i &amp;lt;- 1 to 100) {
-    nextSeq map { j =&amp;gt;
-      // pretend we&#39;re doing something useful with the sequence number
-      print(s&amp;quot;$j &amp;quot;)
-      if(i % 10 == 0) println
-    }
-  }
+  &lt;span style=&#34;color: #75715e&#34;&gt;// simulate calling our HTTP service 100 times&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;for&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;to&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;j&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+      &lt;span style=&#34;color: #75715e&#34;&gt;// pretend we&amp;#39;re doing something useful with the sequence number&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;s&amp;quot;$j &amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;println&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  Thread.sleep(5000)
-}
-&amp;lt;/code&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;Thread&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sleep&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;5000&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;Running that example produces output like this (the exact ordering of numbers may be different):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;2 3 1 4 5 7 6 8 9 10 11 12
+&lt;pre&gt;&lt;code&gt;2 3 1 4 5 7 6 8 9 10 11 12
 14 13 16 17 15 19 18 21 22 20 24 23 25
 26 27 28 30 29
 31 32 34 33 36 35 37 38 39 40 41 43 42
@@ -91,7 +88,6 @@
 71 72 74 73 75 76 78 77 80 79 81
 82 83 85 84 86 87 89 88 90 91
 93 95 92 96 97 94 99 98 100
-&amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;No duplicates, but it&amp;rsquo;s not scalable, and the performance is terrible.&lt;/p&gt;
@@ -102,57 +98,57 @@
 
 &lt;p&gt;The first attempt looked a bit like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;object BatchedSequenceGenerator extends App {
-  // the master sequence number and batch size
-  var seq = 0
-  val batch_size = 10
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;object&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;BatchedSequenceGenerator&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;App&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #75715e&#34;&gt;// the master sequence number and batch size&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;batch_size&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt;
 
-  // our current sequence and maximum sequence numbers
-  var local_seq = 0
-  var local_max = 0
+  &lt;span style=&#34;color: #75715e&#34;&gt;// our current sequence and maximum sequence numbers&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;
 
-  def newBatch : Future[Int] = future { blocking {
-    // pretend we&#39;re doing a find and modify asynchronously
-    Thread.sleep(30)
-    this.synchronized {
-        seq = seq + 10
-        seq
-    }
-  } }
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;newBatch&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;Future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;future&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;blocking&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;// pretend we&amp;#39;re doing a find and modify asynchronously&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;Thread&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sleep&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;30&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;synchronized&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  def nextSeq : Future[Int] = {
-    if(local_seq &amp;gt;= local_max) {
-      // Get a new batch of sequence numbers
-      newBatch map { new_max =&amp;gt;
-        // Update our local sequence
-        local_max = new_max
-        local_seq = local_max - batch_size
-        local_seq = local_seq + 1
-        local_seq
-      }
-    } else {
-      // Use our local sequence number
-      val next_seq = local_seq
-      local_seq = local_seq + 1
-      future { next_seq }
-    }
-  }
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;Future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #75715e&#34;&gt;// Get a new batch of sequence numbers&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;newBatch&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;new_max&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color: #75715e&#34;&gt;// Update our local sequence&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;new_max&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;batch_size&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt;
+      &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #75715e&#34;&gt;// Use our local sequence number&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;next_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;future&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;next_seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  // simulate calling our HTTP service 100 times
-  for(i &amp;lt;- 1 to 100) nextSeq map { j =&amp;gt;
-    // pretend we&#39;re doing something useful with the sequence number
-    print(s&amp;quot;$j &amp;quot;)
-    if(i % 10 == 0) println
-  }
+  &lt;span style=&#34;color: #75715e&#34;&gt;// simulate calling our HTTP service 100 times&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;for&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;to&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;j&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;// pretend we&amp;#39;re doing something useful with the sequence number&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;s&amp;quot;$j &amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;println&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  Thread.sleep(5000)
-}
-&amp;lt;/code&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;Thread&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sleep&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;5000&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;While it does at least take batches of sequence numbers, we get the following unexpected but understandable output:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221
+&lt;pre&gt;&lt;code&gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221
 101 81 111 51
 231 251 241 261 271 281 291 301
 311 321 331 341 351 361 371 381
@@ -163,7 +159,6 @@
 861 871 851 881 891 911
 901 921 931 951 961 941 971
 991 981
-&amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;We&amp;rsquo;re only using 1/10th of each batch, and we get to 991 in only 100 requests. It&amp;rsquo;s no more scalable than the unbatched version.&lt;/p&gt;
@@ -171,15 +166,11 @@
 &lt;p&gt;It should probably have been obvious, but the problem is caused by requests arriving between requesting a new batch and getting a response:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;The 10th request gives out the last local sequence number&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;The 11th request gets a new batch asynchronously&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;The 12th request arrives before we get a new batch, and requests another new batch asynchronously&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;We get the 11th request batch, reset our sequence numbers and return a sequence&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;We get the 12th request batch, and again reset our sequence numbers and return a sequence, wasting the rest of the previous batch&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;The 10th request gives out the last local sequence number&lt;/li&gt;
+&lt;li&gt;The 11th request gets a new batch asynchronously&lt;/li&gt;
+&lt;li&gt;The 12th request arrives before we get a new batch, and requests another new batch asynchronously&lt;/li&gt;
+&lt;li&gt;We get the 11th request batch, reset our sequence numbers and return a sequence&lt;/li&gt;
+&lt;li&gt;We get the 12th request batch, and again reset our sequence numbers and return a sequence, wasting the rest of the previous batch&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;To fix it, we need the 12th request to wait for the 11th request to complete first.&lt;/p&gt;
@@ -194,65 +185,65 @@
 
 &lt;p&gt;It&amp;rsquo;s a fairly simple change to our batched sequence generator (or at least, in hindsight it is):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;object BatchedSequenceGenerator extends App {
-  // the master sequence number and batch size
-  var seq = 10
-  val batch_size = 10
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;object&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;BatchedSequenceGenerator&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;App&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #75715e&#34;&gt;// the master sequence number and batch size&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;batch_size&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt;
 
-  // our current sequence and maximum sequence numbers
-  var local_seq = 0
-  var local_max = 10
-  var pending : Option[Future[Int]] = None
+  &lt;span style=&#34;color: #75715e&#34;&gt;// our current sequence and maximum sequence numbers&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;pending&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;Option&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;]]&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;None&lt;/span&gt;
 
-  def newBatch : Future[Int] = future { blocking {
-    // pretend we&#39;re doing a find and modify asynchronously
-    Thread.sleep(30)
-    this.synchronized {
-      seq = seq + batch_size
-      seq
-    }
-  } }
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;newBatch&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;Future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;future&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;blocking&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;// pretend we&amp;#39;re doing a find and modify asynchronously&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;Thread&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sleep&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;30&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;synchronized&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;batch_size&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  def nextSeq : Future[Int] = this.synchronized {
-    pending match {
-      case None =&amp;gt;
-        if(local_seq &amp;gt;= local_max) {
-          // Get a new batch of sequence numbers
-          pending = Some(newBatch map { new_max =&amp;gt;
-            // Update our local sequence
-            local_max = new_max
-            local_seq = local_max - batch_size + 1
-            local_seq
-          })
-          // Clear the pending future once we&#39;ve got the batch
-          pending.get andThen { case _ =&amp;gt; pending = None }
-        } else {
-          // Use our local sequence number
-          local_seq = local_seq + 1
-          val seq = local_seq
-          future(seq)
-        }
-      case Some(f) =&amp;gt;
-        // Wait on the pending future
-        f flatMap { f =&amp;gt; nextSeq }
-    }
-  }
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;Future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;synchronized&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;pending&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;match&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;None&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+          &lt;span style=&#34;color: #75715e&#34;&gt;// Get a new batch of sequence numbers&lt;/span&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;pending&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Some&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;newBatch&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;new_max&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+            &lt;span style=&#34;color: #75715e&#34;&gt;// Update our local sequence&lt;/span&gt;
+            &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;new_max&lt;/span&gt;
+            &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_max&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;batch_size&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;
+            &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt;
+          &lt;span style=&#34;color: #f92672&#34;&gt;})&lt;/span&gt;
+          &lt;span style=&#34;color: #75715e&#34;&gt;// Clear the pending future once we&amp;#39;ve got the batch&lt;/span&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;pending&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;get&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;andThen&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;pending&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;None&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+        &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt;
+          &lt;span style=&#34;color: #75715e&#34;&gt;// Use our local sequence number&lt;/span&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;
+          &lt;span style=&#34;color: #66d9ef&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;local_seq&lt;/span&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;future&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;seq&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Some&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;f&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color: #75715e&#34;&gt;// Wait on the pending future&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;f&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;flatMap&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;f&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  // simulate calling our HTTP service 100 times
-  for(i &amp;lt;- 1 to 100) nextSeq map { j =&amp;gt;
-    // pretend we&#39;re doing something useful with the sequence number
-    print(s&amp;quot;$j &amp;quot;)
-    if(i % 10 == 0) println
-  }
+  &lt;span style=&#34;color: #75715e&#34;&gt;// simulate calling our HTTP service 100 times&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;for&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;to&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;nextSeq&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;j&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;=&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;// pretend we&amp;#39;re doing something useful with the sequence number&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;s&amp;quot;$j &amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;println&lt;/span&gt;
+  &lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
 
-  Thread.sleep(5000)
-}
-&amp;lt;/code&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;Thread&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sleep&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;5000&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;And running that example generates output like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;code&amp;gt;3 5 6 2 7 8 9 10
+&lt;pre&gt;&lt;code&gt;3 5 6 2 7 8 9 10
 4 1 13 11 12 14 15 17 19 20
 16 18 23 21 24 26 27 28 29 30 22
 25 34 35 31 33 37 38 39 40
@@ -263,23 +254,20 @@
 73 74 76 77 78 80 79 82 83 85 84 86 87 81
 89 88 90 92 95 93 99 98 100 97
 96 91 94
-&amp;lt;/code&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;The changes we made are straightforward:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;When we request a new sequence number, check if a pending future exists&lt;/p&gt;
+&lt;li&gt;When we request a new sequence number, check if a pending future exists
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;If it does, wait on that and return a new call to nextSeq&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;If not, check if a new batch is required&lt;/p&gt;
+&lt;li&gt;If it does, wait on that and return a new call to nextSeq&lt;/li&gt;
+&lt;li&gt;If not, check if a new batch is required
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;If it is, store the future before returning&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;It not, use the existing batch as normal&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;If it is, store the future before returning&lt;/li&gt;
+&lt;li&gt;It not, use the existing batch as normal&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;

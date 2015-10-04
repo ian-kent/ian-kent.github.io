@@ -20,7 +20,7 @@
 
 &lt;p&gt;It was inspired by &lt;a href=&#34;http://mailcatcher.me/&#34;&gt;MailCatcher&lt;/a&gt;, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.&lt;/p&gt;
 
-&lt;p&gt;| edit: it was Ruby, not Python - but painful nonetheless!&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;edit&lt;/strong&gt;: it was Ruby, not Python - but painful nonetheless!&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;It was originally written in Perl based on code from &lt;a href=&#34;https://github.com/ian-kent/M3MTA&#34;&gt;M3MTA&lt;/a&gt;, but it&amp;rsquo;s been rewritten in Go for portability, and now runs on any supported platform without installation.&lt;/p&gt;
 
@@ -34,7 +34,7 @@
 
 &lt;p&gt;To view messages, point your browser at &lt;code&gt;http://localhost:8025&lt;/code&gt; or send a GET request to &lt;code&gt;http://localhost:8025/api/v1/messages&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34;&gt;&lt;img src=&#34;http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://ian-kent.github.io/img/MailHog.png&#34;&gt;&lt;img src=&#34;http://ian-kent.github.io/img/MailHog.png&#34; alt=&#34;MailHog&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

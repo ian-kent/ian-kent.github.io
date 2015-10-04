@@ -48,9 +48,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Action composition in Mojolicious</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/action-composition-in-mojolicious/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -72,7 +73,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -189,6 +197,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -277,11 +289,11 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Action composition in Mojolicious</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p>Something about the routing in Mojolicious has been making things difficult, and Play Framework had the answer.</p>
 
@@ -294,38 +306,33 @@
 <h4 id="mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Mojolicious</h4>
 
 <ul>
-<li><p>Routes are complicated, can be chained together, and can have bridges and conditions which control the way routes behave:</p>
+<li>Routes are complicated, can be chained together, and can have bridges and conditions which control the way routes behave:
 
 <ul>
-<li><p>Conditions are synchronous, and can switch between sub-routes on a per-request basis</p></li>
-
-<li><p>Bridges can be asynchronous, but always ultimately end at the same destination (e.g., you couldn&rsquo;t have two identical routes running through different bridges, since Mojolicious couldn&rsquo;t determine which to use or if a route even exists, which is why conditions are synchronous).</p></li>
+<li>Conditions are synchronous, and can switch between sub-routes on a per-request basis</li>
+<li>Bridges can be asynchronous, but always ultimately end at the same destination (e.g., you couldn&rsquo;t have two identical routes running through different bridges, since Mojolicious couldn&rsquo;t determine which to use or if a route even exists, which is why conditions are synchronous).</li>
 </ul></li>
-
-<li><p>Controller actions are plain subs, called directly at run-time by the Mojolicious router</p>
+<li>Controller actions are plain subs, called directly at run-time by the Mojolicious router
 
 <ul>
-<li><p>Actions manipulate the stash and call Mojolicious methods directly (e.g. render)</p></li>
-
-<li><p>The return value from an action is of limited use</p></li>
+<li>Actions manipulate the stash and call Mojolicious methods directly (e.g. render)</li>
+<li>The return value from an action is of limited use</li>
 </ul></li>
 </ul>
 
 <h4 id="play-framework:a3daa83d4d79bd93ea67944afafd2b47">Play Framework:</h4>
 
 <ul>
-<li><p>Routes are simple - they&rsquo;re written statically and have no concept of bridges or conditions.</p>
+<li>Routes are simple - they&rsquo;re written statically and have no concept of bridges or conditions.
 
 <ul>
 <li>One route can point to one action, limited flexibility at the routing layer</li>
 </ul></li>
-
-<li><p>Actions are composed by nesting action functions, with outer functions calling inner functions</p>
+<li>Actions are composed by nesting action functions, with outer functions calling inner functions
 
 <ul>
-<li><p>The action returns either a result, or a future result</p></li>
-
-<li><p>Actions can choose to call other actions, or contain multiple nested actions inside one action</p></li>
+<li>The action returns either a result, or a future result</li>
+<li>Actions can choose to call other actions, or contain multiple nested actions inside one action</li>
 </ul></li>
 </ul>
 
@@ -344,11 +351,9 @@
 <p>The Mojolicious model is extremely powerful for a simple application - we can define route stubs or bridges, attach more routes to those, intercept requests in bridges and return 404 or 500 errors. Which is great - but then we end in a messy refactoring nightmare:</p>
 
 <ul>
-<li><p>The code used in routing (e.g. authenticated bridges) needs to be shared between applications</p></li>
-
-<li><p>We move the code into a shared library, and get it to create named bridges</p></li>
-
-<li><p>We update our applications to use the named bridge from the shared library</p></li>
+<li>The code used in routing (e.g. authenticated bridges) needs to be shared between applications</li>
+<li>We move the code into a shared library, and get it to create named bridges</li>
+<li>We update our applications to use the named bridge from the shared library</li>
 </ul>
 
 <p>All good so far.</p>
@@ -356,32 +361,34 @@
 <p>Now we want to use a hook to intercept some part of the request - adding headers for example:</p>
 
 <ul>
-<li><p>We write a plugin which registers a hook</p></li>
-
-<li><p>The hook adds custom headers to a response</p></li>
-
-<li><p>We include the plugin in our application, and all responses get new headers</p></li>
+<li>We write a plugin which registers a hook</li>
+<li>The hook adds custom headers to a response</li>
+<li>We include the plugin in our application, and all responses get new headers</li>
 </ul>
 
 <p>Still good. But once we&rsquo;ve done this a few times, we end up with all routing and request manipulation being done by shared libraries. We have limited code visibility, and all we get to show for our efforts are:</p>
 
 <ul>
-<li><p>A few <code>-&gt;plugin</code> lines, adding &lsquo;unknown&rsquo; functionality to our routing</p>
-
-<p><code>$app-&gt;plugin(&lsquo;My::Magic::Routing::Plugin&rsquo;);
-$app-&gt;plugin(&lsquo;Another::Magic::Routing::Plugin&rsquo;);
-</code></p></li>
-
-<li><p>An dangerous action sub, with no idea how the request gets there</p>
-
-<p><code>sub this_should_be_authenticated_and_authorised {
-  $self-&gt;delete_all_data;
-  $self-&gt;make_everyone_admin;
-  $self-&gt;enter_maintenance_mode;
-  $self-&gt;render(text =&gt; &lsquo;hope I really was authenticated&hellip;&rsquo;);
-}
-</code></p></li>
+<li>A few <code>-&gt;plugin</code> lines, adding &lsquo;unknown&rsquo; functionality to our routing</li>
 </ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">$app</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">plugin(</span><span style="color: #e6db74">&#39;My::Magic::Routing::Plugin&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">$app</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">plugin(</span><span style="color: #e6db74">&#39;Another::Magic::Routing::Plugin&#39;</span><span style="color: #f8f8f2">);</span>
+</pre></div>
+</p>
+
+<ul>
+<li>An dangerous action sub, with no idea how the request gets there</li>
+</ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">sub </span><span style="color: #a6e22e">this_should_be_authenticated_and_authorised</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">delete_all_data;</span>
+  <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">make_everyone_admin;</span>
+  <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">enter_maintenance_mode;</span>
+  <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;hope I really was authenticated...&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>And now we&rsquo;re potentially screwed.</p>
 
@@ -395,15 +402,15 @@ $app-&gt;plugin(&lsquo;Another::Magic::Routing::Plugin&rsquo;);
 
 <p>With Play Framework action composition, we maintain full code visibility at the controller:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
-  Authorised(request, request.user) {
-    Ok(request.user.get)
-  } otherwise {
-    Unauthorized
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span> <span style="color: #f8f8f2">otherwise</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Unauthorized</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>Instead of tracing through multiple plugins to find out what happens to a request, it&rsquo;s all there in front of us. We know the request is Authenticated, and is then Authorised. If we have a bug, its easy to follow a request to see what happens.</p>
 
@@ -415,34 +422,34 @@ $app-&gt;plugin(&lsquo;Another::Magic::Routing::Plugin&rsquo;);
 
 <p>Let&rsquo;s define the syntax first:</p>
 
-<pre><code>&lt;code&gt;# a plain action
-Action 'welcome' =&gt; sub {
-  shift-&gt;render(text =&gt; '');
-};
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #75715e"># a plain action</span>
+<span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;welcome&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">};</span>
 
-# an asynchronous action (without a render_later call)
-Action 'login' =&gt; Async {
-  my $self = shift;
-  Mojo::IOLoop-&gt;timer(0.25 =&gt; sub {
-    $self-&gt;render(text =&gt; '');
-  });
-};
+<span style="color: #75715e"># an asynchronous action (without a render_later call)</span>
+<span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;login&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #f8f8f2">Async</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$self</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">shift;</span>
+  <span style="color: #f8f8f2">Mojo::IOLoop</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">timer(</span><span style="color: #ae81ff">0.25</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+  <span style="color: #f8f8f2">});</span>
+<span style="color: #f8f8f2">};</span>
 
-# an authenticated action
-Action 'private1' =&gt; Authenticated {
-  shift-&gt;render(text =&gt; '');
-};
+<span style="color: #75715e"># an authenticated action</span>
+<span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;private1&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #f8f8f2">Authenticated</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">};</span>
 
-# nested actions, with parameters
-Action 'private2' =&gt; Async { Authenticated {
-  WithPermission 'blog.post' =&gt; sub {
-    shift-&gt;render(text =&gt; '');
-  }, sub {
-    shift-&gt;render(text =&gt; 'not authorised');
-  }
-}};
-&lt;/code&gt;
-</code></pre>
+<span style="color: #75715e"># nested actions, with parameters</span>
+<span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;private2&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #f8f8f2">Async</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">Authenticated</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">WithPermission</span> <span style="color: #e6db74">&#39;blog.post&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+  <span style="color: #f8f8f2">},</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;not authorised&#39;</span><span style="color: #f8f8f2">);</span>
+  <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}};</span>
+</pre></div>
+</p>
 
 <h3 id="implementing-it-in-mojolicious:a3daa83d4d79bd93ea67944afafd2b47">Implementing it in Mojolicious</h3>
 
@@ -454,30 +461,30 @@ Action 'private2' =&gt; Async { Authenticated {
 
 <p>Since we need to be able to chain these actions together, we also need to recursively call the inner action. We&rsquo;ll also need to do that for any other actions we define, so lets make it generic:</p>
 
-<pre><code>&lt;code&gt;sub go {
-  my ($controller, $inner) = @_;
-  my $i = $inner;
-  while($i) {
-    my $res = $i-&gt;($controller) if ref($i) eq 'CODE';
-    $i = ref($res) eq 'CODE' ? $res : undef;
-  }
-  return undef;
-}
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">sub </span><span style="color: #a6e22e">go</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">($controller,</span> <span style="color: #f8f8f2">$inner)</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">@_;</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$i</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">$inner;</span>
+  <span style="color: #66d9ef">while</span><span style="color: #f8f8f2">($i)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$res</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">$i</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">($controller)</span> <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">ref($i)</span> <span style="color: #f92672">eq</span> <span style="color: #e6db74">&#39;CODE&#39;</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #f8f8f2">$i</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">ref($res)</span> <span style="color: #f92672">eq</span> <span style="color: #e6db74">&#39;CODE&#39;</span> <span style="color: #f8f8f2">?</span> <span style="color: #f8f8f2">$res</span> <span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">undef;</span>
+  <span style="color: #f8f8f2">}</span>
+  <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">undef;</span>
+<span style="color: #f8f8f2">}</span>
 
-sub Action($$) {
-  my ($action, $inner) = @_;
-  monkey_patch caller, $action =&gt; sub { go(shift, $inner) }
-}
-&lt;/code&gt;
-</code></pre>
+<span style="color: #66d9ef">sub </span><span style="color: #a6e22e">Action</span><span style="color: #f8f8f2">($$)</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">($action,</span> <span style="color: #f8f8f2">$inner)</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">@_;</span>
+  <span style="color: #f8f8f2">monkey_patch</span> <span style="color: #f8f8f2">caller,</span> <span style="color: #f8f8f2">$action</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">go(shift,</span> <span style="color: #f8f8f2">$inner)</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>This is enough to let us define a new action like this:</p>
 
-<pre><code>&lt;code&gt;Action 'myaction' =&gt; sub {
-    shift-&gt;render(text =&gt; '');
-};
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;myaction&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">};</span>
+</pre></div>
+</p>
 
 <h4 id="a-nested-action-async:a3daa83d4d79bd93ea67944afafd2b47">A nested action - Async</h4>
 
@@ -485,28 +492,28 @@ sub Action($$) {
 
 <p>Since Async is our first &lsquo;nested&rsquo; action, we&rsquo;ll implement that:</p>
 
-<pre><code>&lt;code&gt;sub Async(&amp;) {
-  my $inner = shift;
-  return sub {
-    my $controller = shift;
-    $controller-&gt;render_later;
-    go($controller, $inner);
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">sub </span><span style="color: #a6e22e">Async</span><span style="color: #f8f8f2">(&amp;) {</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$inner</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">shift;</span>
+  <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$controller</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">shift;</span>
+    <span style="color: #f8f8f2">$controller</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render_later;</span>
+    <span style="color: #f8f8f2">go($controller,</span> <span style="color: #f8f8f2">$inner);</span>
+  <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>Now we can define an Async action, without needing to call <code>render_later</code>:</p>
 
-<pre><code>&lt;code&gt;Action 'login' =&gt; Async {
-  my $self = shift;
-  Mojo::IOLoop-&gt;timer(0.25 =&gt; sub {
-    $self-&gt;session(auth =&gt; 1);
-    $self-&gt;render(text =&gt; '');
-  });
-};
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;login&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #f8f8f2">Async</span> <span style="color: #f8f8f2">{</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$self</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">shift;</span>
+  <span style="color: #f8f8f2">Mojo::IOLoop</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">timer(</span><span style="color: #ae81ff">0.25</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">session(auth</span> <span style="color: #f92672">=&gt;</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">);</span>
+    <span style="color: #f8f8f2">$self</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+  <span style="color: #f8f8f2">});</span>
+<span style="color: #f8f8f2">};</span>
+</pre></div>
+</p>
 
 <h4 id="an-action-with-parameters:a3daa83d4d79bd93ea67944afafd2b47">An action with parameters</h4>
 
@@ -516,30 +523,30 @@ sub Action($$) {
 
 <p>We need to be able to pass in some custom parameters, and a sub, and have it return a sub which, like the others, invokes the inner sub when its called:</p>
 
-<pre><code>&lt;code&gt;sub WithPermission($&amp;;&amp;) {
-  my ($permission, $inner, $error) = @_;
-  return sub {
-    my $controller = shift;
-    if($permission eq 'blog.delete') {
-      go($controller, $inner);
-    } else {
-      $error ? go($controller, $error) : $controller-&gt;render_exception('Unauthorised');
-    }
-    return undef;
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">sub </span><span style="color: #a6e22e">WithPermission</span><span style="color: #f8f8f2">($&amp;;&amp;) {</span>
+  <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">($permission,</span> <span style="color: #f8f8f2">$inner,</span> <span style="color: #f8f8f2">$error)</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">@_;</span>
+  <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">my</span> <span style="color: #f8f8f2">$controller</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">shift;</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f8f8f2">($permission</span> <span style="color: #f92672">eq</span> <span style="color: #e6db74">&#39;blog.delete&#39;</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #f8f8f2">go($controller,</span> <span style="color: #f8f8f2">$inner);</span>
+    <span style="color: #f8f8f2">}</span> <span style="color: #66d9ef">else</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #f8f8f2">$error</span> <span style="color: #f8f8f2">?</span> <span style="color: #f8f8f2">go($controller,</span> <span style="color: #f8f8f2">$error)</span> <span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">$controller</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render_exception(</span><span style="color: #e6db74">&#39;Unauthorised&#39;</span><span style="color: #f8f8f2">);</span>
+    <span style="color: #f8f8f2">}</span>
+    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">undef;</span>
+  <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>Which lets us define an action like this:</p>
 
-<pre><code>&lt;code&gt;Action 'private1' =&gt; Authenticated { WithPermission 'blog.post' =&gt; sub {
-  shift-&gt;render(text =&gt; '');
-}, sub {
-  shift-&gt;render(text =&gt; 'need permission blog.post');
-}};
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">Action</span> <span style="color: #e6db74">&#39;private1&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #f8f8f2">Authenticated</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">WithPermission</span> <span style="color: #e6db74">&#39;blog.post&#39;</span> <span style="color: #f92672">=&gt;</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">},</span> <span style="color: #66d9ef">sub </span><span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">shift</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">render(text</span> <span style="color: #f92672">=&gt;</span> <span style="color: #e6db74">&#39;need permission blog.post&#39;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">}};</span>
+</pre></div>
+</p>
 
 <p>If the user is authenticated and has the permission &lsquo;blog.post&rsquo;, the first inner action gets executed, otherwise the second is called instead. However, since our WithPermission action only accepts &lsquo;blog.delete&rsquo;, this will always fail.</p>
 
@@ -553,23 +560,23 @@ sub Action($$) {
 
 <p>In Play Framework, we could invoke an action and inspect its result, and still choose to not return that content to the user. This gives us the flexibility to invoke multiple actions, and decide later which to use, for example:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
-  val res1 = Foo(request);
-  val res2 = Bar(request);
-  if((res1.body.json \ 'some_key').isDefined)
-    Authorised(res1, request.user) {
-  else
-    Unauthorized
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">res1</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Foo</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">);</span>
+  <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">res2</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Bar</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">);</span>
+  <span style="color: #66d9ef">if</span><span style="color: #f92672">((</span><span style="color: #f8f8f2">res1</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">body</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span> <span style="color: #f92672">\</span> &#39;some_key<span style="color: #960050; background-color: #1e0010">&#39;</span><span style="color: #f92672">).</span><span style="color: #f8f8f2">isDefined</span><span style="color: #f92672">)</span>
+    <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">res1</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">else</span>
+    <span style="color: #a6e22e">Unauthorized</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>In Mojolicious, the client might end up with a mixture of both responses, or just whichever gets called first. Because Mojolicious doesn&rsquo;t use the return value, as soon as an action calls <code>-&gt;render</code> it will immediately return a response to the client.</p>
 
 <p>It should be possible - by creating a new stash and fake response objects, and possibly patching <code>-&gt;render</code> - to trick Mojolicious into supporting a future/promise based interface.</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

@@ -44,9 +44,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Projects</title>
     <link rel="canonical" href="http://ian-kent.github.io/project/">
     <link href="http://ian-kent.github.io/project/index.xml" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -68,7 +69,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -185,6 +193,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -287,9 +299,13 @@
       </div>
 
       <div>
-        <p>MailHog is a web application e-mail testing tool.</p>
+        <p>MailHog is an email testing tool for developers:</p>
 
-<p>You can do stuff with it.</p>
+<ul>
+<li>Configure your application to use MailHog for SMTP delivery</li>
+<li>View messages in the web UI, or retrieve them with the JSON API</li>
+<li>Optionally release messages to real SMTP servers for delivery</li>
+</ul>
 
       </div>
 

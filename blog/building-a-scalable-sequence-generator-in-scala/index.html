@@ -48,9 +48,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Building a scalable sequence generator (in Scala)</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/building-a-scalable-sequence-generator-in-scala/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -72,7 +73,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -189,6 +197,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -277,22 +289,20 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Building a scalable sequence generator (in Scala)</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p>Building a scalable sequence generator was more difficult than I&rsquo;d anticipated.</p>
 
 <h3 id="the-challenge:1488174a7a6bea43933aad3fecc4c536">The challenge</h3>
 
 <ul>
-<li><p>Build a scalable sequence generator (must scale out and provide resilience)</p></li>
-
-<li><p>Master sequence number is stored in MongoDB, updated atomically using find and modify</p></li>
-
-<li><p>Sequence numbers must never be repeated (but strict ordering isn&rsquo;t required)</p></li>
+<li>Build a scalable sequence generator (must scale out and provide resilience)</li>
+<li>Master sequence number is stored in MongoDB, updated atomically using find and modify</li>
+<li>Sequence numbers must never be repeated (but strict ordering isn&rsquo;t required)</li>
 </ul>
 
 <h3 id="the-problem:1488174a7a6bea43933aad3fecc4c536">The problem</h3>
@@ -300,9 +310,8 @@
 <p>Since the sequence number is a single value stored in a single document in a single collection, the document gets locked on every request. MongoDB can&rsquo;t help with scaling:</p>
 
 <ul>
-<li><p>Starting multiple instances of our sequence generator doesn&rsquo;t help, they all need to lock the same document</p></li>
-
-<li><p>Multiple MongoDB nodes doesn&rsquo;t help - we&rsquo;d need <a href="http://docs.mongodb.org/manual/core/write-concern/#replica-acknowledged">replica acknowledged write concern</a> to avoid duplicate sequence numbers</p></li>
+<li>Starting multiple instances of our sequence generator doesn&rsquo;t help, they all need to lock the same document</li>
+<li>Multiple MongoDB nodes doesn&rsquo;t help - we&rsquo;d need <a href="http://docs.mongodb.org/manual/core/write-concern/#replica-acknowledged">replica acknowledged write concern</a> to avoid duplicate sequence numbers</li>
 </ul>
 
 <h3 id="the-solution:1488174a7a6bea43933aad3fecc4c536">The solution</h3>
@@ -317,36 +326,36 @@
 
 <p>An implementation might look a bit like this:</p>
 
-<pre><code>&lt;code&gt;object UnscalableSequenceGenerator extends App {
-  // the master sequence number
-  var seq = 0
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">UnscalableSequenceGenerator</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">App</span> <span style="color: #f92672">{</span>
+  <span style="color: #75715e">// the master sequence number</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">0</span>
 
-  def nextSeq : Future[Int] = future { blocking {
-    // pretend we're doing a find and modify asynchronously
-    Thread.sleep(30)
-    this.synchronized {
-      seq = seq + 1
-      seq
-    }
-  } }
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">nextSeq</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Int</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">blocking</span> <span style="color: #f92672">{</span>
+    <span style="color: #75715e">// pretend we&#39;re doing a find and modify asynchronously</span>
+    <span style="color: #a6e22e">Thread</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">sleep</span><span style="color: #f92672">(</span><span style="color: #ae81ff">30</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">this</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">synchronized</span> <span style="color: #f92672">{</span>
+      <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">seq</span> <span style="color: #f92672">+</span> <span style="color: #ae81ff">1</span>
+      <span style="color: #f8f8f2">seq</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span> <span style="color: #f92672">}</span>
 
-  // simulate calling our HTTP service 100 times
-  for(i &lt;- 1 to 100) {
-    nextSeq map { j =&gt;
-      // pretend we're doing something useful with the sequence number
-      print(s&quot;$j &quot;)
-      if(i % 10 == 0) println
-    }
-  }
+  <span style="color: #75715e">// simulate calling our HTTP service 100 times</span>
+  <span style="color: #66d9ef">for</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">i</span> <span style="color: #66d9ef">&lt;-</span> <span style="color: #ae81ff">1</span> <span style="color: #f8f8f2">to</span> <span style="color: #ae81ff">100</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+    <span style="color: #f8f8f2">nextSeq</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">j</span> <span style="color: #66d9ef">=&gt;</span>
+      <span style="color: #75715e">// pretend we&#39;re doing something useful with the sequence number</span>
+      <span style="color: #f8f8f2">print</span><span style="color: #f92672">(</span><span style="color: #e6db74">s&quot;$j &quot;</span><span style="color: #f92672">)</span>
+      <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">10</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">println</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span>
 
-  Thread.sleep(5000)
-}
-&lt;/code&gt;
-</code></pre>
+  <span style="color: #a6e22e">Thread</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">sleep</span><span style="color: #f92672">(</span><span style="color: #ae81ff">5000</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>Running that example produces output like this (the exact ordering of numbers may be different):</p>
 
-<pre><code>&lt;code&gt;2 3 1 4 5 7 6 8 9 10 11 12
+<pre><code>2 3 1 4 5 7 6 8 9 10 11 12
 14 13 16 17 15 19 18 21 22 20 24 23 25
 26 27 28 30 29
 31 32 34 33 36 35 37 38 39 40 41 43 42
@@ -356,7 +365,6 @@
 71 72 74 73 75 76 78 77 80 79 81
 82 83 85 84 86 87 89 88 90 91
 93 95 92 96 97 94 99 98 100
-&lt;/code&gt;
 </code></pre>
 
 <p>No duplicates, but it&rsquo;s not scalable, and the performance is terrible.</p>
@@ -367,57 +375,57 @@
 
 <p>The first attempt looked a bit like this:</p>
 
-<pre><code>&lt;code&gt;object BatchedSequenceGenerator extends App {
-  // the master sequence number and batch size
-  var seq = 0
-  val batch_size = 10
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">BatchedSequenceGenerator</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">App</span> <span style="color: #f92672">{</span>
+  <span style="color: #75715e">// the master sequence number and batch size</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">0</span>
+  <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">batch_size</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">10</span>
 
-  // our current sequence and maximum sequence numbers
-  var local_seq = 0
-  var local_max = 0
+  <span style="color: #75715e">// our current sequence and maximum sequence numbers</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">0</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">local_max</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">0</span>
 
-  def newBatch : Future[Int] = future { blocking {
-    // pretend we're doing a find and modify asynchronously
-    Thread.sleep(30)
-    this.synchronized {
-        seq = seq + 10
-        seq
-    }
-  } }
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">newBatch</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Int</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">blocking</span> <span style="color: #f92672">{</span>
+    <span style="color: #75715e">// pretend we&#39;re doing a find and modify asynchronously</span>
+    <span style="color: #a6e22e">Thread</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">sleep</span><span style="color: #f92672">(</span><span style="color: #ae81ff">30</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">this</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">synchronized</span> <span style="color: #f92672">{</span>
+        <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">seq</span> <span style="color: #f92672">+</span> <span style="color: #ae81ff">10</span>
+        <span style="color: #f8f8f2">seq</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span> <span style="color: #f92672">}</span>
 
-  def nextSeq : Future[Int] = {
-    if(local_seq &gt;= local_max) {
-      // Get a new batch of sequence numbers
-      newBatch map { new_max =&gt;
-        // Update our local sequence
-        local_max = new_max
-        local_seq = local_max - batch_size
-        local_seq = local_seq + 1
-        local_seq
-      }
-    } else {
-      // Use our local sequence number
-      val next_seq = local_seq
-      local_seq = local_seq + 1
-      future { next_seq }
-    }
-  }
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">nextSeq</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Int</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">local_seq</span> <span style="color: #f92672">&gt;=</span> <span style="color: #f8f8f2">local_max</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+      <span style="color: #75715e">// Get a new batch of sequence numbers</span>
+      <span style="color: #f8f8f2">newBatch</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">new_max</span> <span style="color: #66d9ef">=&gt;</span>
+        <span style="color: #75715e">// Update our local sequence</span>
+        <span style="color: #f8f8f2">local_max</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">new_max</span>
+        <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_max</span> <span style="color: #f92672">-</span> <span style="color: #f8f8f2">batch_size</span>
+        <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_seq</span> <span style="color: #f92672">+</span> <span style="color: #ae81ff">1</span>
+        <span style="color: #f8f8f2">local_seq</span>
+      <span style="color: #f92672">}</span>
+    <span style="color: #f92672">}</span> <span style="color: #66d9ef">else</span> <span style="color: #f92672">{</span>
+      <span style="color: #75715e">// Use our local sequence number</span>
+      <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">next_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_seq</span>
+      <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_seq</span> <span style="color: #f92672">+</span> <span style="color: #ae81ff">1</span>
+      <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">next_seq</span> <span style="color: #f92672">}</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span>
 
-  // simulate calling our HTTP service 100 times
-  for(i &lt;- 1 to 100) nextSeq map { j =&gt;
-    // pretend we're doing something useful with the sequence number
-    print(s&quot;$j &quot;)
-    if(i % 10 == 0) println
-  }
+  <span style="color: #75715e">// simulate calling our HTTP service 100 times</span>
+  <span style="color: #66d9ef">for</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">i</span> <span style="color: #66d9ef">&lt;-</span> <span style="color: #ae81ff">1</span> <span style="color: #f8f8f2">to</span> <span style="color: #ae81ff">100</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">nextSeq</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">j</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #75715e">// pretend we&#39;re doing something useful with the sequence number</span>
+    <span style="color: #f8f8f2">print</span><span style="color: #f92672">(</span><span style="color: #e6db74">s&quot;$j &quot;</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">10</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">println</span>
+  <span style="color: #f92672">}</span>
 
-  Thread.sleep(5000)
-}
-&lt;/code&gt;
-</code></pre>
+  <span style="color: #a6e22e">Thread</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">sleep</span><span style="color: #f92672">(</span><span style="color: #ae81ff">5000</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>While it does at least take batches of sequence numbers, we get the following unexpected but understandable output:</p>
 
-<pre><code>&lt;code&gt;11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221
+<pre><code>11 1 41 61 71 91 21 31 121 181 191 131 141 151 161 171 201 211 221
 101 81 111 51
 231 251 241 261 271 281 291 301
 311 321 331 341 351 361 371 381
@@ -428,7 +436,6 @@
 861 871 851 881 891 911
 901 921 931 951 961 941 971
 991 981
-&lt;/code&gt;
 </code></pre>
 
 <p>We&rsquo;re only using 1/10th of each batch, and we get to 991 in only 100 requests. It&rsquo;s no more scalable than the unbatched version.</p>
@@ -436,15 +443,11 @@
 <p>It should probably have been obvious, but the problem is caused by requests arriving between requesting a new batch and getting a response:</p>
 
 <ul>
-<li><p>The 10th request gives out the last local sequence number</p></li>
-
-<li><p>The 11th request gets a new batch asynchronously</p></li>
-
-<li><p>The 12th request arrives before we get a new batch, and requests another new batch asynchronously</p></li>
-
-<li><p>We get the 11th request batch, reset our sequence numbers and return a sequence</p></li>
-
-<li><p>We get the 12th request batch, and again reset our sequence numbers and return a sequence, wasting the rest of the previous batch</p></li>
+<li>The 10th request gives out the last local sequence number</li>
+<li>The 11th request gets a new batch asynchronously</li>
+<li>The 12th request arrives before we get a new batch, and requests another new batch asynchronously</li>
+<li>We get the 11th request batch, reset our sequence numbers and return a sequence</li>
+<li>We get the 12th request batch, and again reset our sequence numbers and return a sequence, wasting the rest of the previous batch</li>
 </ul>
 
 <p>To fix it, we need the 12th request to wait for the 11th request to complete first.</p>
@@ -459,65 +462,65 @@
 
 <p>It&rsquo;s a fairly simple change to our batched sequence generator (or at least, in hindsight it is):</p>
 
-<pre><code>&lt;code&gt;object BatchedSequenceGenerator extends App {
-  // the master sequence number and batch size
-  var seq = 10
-  val batch_size = 10
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">BatchedSequenceGenerator</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">App</span> <span style="color: #f92672">{</span>
+  <span style="color: #75715e">// the master sequence number and batch size</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">10</span>
+  <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">batch_size</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">10</span>
 
-  // our current sequence and maximum sequence numbers
-  var local_seq = 0
-  var local_max = 10
-  var pending : Option[Future[Int]] = None
+  <span style="color: #75715e">// our current sequence and maximum sequence numbers</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">0</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">local_max</span> <span style="color: #66d9ef">=</span> <span style="color: #ae81ff">10</span>
+  <span style="color: #66d9ef">var</span> <span style="color: #f8f8f2">pending</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Int</span><span style="color: #f92672">]]</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">None</span>
 
-  def newBatch : Future[Int] = future { blocking {
-    // pretend we're doing a find and modify asynchronously
-    Thread.sleep(30)
-    this.synchronized {
-      seq = seq + batch_size
-      seq
-    }
-  } }
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">newBatch</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Int</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">blocking</span> <span style="color: #f92672">{</span>
+    <span style="color: #75715e">// pretend we&#39;re doing a find and modify asynchronously</span>
+    <span style="color: #a6e22e">Thread</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">sleep</span><span style="color: #f92672">(</span><span style="color: #ae81ff">30</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">this</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">synchronized</span> <span style="color: #f92672">{</span>
+      <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">seq</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">batch_size</span>
+      <span style="color: #f8f8f2">seq</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span> <span style="color: #f92672">}</span>
 
-  def nextSeq : Future[Int] = this.synchronized {
-    pending match {
-      case None =&gt;
-        if(local_seq &gt;= local_max) {
-          // Get a new batch of sequence numbers
-          pending = Some(newBatch map { new_max =&gt;
-            // Update our local sequence
-            local_max = new_max
-            local_seq = local_max - batch_size + 1
-            local_seq
-          })
-          // Clear the pending future once we've got the batch
-          pending.get andThen { case _ =&gt; pending = None }
-        } else {
-          // Use our local sequence number
-          local_seq = local_seq + 1
-          val seq = local_seq
-          future(seq)
-        }
-      case Some(f) =&gt;
-        // Wait on the pending future
-        f flatMap { f =&gt; nextSeq }
-    }
-  }
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">nextSeq</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Int</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #66d9ef">this</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">synchronized</span> <span style="color: #f92672">{</span>
+    <span style="color: #f8f8f2">pending</span> <span style="color: #66d9ef">match</span> <span style="color: #f92672">{</span>
+      <span style="color: #66d9ef">case</span> <span style="color: #a6e22e">None</span> <span style="color: #66d9ef">=&gt;</span>
+        <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">local_seq</span> <span style="color: #f92672">&gt;=</span> <span style="color: #f8f8f2">local_max</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+          <span style="color: #75715e">// Get a new batch of sequence numbers</span>
+          <span style="color: #f8f8f2">pending</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Some</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">newBatch</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">new_max</span> <span style="color: #66d9ef">=&gt;</span>
+            <span style="color: #75715e">// Update our local sequence</span>
+            <span style="color: #f8f8f2">local_max</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">new_max</span>
+            <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_max</span> <span style="color: #f92672">-</span> <span style="color: #f8f8f2">batch_size</span> <span style="color: #f92672">+</span> <span style="color: #ae81ff">1</span>
+            <span style="color: #f8f8f2">local_seq</span>
+          <span style="color: #f92672">})</span>
+          <span style="color: #75715e">// Clear the pending future once we&#39;ve got the batch</span>
+          <span style="color: #f8f8f2">pending</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span> <span style="color: #f8f8f2">andThen</span> <span style="color: #f92672">{</span> <span style="color: #66d9ef">case</span> <span style="color: #66d9ef">_</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #f8f8f2">pending</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">None</span> <span style="color: #f92672">}</span>
+        <span style="color: #f92672">}</span> <span style="color: #66d9ef">else</span> <span style="color: #f92672">{</span>
+          <span style="color: #75715e">// Use our local sequence number</span>
+          <span style="color: #f8f8f2">local_seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_seq</span> <span style="color: #f92672">+</span> <span style="color: #ae81ff">1</span>
+          <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">seq</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">local_seq</span>
+          <span style="color: #f8f8f2">future</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">seq</span><span style="color: #f92672">)</span>
+        <span style="color: #f92672">}</span>
+      <span style="color: #66d9ef">case</span> <span style="color: #a6e22e">Some</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">f</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">=&gt;</span>
+        <span style="color: #75715e">// Wait on the pending future</span>
+        <span style="color: #f8f8f2">f</span> <span style="color: #f8f8f2">flatMap</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">f</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #f8f8f2">nextSeq</span> <span style="color: #f92672">}</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span>
 
-  // simulate calling our HTTP service 100 times
-  for(i &lt;- 1 to 100) nextSeq map { j =&gt;
-    // pretend we're doing something useful with the sequence number
-    print(s&quot;$j &quot;)
-    if(i % 10 == 0) println
-  }
+  <span style="color: #75715e">// simulate calling our HTTP service 100 times</span>
+  <span style="color: #66d9ef">for</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">i</span> <span style="color: #66d9ef">&lt;-</span> <span style="color: #ae81ff">1</span> <span style="color: #f8f8f2">to</span> <span style="color: #ae81ff">100</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">nextSeq</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">j</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #75715e">// pretend we&#39;re doing something useful with the sequence number</span>
+    <span style="color: #f8f8f2">print</span><span style="color: #f92672">(</span><span style="color: #e6db74">s&quot;$j &quot;</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">10</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">println</span>
+  <span style="color: #f92672">}</span>
 
-  Thread.sleep(5000)
-}
-&lt;/code&gt;
-</code></pre>
+  <span style="color: #a6e22e">Thread</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">sleep</span><span style="color: #f92672">(</span><span style="color: #ae81ff">5000</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And running that example generates output like this:</p>
 
-<pre><code>&lt;code&gt;3 5 6 2 7 8 9 10
+<pre><code>3 5 6 2 7 8 9 10
 4 1 13 11 12 14 15 17 19 20
 16 18 23 21 24 26 27 28 29 30 22
 25 34 35 31 33 37 38 39 40
@@ -528,23 +531,20 @@
 73 74 76 77 78 80 79 82 83 85 84 86 87 81
 89 88 90 92 95 93 99 98 100 97
 96 91 94
-&lt;/code&gt;
 </code></pre>
 
 <p>The changes we made are straightforward:</p>
 
 <ul>
-<li><p>When we request a new sequence number, check if a pending future exists</p>
+<li>When we request a new sequence number, check if a pending future exists
 
 <ul>
-<li><p>If it does, wait on that and return a new call to nextSeq</p></li>
-
-<li><p>If not, check if a new batch is required</p>
+<li>If it does, wait on that and return a new call to nextSeq</li>
+<li>If not, check if a new batch is required
 
 <ul>
-<li><p>If it is, store the future before returning</p></li>
-
-<li><p>It not, use the existing batch as normal</p></li>
+<li>If it is, store the future before returning</li>
+<li>It not, use the existing batch as normal</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -553,8 +553,8 @@
 
 <p>Getting it to work felt like an achievement, but I&rsquo;m still not happy with the code. It looks like there should be a nicer way to do it, and it doesn&rsquo;t feel all that functional, but I can&rsquo;t see it yet!</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

@@ -50,9 +50,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>MailHog: web application e-mail testing</title>
     <link rel="canonical" href="http://ian-kent.github.io/project/mailhog/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -74,7 +75,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -191,6 +199,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -282,13 +294,19 @@
 
 <section id="main" class="ui container">
   <h1 itemprop="name" id="title">MailHog: web application e-mail testing</h1>
+  <div class="addthis_sharing_toolbox"></div>
+  
   <div>
         <article itemprop="articleBody" id="content">
            
 
-<p>MailHog is a web application e-mail testing tool.</p>
+<p>MailHog is an email testing tool for developers:</p>
 
-<p>You can do stuff with it.</p>
+<ul>
+<li>Configure your application to use MailHog for SMTP delivery</li>
+<li>View messages in the web UI, or retrieve them with the JSON API</li>
+<li>Optionally release messages to real SMTP servers for delivery</li>
+</ul>
 
 <p>
 <figure class="hid">
@@ -466,7 +484,7 @@ go run main.go
 
 </aside>
 
-<meta itemprop="wordCount" content="401">
+<meta itemprop="wordCount" content="426">
 <meta itemprop="datePublished" content="2013-07-04">
 <meta itemprop="url" content="http://ian-kent.github.io/project/mailhog/">
 

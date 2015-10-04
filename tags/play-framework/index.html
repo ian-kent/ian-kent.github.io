@@ -44,9 +44,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Play Framework</title>
     <link rel="canonical" href="http://ian-kent.github.io/tags/play-framework/">
     <link href="http://ian-kent.github.io/tags/play-framework/index.xml" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -68,7 +69,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -183,6 +191,10 @@
       .ui.inverted.button .icon {
         margin-left: -12px;
         margin-right: 4px;
+      }
+
+      .highlight pre {
+        padding: 0.2em;
       }
 
     </style>
@@ -302,7 +314,7 @@
     </div>
 
     <div>
-      If you&rsquo;re using AJAX to talk to a Play Framework application, you&rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers. In a controller, we can easily define a handler to accept OPTIONS requests: &lt;code&gt;def headers = List( &quot;Access-Control-Allow-Origin&quot; -&gt; &quot;*&quot;, &quot;Access-Control-Allow-Methods&quot; -&gt; &quot;GET, POST, OPTIONS, DELETE, PUT&quot;, &quot;Access-Control-Max-Age&quot; -&gt; &quot;3600&quot;, &quot;Access-Control-Allow-Headers&quot; -&gt; &quot;Origin, Content-Type, Accept, Authorization&quot;, &quot;Access-Control-Allow-Credentials&quot; -&gt; &quot;true&quot; ) def options = Action { request =&gt; NoContent.withHeaders(headers : _*) } &lt;/code&gt; And we can call our new options handler from our routes file, but this has a few problems.
+      If you&rsquo;re using AJAX to talk to a Play Framework application, you&rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers. In a controller, we can easily define a handler to accept OPTIONS requests: def headers = List( &quot;Access-Control-Allow-Origin&quot; -&gt; &quot;*&quot;, &quot;Access-Control-Allow-Methods&quot; -&gt; &quot;GET, POST, OPTIONS, DELETE, PUT&quot;, &quot;Access-Control-Max-Age&quot; -&gt; &quot;3600&quot;, &quot;Access-Control-Allow-Headers&quot; -&gt; &quot;Origin, Content-Type, Accept, Authorization&quot;, &quot;Access-Control-Allow-Credentials&quot; -&gt; &quot;true&quot; ) def options = Action { request =&gt; NoContent.withHeaders(headers : _*) } And we can call our new options handler from our routes file, but this has a few problems.
     </div>
 
     
@@ -320,7 +332,7 @@
     </div>
 
     <div>
-      Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests. But typical action composition can be messy. Using action builders, we can simplify the process - and you may have already used them without realising it! You&rsquo;ve probably seen code like this before, it&rsquo;s pretty standard stuff: &lt;code&gt;def index = Action { request =&gt; Ok(views.html.index(&quot;Your new application is ready.&quot;)) } &lt;/code&gt; And if you&rsquo;ve used Play Framework asynchronously, maybe something like this: &lt;code&gt;def index = Action.async { request =&gt; doSomething map { result =&gt; Ok(views.html.index(&quot;Your new application is ready.&quot;)) } } &lt;/code&gt; You can also easily parse the request using a different content type (or &ldquo;body parser&rdquo;), for example using JSON: &lt;code&gt;def index = Action.async(parse.json) { request =&gt; doSomething map { result =&gt; Ok(Json.obj(result -&gt; &quot;Your new application is ready.&quot;)) } } &lt;/code&gt; All of these use the Action action builder (that is, the Action object, which is an action builder).
+      Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests. But typical action composition can be messy. Using action builders, we can simplify the process - and you may have already used them without realising it! You&rsquo;ve probably seen code like this before, it&rsquo;s pretty standard stuff: def index = Action { request =&gt; Ok(views.html.index(&quot;Your new application is ready.&quot;)) } And if you&rsquo;ve used Play Framework asynchronously, maybe something like this: def index = Action.async { request =&gt; doSomething map { result =&gt; Ok(views.html.index(&quot;Your new application is ready.&quot;)) } } You can also easily parse the request using a different content type (or &ldquo;body parser&rdquo;), for example using JSON: def index = Action.async(parse.json) { request =&gt; doSomething map { result =&gt; Ok(Json.obj(result -&gt; &quot;Your new application is ready.&quot;)) } } All of these use the Action action builder (that is, the Action object, which is an action builder).
     </div>
 
     

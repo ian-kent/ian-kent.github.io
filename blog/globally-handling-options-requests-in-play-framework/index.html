@@ -50,9 +50,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Globally handling OPTIONS requests in Play Framework</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/globally-handling-options-requests-in-play-framework/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -74,7 +75,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -191,6 +199,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -279,29 +291,29 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Globally handling OPTIONS requests in Play Framework</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p>If you&rsquo;re using AJAX to talk to a Play Framework application, you&rsquo;ll probably need to respond to OPTIONS requests and might need to return the correct access control (CORS) headers.</p>
 
 <p>In a controller, we can easily define a handler to accept OPTIONS requests:</p>
 
-<pre><code>&lt;code&gt;def headers = List(
-  &quot;Access-Control-Allow-Origin&quot; -&gt; &quot;*&quot;,
-  &quot;Access-Control-Allow-Methods&quot; -&gt; &quot;GET, POST, OPTIONS, DELETE, PUT&quot;,
-  &quot;Access-Control-Max-Age&quot; -&gt; &quot;3600&quot;,
-  &quot;Access-Control-Allow-Headers&quot; -&gt; &quot;Origin, Content-Type, Accept, Authorization&quot;,
-  &quot;Access-Control-Allow-Credentials&quot; -&gt; &quot;true&quot;
-)
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">headers</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span>
+  <span style="color: #e6db74">&quot;Access-Control-Allow-Origin&quot;</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;*&quot;</span><span style="color: #f92672">,</span>
+  <span style="color: #e6db74">&quot;Access-Control-Allow-Methods&quot;</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;GET, POST, OPTIONS, DELETE, PUT&quot;</span><span style="color: #f92672">,</span>
+  <span style="color: #e6db74">&quot;Access-Control-Max-Age&quot;</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;3600&quot;</span><span style="color: #f92672">,</span>
+  <span style="color: #e6db74">&quot;Access-Control-Allow-Headers&quot;</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;Origin, Content-Type, Accept, Authorization&quot;</span><span style="color: #f92672">,</span>
+  <span style="color: #e6db74">&quot;Access-Control-Allow-Credentials&quot;</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;true&quot;</span>
+<span style="color: #f92672">)</span>
 
-def options = Action { request =&gt;
-  NoContent.withHeaders(headers : _*)
-}
-&lt;/code&gt;
-</code></pre>
+<span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">options</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Action</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">NoContent</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">withHeaders</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">headers</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">_*</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And we can call our new options handler from our routes file, but this has a few problems. We either need to implement an options handler for every route, or we send the same response whatever route we have, even if it doesn&rsquo;t exist.</p>
 
@@ -309,36 +321,36 @@ def options = Action { request =&gt;
 
 <p>If you want to respond on a per-route basis, that typically requires one additional line in your routes file for every route you define:</p>
 
-<pre><code>&lt;code&gt;GET / controllers.Application.index
-OPTIONS / controllers.Application.options
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #a6e22e">GET</span> <span style="color: #f92672">/</span> <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">index</span>
+<span style="color: #a6e22e">OPTIONS</span> <span style="color: #f92672">/</span> <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">options</span>
+</pre></div>
+</p>
 
 <h3 id="globally:690e640b2fe5a8e8798609567de62b3e">Globally</h3>
 
 <p>Or, if you don&rsquo;t mind sending the same headers back for every OPTIONS request (even if the route doesn&rsquo;t really exist), there&rsquo;s a cheat:</p>
 
-<pre><code>&lt;code&gt;OPTIONS / controllers.Application.rootOptions
-OPTIONS /*url controllers.Application.options(url: String)
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #a6e22e">OPTIONS</span> <span style="color: #f92672">/</span> <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">rootOptions</span>
+<span style="color: #a6e22e">OPTIONS</span> <span style="color: #75715e">/*url controllers.Application.options(url: String)</span>
+</pre></div>
+</p>
 
 <p>and change your controller options handler to:</p>
 
-<pre><code>&lt;code&gt;def rootOptions = options(&quot;/&quot;)
-def options(url: String) = Action { request =&gt;
-  NoContent.withHeaders(headers : _*)
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">rootOptions</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">options</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;/&quot;</span><span style="color: #f92672">)</span>
+<span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">options</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">url</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">String</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Action</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #a6e22e">NoContent</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">withHeaders</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">headers</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">_*</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>You can still override the global OPTIONS per-route by adding additional routes before the wildcard, for example:</p>
 
-<pre><code>&lt;code&gt;OPTIONS /foo controllers.Application.someCustomOptions
-OPTIONS / controllers.Application.rootOptions
-OPTIONS /*url controllers.Application.options(url: String)
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #a6e22e">OPTIONS</span> <span style="color: #f92672">/</span><span style="color: #f8f8f2">foo</span> <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">someCustomOptions</span>
+<span style="color: #a6e22e">OPTIONS</span> <span style="color: #f92672">/</span> <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">rootOptions</span>
+<span style="color: #a6e22e">OPTIONS</span> <span style="color: #75715e">/*url controllers.Application.options(url: String)</span>
+</pre></div>
+</p>
 
 <h3 id="or-we-can-abuse-play-framework-the-best-way:690e640b2fe5a8e8798609567de62b3e">Or we can abuse Play Framework - the best way!</h3>
 
@@ -348,12 +360,12 @@ OPTIONS /*url controllers.Application.options(url: String)
 
 <p>This is the example routes file:</p>
 
-<pre><code>&lt;code&gt;GET /           controllers.Application.index
-GET /foo        controllers.Application.foo
-OPTIONS /       controllers.Application.rootOptions
-OPTIONS /*url   controllers.Application.options(url: String)
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #a6e22e">GET</span> <span style="color: #f92672">/</span>           <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">index</span>
+<span style="color: #a6e22e">GET</span> <span style="color: #f92672">/</span><span style="color: #f8f8f2">foo</span>        <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">foo</span>
+<span style="color: #a6e22e">OPTIONS</span> <span style="color: #f92672">/</span>       <span style="color: #f8f8f2">controllers</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">rootOptions</span>
+<span style="color: #a6e22e">OPTIONS</span> <span style="color: #75715e">/*url   controllers.Application.options(url: String)</span>
+</pre></div>
+</p>
 
 <p>When sending OPTIONS requests, we want to respond with 204 and <code>Allow: GET, OPTIONS</code> for <code>/</code> and <code>/foo</code>, but respond with 404 for everything else.</p>
 
@@ -361,49 +373,49 @@ OPTIONS /*url   controllers.Application.options(url: String)
 
 <p>Play Framework gives us a convenient function - <code>handlerFor</code> - which is normally used to route requests to a handler. For this to work, you&rsquo;ll need to add an import:</p>
 
-<pre><code>&lt;code&gt;import play.api.Play.current
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">import</span> <span style="color: #f8f8f2">play.api.Play.current</span>
+</pre></div>
+</p>
 
 <p>We can then define a <code>getMethods</code> function, which given a request will return a list of available methods. It does this by asking Play Framework to route new requests with modified method parameters. If a handler is found, the method is added to the list. The list is also cached for future requests.</p>
 
-<pre><code>&lt;code&gt;val methodList = List(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;PATCH&quot;)
-def getMethods(request: Request[AnyContent]) : List[String] = {
-  Cache.getOrElse[List[String]](&quot;options.url.&quot; + request.uri) {
-    for(m &lt;- methodList; if Play.application.routes.get.handlerFor(new RequestHeader {
-      val remoteAddress = request.remoteAddress
-      val headers = request.headers
-      val queryString = request.queryString
-      val version = request.version
-      val method = m
-      val path = request.path
-      val uri = request.uri
-      val tags = request.tags
-      val id: Long = request.id
-    }).isDefined) yield m
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">methodList</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;GET&quot;</span><span style="color: #f92672">,</span> <span style="color: #e6db74">&quot;POST&quot;</span><span style="color: #f92672">,</span> <span style="color: #e6db74">&quot;PUT&quot;</span><span style="color: #f92672">,</span> <span style="color: #e6db74">&quot;DELETE&quot;</span><span style="color: #f92672">,</span> <span style="color: #e6db74">&quot;PATCH&quot;</span><span style="color: #f92672">)</span>
+<span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">getMethods</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">AnyContent</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">List</span><span style="color: #f92672">[</span><span style="color: #66d9ef">String</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Cache</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">getOrElse</span><span style="color: #f92672">[</span><span style="color: #66d9ef">List</span><span style="color: #f92672">[</span><span style="color: #66d9ef">String</span><span style="color: #f92672">]](</span><span style="color: #e6db74">&quot;options.url.&quot;</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">uri</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+        <span style="color: #66d9ef">for</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">m</span> <span style="color: #66d9ef">&lt;-</span> <span style="color: #f8f8f2">methodList</span><span style="color: #f92672">;</span> <span style="color: #66d9ef">if</span> <span style="color: #a6e22e">Play</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">application</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">routes</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">handlerFor</span><span style="color: #f92672">(</span><span style="color: #66d9ef">new</span> <span style="color: #a6e22e">RequestHeader</span> <span style="color: #f92672">{</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">remoteAddress</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">remoteAddress</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">headers</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">headers</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">queryString</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">queryString</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">version</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">version</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">method</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">m</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">path</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">path</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">uri</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">uri</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">tags</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">tags</span>
+            <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">id</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Long</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">id</span>
+        <span style="color: #f92672">}).</span><span style="color: #f8f8f2">isDefined</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">yield</span> <span style="color: #f8f8f2">m</span>
+    <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>We can then update our options action to use the new method list:</p>
 
-<pre><code>&lt;code&gt;def options(url: String) = Action { request =&gt;
-  val methods = List(&quot;OPTIONS&quot;) ++ getMethods(request)
-  if(methods.length &gt; 1)
-    NoContent.withHeaders(List(&quot;Allow&quot; -&gt; methods.mkString(&quot;, &quot;)) : _*)
-  else
-    NotFound
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">options</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">url</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">String</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Action</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">methods</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;OPTIONS&quot;</span><span style="color: #f92672">)</span> <span style="color: #f92672">++</span> <span style="color: #f8f8f2">getMethods</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">methods</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">length</span> <span style="color: #f92672">&gt;</span> <span style="color: #ae81ff">1</span><span style="color: #f92672">)</span>
+        <span style="color: #a6e22e">NoContent</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">withHeaders</span><span style="color: #f92672">(</span><span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;Allow&quot;</span> <span style="color: #f92672">-&gt;</span> <span style="color: #f8f8f2">methods</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">mkString</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;, &quot;</span><span style="color: #f92672">))</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">_*</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">else</span>
+        <span style="color: #a6e22e">NotFound</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>We add OPTIONS back in, and if we have more than one method we return the Allow header, otherwise a 404 response.</p>
 
 <p>We could instead cache the entire response for a given URI, but caching just the method list gives us the flexibility to set other headers which may be more dynamic, for example Last-Modified. Even the current caching might be too restrictive if the available methods depends on other request parameters.</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

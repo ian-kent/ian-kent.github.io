@@ -50,9 +50,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Getting started with HashiCorp Serf</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/getting-started-with-hashicorp-serf/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -74,7 +75,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -191,6 +199,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -279,11 +291,11 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Getting started with HashiCorp Serf</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p>In my <a href="http://iankent.co.uk/2014/02/26/a-quick-introduction-to-apache-mesos/">post about Apache Mesos</a> I briefly mentioned Serf.</p>
 
@@ -293,21 +305,19 @@
 
 <p>Once it&rsquo;s installed and agents are started, running <code>serf members</code> from any node will produce output similar to this:</p>
 
-<pre><code>&lt;code&gt;vagrant@master10:~$ serf members
+<pre><code>vagrant@master10:~$ serf members
 master10     192.168.100.131:7946    alive    role=master
 zk10     192.168.100.130:7946    alive    role=zookeeper
 slave10     192.168.100.135:7946    alive    role=slave
 mongodb10     192.168.100.136:7946    alive    role=mongodb
-&lt;/code&gt;
 </code></pre>
 
 <p>Which is when you realise you&rsquo;ve still got a Mesos cluster running that you&rsquo;d forgotten about&hellip;</p>
 
 <p>The output from Serf shows the hostname, IP address, status and any tags the Serf agent is configured with. In this case, I&rsquo;ve set a <code>role</code> tag which lets us quickly find a particular instance type on the network:</p>
 
-<pre><code>&lt;code&gt;vagrant@master10:~$ serf members | grep mongodb
+<pre><code>vagrant@master10:~$ serf members | grep mongodb
 mongodb10     192.168.100.136:7946    alive    role=mongodb
-&lt;/code&gt;
 </code></pre>
 
 <p>This, with its event system, makes Serf ideal for efficiently maintaining cluster node state, and reducing or eliminating application configuration.</p>
@@ -323,11 +333,9 @@ mongodb10     192.168.100.136:7946    alive    role=mongodb
 <p>Installing Serf couldn&rsquo;t be easier.</p>
 
 <ul>
-<li><p><a href="http://www.serfdom.io/downloads.html">Download Serf</a></p></li>
-
-<li><p>Extract the downloaded archive</p></li>
-
-<li><p>Move the &lsquo;serf&rsquo; binary into your PATH (<a href="http://www.serfdom.io/intro/getting-started/install.html">full instructions from Serf</a>)</p></li>
+<li><a href="http://www.serfdom.io/downloads.html">Download Serf</a></li>
+<li>Extract the downloaded archive</li>
+<li>Move the &lsquo;serf&rsquo; binary into your PATH (<a href="http://www.serfdom.io/intro/getting-started/install.html">full instructions from Serf</a>)</li>
 </ul>
 
 <p>You should be able to run <code>serf</code> from the command line and see a list of available commands.</p>
@@ -337,16 +345,14 @@ mongodb10     192.168.100.136:7946    alive    role=mongodb
 <p>To try Serf, you need two console windows open and you&rsquo;re ready!</p>
 
 <ul>
-<li><p>Run <code>serf agent</code> from one console</p></li>
-
-<li><p>Run <code>serf members</code> from another</p></li>
+<li>Run <code>serf agent</code> from one console</li>
+<li>Run <code>serf members</code> from another</li>
 </ul>
 
 <p>You should see something like this:</p>
 
-<pre><code>&lt;code&gt;vagrant@example:~$ serf members
+<pre><code>vagrant@example:~$ serf members
 example     127.0.0.1:7946    alive
-&lt;/code&gt;
 </code></pre>
 
 <p>That output shows a cluster containing your local machine (with a hostname of &lsquo;example&rsquo;), available at 127.0.0.1, and that the node is alive.</p>
@@ -381,11 +387,11 @@ example     127.0.0.1:7946    alive
 
 <p>To fix this, Serf lets us override the IP address it advertises to the cluster:</p>
 
-<pre><code>&lt;code&gt;{
-    &quot;advertise&quot;: &quot;192.168.100.200&quot;
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;advertise&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&quot;192.168.100.200&quot;</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <h4 id="setting-tags:9ebde56991c3197de5edd6f179dc2fd9">Setting tags</h4>
 
@@ -393,22 +399,18 @@ example     127.0.0.1:7946    alive
 
 <p>Tags are key-value pairs which provide metadata about the agent. In the example above, I&rsquo;ve created a tag named <code>role</code> which describes the purpose of the node.</p>
 
-<pre><code>&lt;code&gt;{
-    &quot;tags&quot;: {
-        &quot;role&quot;: &quot;mongodb&quot;
-    }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;tags&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #f92672">&quot;role&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&quot;mongodb&quot;</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>You can set multiple tags, but there is a limit - the Serf documentation doesn&rsquo;t specify the limit, except to say</p>
 
 <blockquote>
-
->
-> There is a byte size limit for the maximum number of tags, but in practice dozens of tags may be used.
->
->
+<p>There is a byte size limit for the maximum number of tags, but in practice dozens of tags may be used.</p>
 </blockquote>
 
 <p>You can also <a href="http://www.serfdom.io/docs/commands/tags.html">replace tags while the Serf agent is still running</a> using the <code>serf tags</code> command, though changes aren&rsquo;t persisted to configuration files.</p>
@@ -419,11 +421,11 @@ example     127.0.0.1:7946    alive
 
 <p>It does, when started from the command line. But it didn&rsquo;t seem to when started using upstart and a configuration directory. Easy to fix though:</p>
 
-<pre><code>&lt;code&gt;{
-    &quot;protocol&quot;: 3
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;protocol&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #ae81ff">3</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>This might not be a bad practice anyway, you can update Serf on all nodes without worrying about protocol compatibility.</p>
 
@@ -439,7 +441,7 @@ example     127.0.0.1:7946    alive
 
 <p>Because its from a Vagrant build, it uses a workaround to find the correct IP.</p>
 
-<pre><code>&lt;code&gt;wget https://dl.bintray.com/mitchellh/serf/0.4.5_linux_amd64.zip
+<pre><code>wget https://dl.bintray.com/mitchellh/serf/0.4.5_linux_amd64.zip
 unzip 0.4.5_linux_amd64.zip
 mv serf /usr/local/bin
 rm 0.4.5_linux_amd64.zip
@@ -449,7 +451,6 @@ mkdir /etc/serf
 ip=`ip addr list eth1 | grep &quot;inet &quot; | cut -d ' ' -f6 | cut -d/ -f1`
 echo { \&quot;start_join\&quot;: [\&quot;$1\&quot;], \&quot;protocol\&quot;: 3, \&quot;tags\&quot;: { \&quot;role\&quot;: \&quot;mongodb\&quot; }, \&quot;advertise\&quot;: \&quot;$ip\&quot; } | tee /etc/serf/config.json
 exec start serf-agent
-&lt;/code&gt;
 </code></pre>
 
 <h2 id="forming-a-cluster-1:9ebde56991c3197de5edd6f179dc2fd9">Forming a cluster</h2>
@@ -462,11 +463,11 @@ exec start serf-agent
 
 <p>Using the <code>discover</code> configuration option, we provide Serf with a cluster name which it will use to automatically discover Serf peers.</p>
 
-<pre><code>&lt;code&gt;{
-    &quot;discover&quot;: &quot;mycluster&quot;
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;discover&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&quot;mycluster&quot;</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>In a cloud environment this removes the need to bootstrap Serf, making it truly autonomous.</p>
 
@@ -476,19 +477,19 @@ exec start serf-agent
 
 <p>This could be problematic, but if we&rsquo;re in a Mesos cluster it becomes easy. We know at least one Zookeeper must always be available, so we can give Serf the hostnames of our known Zookeeper instances:</p>
 
-<pre><code>&lt;code&gt;{
-    &quot;start_join&quot;: [ &quot;zk1&quot;, &quot;zk2&quot;, &quot;zk3&quot; ]
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;start_join&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span> <span style="color: #e6db74">&quot;zk1&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;zk2&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;zk3&quot;</span> <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>Or, if we get the Zookeepers to update a load balancer (using Serf!) when they join or leave the cluster, we can make our configuration even easier:</p>
 
-<pre><code>&lt;code&gt;{
-    &quot;start_join&quot;: [ &quot;zk&quot; ]
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;start_join&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span> <span style="color: #e6db74">&quot;zk&quot;</span> <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>We can also use the same technique to configure Serf on the Zookeeper nodes.</p>
 
@@ -508,8 +509,7 @@ exec start serf-agent
 
 <p>It&rsquo;s membership information will be updated to show a &lsquo;left&rsquo; state:</p>
 
-<pre><code>&lt;code&gt;example     192.168.100.200:7946    left    role=mongodb
-&lt;/code&gt;
+<pre><code>example     192.168.100.200:7946    left    role=mongodb
 </code></pre>
 
 <p>A node leaving the cluster is treated differently to a failure.</p>
@@ -522,8 +522,7 @@ exec start serf-agent
 
 <p>It&rsquo;s membership information will be updated to show a &lsquo;failed&rsquo; state:</p>
 
-<pre><code>&lt;code&gt;example     192.168.100.200:7946    failed    role=mongodb
-&lt;/code&gt;
+<pre><code>example     192.168.100.200:7946    failed    role=mongodb
 </code></pre>
 
 <p>Knowledge of the failed node is kept by other Serf agents in the cluster. They will periodically attempt to reconnect to the node, and eventually remove the node if further attempts are unsuccessful.</p>
@@ -534,8 +533,7 @@ exec start serf-agent
 
 <p>You can also send custom events (which use the <code>user</code> event type), and provide a custom event name and data payload to send with it:</p>
 
-<pre><code>&lt;code&gt;serf event dosomething &quot;{ \&quot;foo\&quot;: \&quot;bar\&quot; }&quot;
-&lt;/code&gt;
+<pre><code>serf event dosomething &quot;{ \&quot;foo\&quot;: \&quot;bar\&quot; }&quot;
 </code></pre>
 
 <p>Events with the same name within a short time frame are coalesced into one event, although this can be disabled using the <code>-coalesce=false</code> command line argument.</p>
@@ -551,17 +549,12 @@ exec start serf-agent
 <p>Within the shell created by Serf, we have the following environment variables available:</p>
 
 <ul>
-<li><p><code>SERF_EVENT</code> - the event type</p></li>
-
-<li><p><code>SERF_SELF_NAME</code> - the current node name</p></li>
-
-<li><p><code>SERF_SELF_ROLE</code> - the role of the node, but presumably deprecated</p></li>
-
-<li><p><code>SERF_TAG_${TAG}</code> - one for each tag set (uppercased)</p></li>
-
-<li><p><code>SERF_USER_EVENT</code> - the user event type, if SERF_EVENT is &lsquo;user&rsquo;</p></li>
-
-<li><p><code>SERF_USER_LTIME</code> - the <a href="http://en.wikipedia.org/wiki/Lamport_timestamps">Lamport timestamp</a> of the event, if SERF_EVENT is &lsquo;user&rsquo;</p></li>
+<li><code>SERF_EVENT</code> - the event type</li>
+<li><code>SERF_SELF_NAME</code> - the current node name</li>
+<li><code>SERF_SELF_ROLE</code> - the role of the node, but presumably deprecated</li>
+<li><code>SERF_TAG_${TAG}</code> - one for each tag set (uppercased)</li>
+<li><code>SERF_USER_EVENT</code> - the user event type, if SERF_EVENT is &lsquo;user&rsquo;</li>
+<li><code>SERF_USER_LTIME</code> - the <a href="http://en.wikipedia.org/wiki/Lamport_timestamps">Lamport timestamp</a> of the event, if SERF_EVENT is &lsquo;user&rsquo;</li>
 </ul>
 
 <p>Any data payload given by the event is piped to STDIN.</p>
@@ -571,51 +564,64 @@ exec start serf-agent
 <p>Serf&rsquo;s event handler syntax is quite flexible, and lets you listen to all events or filter based on event type.</p>
 
 <ul>
-<li><p>The most basic option is to invoke a script for every event:</p>
-
-<p><code>{
-    &ldquo;event_handlers&rdquo;: [
-        &ldquo;dosomething.sh&rdquo;
-    ]
-}
-</code></p></li>
-
-<li><p>You can listen for a specific event type:</p>
-
-<p><code>{
-    &ldquo;event_handlers&rdquo;: [
-        &ldquo;member-join=dosomething.sh&rdquo;
-    ]
-}
-</code></p></li>
-
-<li><p>You can specify multiple event types:</p>
-
-<p><code>{
-    &ldquo;event_handlers&rdquo;: [
-        &ldquo;member-join,member-leave=dosomething.sh&rdquo;
-    ]
-}
-</code></p></li>
-
-<li><p>You can listen to just user events:</p>
-
-<p><code>{
-    &ldquo;event_handlers&rdquo;: [
-        &ldquo;user=dosomething.sh&rdquo;
-    ]
-}
-</code></p></li>
-
-<li><p>You can listen for specific user event types:</p>
-
-<p><code>{
-    &ldquo;event_handlers&rdquo;: [
-        &ldquo;user:dosomething=dosomething.sh&rdquo;
-    ]
-}
-</code></p></li>
+<li>The most basic option is to invoke a script for every event:</li>
 </ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;event_handlers&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+        <span style="color: #e6db74">&quot;dosomething.sh&quot;</span>
+    <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
+
+<ul>
+<li>You can listen for a specific event type:</li>
+</ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;event_handlers&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+        <span style="color: #e6db74">&quot;member-join=dosomething.sh&quot;</span>
+    <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
+
+<ul>
+<li>You can specify multiple event types:</li>
+</ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;event_handlers&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+        <span style="color: #e6db74">&quot;member-join,member-leave=dosomething.sh&quot;</span>
+    <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
+
+<ul>
+<li>You can listen to just user events:</li>
+</ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;event_handlers&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+        <span style="color: #e6db74">&quot;user=dosomething.sh&quot;</span>
+    <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
+
+<ul>
+<li>You can listen for specific user event types:</li>
+</ul>
+
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&quot;event_handlers&quot;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+        <span style="color: #e6db74">&quot;user:dosomething=dosomething.sh&quot;</span>
+    <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span>
+</pre></div>
+</p>
 
 <p>Multiple event handlers can be specified, and all event handlers which match for an event will be invoked.</p>
 
@@ -627,8 +633,8 @@ exec start serf-agent
 
 <p>You could even use custom user events to rewrite Serf configuration files and reload them across the entire cluster.</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

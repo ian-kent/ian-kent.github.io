@@ -18,9 +18,13 @@
       <guid>http://ian-kent.github.io/project/mailhog/</guid>
       <description>
 
-&lt;p&gt;MailHog is a web application e-mail testing tool.&lt;/p&gt;
+&lt;p&gt;MailHog is an email testing tool for developers:&lt;/p&gt;
 
-&lt;p&gt;You can do stuff with it.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Configure your application to use MailHog for SMTP delivery&lt;/li&gt;
+&lt;li&gt;View messages in the web UI, or retrieve them with the JSON API&lt;/li&gt;
+&lt;li&gt;Optionally release messages to real SMTP servers for delivery&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;
 &lt;figure class=&#34;hid&#34;&gt;

@@ -50,9 +50,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Action Composition in Play Framework</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/action-composition-in-play-framework/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -74,7 +75,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -191,6 +199,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -279,11 +291,11 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Action Composition in Play Framework</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           
+    
 
 <p>Action composition in Play Framework is an incredibly powerful way to enhance or restrict controller behaviour, for example to implement authentication or authorisation controls, set default headers, or handle OPTIONS requests.</p>
 
@@ -291,31 +303,31 @@
 
 <p>You&rsquo;ve probably seen code like this before, it&rsquo;s pretty standard stuff:</p>
 
-<pre><code>&lt;code&gt;def index = Action { request =&gt;
-  Ok(views.html.index(&quot;Your new application is ready.&quot;))
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Action</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">views</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">html</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">index</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;Your new application is ready.&quot;</span><span style="color: #f92672">))</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And if you&rsquo;ve used Play Framework asynchronously, maybe something like this:</p>
 
-<pre><code>&lt;code&gt;def index = Action.async { request =&gt;
-  doSomething map { result =&gt;
-    Ok(views.html.index(&quot;Your new application is ready.&quot;))
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Action</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">async</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #f8f8f2">doSomething</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">result</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">views</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">html</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">index</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;Your new application is ready.&quot;</span><span style="color: #f92672">))</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>You can also easily parse the request using a different content type (or &ldquo;body parser&rdquo;), for example using JSON:</p>
 
-<pre><code>&lt;code&gt;def index = Action.async(parse.json) { request =&gt;
-  doSomething map { result =&gt;
-    Ok(Json.obj(result -&gt; &quot;Your new application is ready.&quot;))
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Action</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">async</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #f8f8f2">doSomething</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">result</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Json</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">obj</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">result</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;Your new application is ready.&quot;</span><span style="color: #f92672">))</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>All of these use the Action action builder (that is, the Action object, which is an action builder).</p>
 
@@ -329,30 +341,30 @@
 
 <p><code>invokeBlock</code> takes two parameters, the first is the incoming request, and the second is the function body, taking <code>Request[A]</code> as a parameter and returning a <code>Future[SimpleResult]</code></p>
 
-<pre><code>&lt;code&gt;object Interceptor extends ActionBuilder[Request] {
-  def invokeBlock[A](request: Request[A], block: (Request[A]) =&gt; Future[SimpleResult]) = block(request)
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">Interceptor</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">ActionBuilder</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Request</span><span style="color: #f92672">]</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">invokeBlock</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #f92672">(</span><span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">block</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>It doesn&rsquo;t do much (in fact, nothing different from <code>Action</code>), but now we can use that in our controller instead:</p>
 
-<pre><code>&lt;code&gt;def index = Interceptor.async(parse.json) { request =&gt;
-  doSomething map { result =&gt;
-    Ok(Json.obj(result -&gt; &quot;Your new application is ready.&quot;))
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Interceptor</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">async</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #f8f8f2">doSomething</span> <span style="color: #f8f8f2">map</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">result</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Json</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">obj</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">result</span> <span style="color: #f92672">-&gt;</span> <span style="color: #e6db74">&quot;Your new application is ready.&quot;</span><span style="color: #f92672">))</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And it works using the same syntax:</p>
 
-<pre><code>&lt;code&gt;def index = Interceptor { request =&gt; Ok }
-def index = Interceptor.async { request =&gt; future { Ok } }
-def index = Interceptor(parse.json) { request =&gt; Ok }
-def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Interceptor</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Ok</span> <span style="color: #f92672">}</span>
+<span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Interceptor</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">async</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #a6e22e">Ok</span> <span style="color: #f92672">}</span> <span style="color: #f92672">}</span>
+<span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Interceptor</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Ok</span> <span style="color: #f92672">}</span>
+<span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Interceptor</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">async</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #a6e22e">Ok</span> <span style="color: #f92672">}</span> <span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <h3 id="intercepting-requests:8a4e04e27a605e28f409c700d00877c8">Intercepting requests</h3>
 
@@ -360,16 +372,16 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>There&rsquo;s also many ways to authenticate a request - using headers, cookies, etc. - and while this is one way you certainly wouldn&rsquo;t do it, it works for a demo:</p>
 
-<pre><code>&lt;code&gt;object Authenticated extends ActionBuilder[Request] {
-  def invokeBlock[A](request: Request[A], block: (Request[A]) =&gt; Future[SimpleResult]) = {
-    if(request.headers.get(&quot;Authorization&quot;).isDefined)
-      block(request)
-    else
-      future { Results.Status(Status.UNAUTHORIZED) }
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">ActionBuilder</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Request</span><span style="color: #f92672">]</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">invokeBlock</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #f92672">(</span><span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">headers</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;Authorization&quot;</span><span style="color: #f92672">).</span><span style="color: #f8f8f2">isDefined</span><span style="color: #f92672">)</span>
+      <span style="color: #f8f8f2">block</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">)</span>
+    <span style="color: #66d9ef">else</span>
+      <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #a6e22e">Results</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Status</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Status</span><span style="color: #f92672">.</span><span style="color: #a6e22e">UNAUTHORIZED</span><span style="color: #f92672">)</span> <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>This very simple example checks for an Authorization header.</p>
 
@@ -391,21 +403,21 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>For a comparison, here&rsquo;s what the controller would have looked like if we&rsquo;d wrapped the action:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated { user =&gt;
-  Action { request =&gt;
-    Ok(user.get)
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">user</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Action</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And here&rsquo;s what we&rsquo;re going to create with our custom request class:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
-  Ok(request.user.get)
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <h4 id="wrapping-the-request-class:8a4e04e27a605e28f409c700d00877c8">Wrapping the request class</h4>
 
@@ -413,32 +425,32 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>The trait <code>AuthenticatedRequest</code> simply extends <code>Request</code> and adds a user value:</p>
 
-<pre><code>&lt;code&gt;trait AuthenticatedRequest[+A] extends Request[A] {
-  val user: Option[JsObject]
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">trait</span> <span style="color: #a6e22e">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">+A</span><span style="color: #f92672">]</span> <span style="color: #a6e22e">extends</span> <span style="color: #a6e22e">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">]</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">user</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">JsObject</span><span style="color: #f92672">]</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>The object <code>AuthenticatedRequest</code> is similar to <code>play.api.mvc.Http.Request</code> - except we copy the existing request, and add the user value:</p>
 
-<pre><code>&lt;code&gt;object AuthenticatedRequest {
-  def apply[A](u: Option[JsObject], r: Request[A]) = new AuthenticatedRequest[A] {
-    def id = r.id
-    def tags = r.tags
-    def uri = r.uri
-    def path = r.path
-    def method = r.method
-    def version = r.version
-    def queryString = r.queryString
-    def headers = r.headers
-    lazy val remoteAddress = r.remoteAddress
-    def username = None
-    val body = r.body
-    val user = u
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">AuthenticatedRequest</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">apply</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">u</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">JsObject</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">r</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #66d9ef">new</span> <span style="color: #a6e22e">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">]</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">id</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">id</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">tags</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">tags</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">uri</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">uri</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">path</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">path</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">method</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">method</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">version</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">version</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">queryString</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">queryString</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">headers</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">headers</span>
+    <span style="color: #66d9ef">lazy</span> <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">remoteAddress</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">remoteAddress</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">username</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">None</span>
+    <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">body</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">r</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">body</span>
+    <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">user</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">u</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>Next, we need to change our call to <code>block(request)</code> to pass through our new <code>AuthenticatedRequest</code> object.</p>
 
@@ -446,16 +458,16 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>Here it is in full:</p>
 
-<pre><code>&lt;code&gt;object Authenticated extends ActionBuilder[AuthenticatedRequest] {
-  def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) =&gt; Future[SimpleResult]) = {
-    if(request.headers.get(&quot;Authorization&quot;).isDefined)
-      block(AuthenticatedRequest[A](Some(Json.obj()), request))
-    else
-      block(AuthenticatedRequest[A](None, request))
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">ActionBuilder</span><span style="color: #f92672">[</span><span style="color: #66d9ef">AuthenticatedRequest</span><span style="color: #f92672">]</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">invokeBlock</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #f92672">(</span><span style="color: #66d9ef">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">headers</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;Authorization&quot;</span><span style="color: #f92672">).</span><span style="color: #f8f8f2">isDefined</span><span style="color: #f92672">)</span>
+      <span style="color: #f8f8f2">block</span><span style="color: #f92672">(</span><span style="color: #a6e22e">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #a6e22e">Some</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Json</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">obj</span><span style="color: #f92672">()),</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">))</span>
+    <span style="color: #66d9ef">else</span>
+      <span style="color: #f8f8f2">block</span><span style="color: #f92672">(</span><span style="color: #a6e22e">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #a6e22e">None</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">))</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>Notice that invokeBlock still expects a <code>Request[A]</code> as its request parameter, but now the block parameter defines a function with a <code>AuthenticatedRequest[A]</code> parameter instead.</p>
 
@@ -465,11 +477,11 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>From our controller, we can now access the user object with <code>request.user</code>:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated.async { request =&gt;
-  future { Ok(request.user.get) }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">async</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span> <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <h3 id="authorisation:8a4e04e27a605e28f409c700d00877c8">Authorisation</h3>
 
@@ -481,11 +493,11 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>We can wrap our Authenticated action builder with another builder, giving us controller code that might look something like this:</p>
 
-<pre><code>&lt;code&gt;def index = Authorised(roles = List(&quot;blog.post&quot;)) { request =&gt;
-  Ok(request.user.get)
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">roles</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;blog.post&quot;</span><span style="color: #f92672">))</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>This is very straightforward, but creates an unnecessary dependency between your authorisation and authentication code.</p>
 
@@ -493,31 +505,31 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>Using action composition, we might end up with code that looks like this:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
-  Authorised(roles = List(&quot;blog.post&quot;)) {
-    Ok(request.user.get)
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">roles</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;blog.post&quot;</span><span style="color: #f92672">))</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And we can also do this:</p>
 
-<pre><code>&lt;code&gt;def index = Authorised(roles = List(&quot;blog.post&quot;)) { request =&gt;
-  Ok(request.user.get)
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">roles</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;blog.post&quot;</span><span style="color: #f92672">))</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>The downside to normal action composition is obvious once you start using different body parsers or asynchronous operations:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated(parse.json).async { request =&gt;
-  Authorised(parse.json).async(roles = List(&quot;blog.post&quot;)) {
-    future { Ok(request.user.get) }
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">).</span><span style="color: #f8f8f2">async</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">).</span><span style="color: #f8f8f2">async</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">roles</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">List</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;blog.post&quot;</span><span style="color: #f92672">))</span> <span style="color: #f92672">{</span>
+    <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span> <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>On every nested action we are required to redeclare the body parser and call async.</p>
 
@@ -531,36 +543,36 @@ def index = Interceptor.async(parse.json) { request =&gt; future { Ok } }
 
 <p>We could just use an if/then/else statement, but I like something a bit cleaner:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated { request =&gt;
-  Authorised(request, request.user) {
-    Ok(request.user.get)
-  } otherwise {
-    Unauthorized
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span> <span style="color: #f8f8f2">otherwise</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Unauthorized</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>And our <code>Authorised</code> implementation is simple. We provide <code>Authorised</code> and <code>Authorised.async</code> functions, and return an instance of our <code>Authorised</code> class providing an <code>otherwise</code> method.</p>
 
-<pre><code>&lt;code&gt;object Authorised {
-  def async[T](request: Request[T], user: Option[JsObject]) = {
-    (block: Future[SimpleResult]) =&gt; new Authorised[T](request, user, block)
-  }
-  def apply[T](request: Request[T], user: Option[JsObject]) = {
-    (block: SimpleResult) =&gt; new Authorised[T](request, user, future { block })
-  }
-}
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">object</span> <span style="color: #a6e22e">Authorised</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">async</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">user</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">JsObject</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #f92672">(</span><span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #66d9ef">new</span> <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">user</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">block</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">apply</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">user</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">JsObject</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #f92672">(</span><span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #66d9ef">new</span> <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">user</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">future</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">block</span> <span style="color: #f92672">})</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
 
-class Authorised[T](request: Request[T], user: Option[JsObject], success: Future[SimpleResult]) {
-  def authorised = {
-    if(user.isDefined) true else false
-  }
-  def otherwise(block: Future[SimpleResult]) : Future[SimpleResult] = authorised.flatMap { valid =&gt; if (valid) success else block }
-  def otherwise(block: SimpleResult) : SimpleResult = if(authorised.value.get.get) success.value.get.get else block
-}
-&lt;/code&gt;
-</code></pre>
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">T</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">user</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">JsObject</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">success</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">authorised</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">isDefined</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">true</span> <span style="color: #66d9ef">else</span> <span style="color: #66d9ef">false</span>
+  <span style="color: #f92672">}</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">otherwise</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #f8f8f2">authorised</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">flatMap</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">valid</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #66d9ef">if</span> <span style="color: #f92672">(</span><span style="color: #f8f8f2">valid</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">success</span> <span style="color: #66d9ef">else</span> <span style="color: #f8f8f2">block</span> <span style="color: #f92672">}</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">otherwise</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">:</span> <span style="color: #66d9ef">SimpleResult</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">authorised</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">value</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span> <span style="color: #f8f8f2">success</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">value</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span> <span style="color: #66d9ef">else</span> <span style="color: #f8f8f2">block</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>As with the Authentication action builder, this implementation isn&rsquo;t particularly secure. As long as the user is defined (which it will be if the Authorization header is set), then authorisation is successful.</p>
 
@@ -578,19 +590,19 @@ class Authorised[T](request: Request[T], user: Option[JsObject], success: Future
 
 <p>For example, we could return <code>NotFound</code> for one level of authorisation failure, but <code>Unauthorized</code> for another:</p>
 
-<pre><code>&lt;code&gt;def index = Authenticated(parse.json) { request =&gt;
-  Authorised(request, request.user) {
-    Authorised(request, Some(Json.obj())) {
-      Ok(request.user.get)
-    } otherwise {
-      Unauthorized
-    }
-  } otherwise {
-    NotFound
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">index</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Authenticated</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">parse</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">json</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">request</span> <span style="color: #66d9ef">=&gt;</span>
+  <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">)</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">Authorised</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">,</span> <span style="color: #a6e22e">Some</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Json</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">obj</span><span style="color: #f92672">()))</span> <span style="color: #f92672">{</span>
+      <span style="color: #a6e22e">Ok</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">)</span>
+    <span style="color: #f92672">}</span> <span style="color: #f8f8f2">otherwise</span> <span style="color: #f92672">{</span>
+      <span style="color: #a6e22e">Unauthorized</span>
+    <span style="color: #f92672">}</span>
+  <span style="color: #f92672">}</span> <span style="color: #f8f8f2">otherwise</span> <span style="color: #f92672">{</span>
+    <span style="color: #a6e22e">NotFound</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <h3 id="summary:8a4e04e27a605e28f409c700d00877c8">Summary</h3>
 
@@ -614,26 +626,26 @@ class Authorised[T](request: Request[T], user: Option[JsObject], success: Future
 
 <p>First we&rsquo;ll create some basic case classes to communicate using Akka:</p>
 
-<pre><code>&lt;code&gt;case class Authenticate[A](request: Request[A])
-case class AuthenticationResult(valid: Boolean, user: Option[JsObject] = None)
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">case</span> <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Authenticate</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">])</span>
+<span style="color: #66d9ef">case</span> <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">AuthenticationResult</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">valid</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Boolean</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">user</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Option</span><span style="color: #f92672">[</span><span style="color: #66d9ef">JsObject</span><span style="color: #f92672">]</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">None</span><span style="color: #f92672">)</span>
+</pre></div>
+</p>
 
 <p>We can extend these classes if we want to provide additional context or return additional information.</p>
 
 <p>Here&rsquo;s our basic actor - it implements a receive function to handle incoming messages:</p>
 
-<pre><code>&lt;code&gt;class Authenticator extends Actor {
-  def receive = {
-    case Authenticate(request) =&gt;
-      if(request.headers.get(&quot;Authorization&quot;).isDefined)
-        sender ! AuthenticationResult(valid = true, user = Json.obj())
-      else
-        sender ! AuthenticationResult(valid = false)
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Authenticator</span> <span style="color: #66d9ef">extends</span> <span style="color: #a6e22e">Actor</span> <span style="color: #f92672">{</span>
+  <span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">receive</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">case</span> <span style="color: #a6e22e">Authenticate</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">)</span> <span style="color: #66d9ef">=&gt;</span>
+      <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">headers</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">(</span><span style="color: #e6db74">&quot;Authorization&quot;</span><span style="color: #f92672">).</span><span style="color: #f8f8f2">isDefined</span><span style="color: #f92672">)</span>
+        <span style="color: #f8f8f2">sender</span> <span style="color: #f92672">!</span> <span style="color: #a6e22e">AuthenticationResult</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">valid</span> <span style="color: #66d9ef">=</span> <span style="color: #66d9ef">true</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">user</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Json</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">obj</span><span style="color: #f92672">())</span>
+      <span style="color: #66d9ef">else</span>
+        <span style="color: #f8f8f2">sender</span> <span style="color: #f92672">!</span> <span style="color: #a6e22e">AuthenticationResult</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">valid</span> <span style="color: #66d9ef">=</span> <span style="color: #66d9ef">false</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>It&rsquo;s only job is to return an AuthenticationResult depending on the request. It provides the same super strength foolproof security we had with our earlier example.</p>
 
@@ -641,25 +653,25 @@ case class AuthenticationResult(valid: Boolean, user: Option[JsObject] = None)
 
 <p>We need to get an instance of our actor for our <code>Authenticated</code> object. We&rsquo;ll send <code>Authenticate</code> requests to the actor, and get an <code>AuthenticationResult</code> back:</p>
 
-<pre><code>&lt;code&gt;val authenticationActor = Akka.system.actorOf(Props[Authenticator], name = &quot;authentication&quot;)
-implicit val timeout = Timeout(1 second)
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">authenticationActor</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Akka</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">system</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">actorOf</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Props</span><span style="color: #f92672">[</span><span style="color: #66d9ef">Authenticator</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">name</span> <span style="color: #66d9ef">=</span> <span style="color: #e6db74">&quot;authentication&quot;</span><span style="color: #f92672">)</span>
+<span style="color: #66d9ef">implicit</span> <span style="color: #66d9ef">val</span> <span style="color: #f8f8f2">timeout</span> <span style="color: #66d9ef">=</span> <span style="color: #a6e22e">Timeout</span><span style="color: #f92672">(</span><span style="color: #ae81ff">1</span> <span style="color: #f8f8f2">second</span><span style="color: #f92672">)</span>
+</pre></div>
+</p>
 
 <p>We can now update our <code>invokeBlock</code> function to use the actor instead of including its own authentication logic. If authentication was successful, the actor returns the <code>JsObject</code> representing the user.</p>
 
-<pre><code>&lt;code&gt;def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) =&gt; Future[SimpleResult]) = {
-  (authenticationActor ask Authenticate(request)).mapTo[AuthenticationResult] flatMap { result =&gt;
-    if(result.valid)
-      block(AuthenticatedRequest[A](Some(result.user.get), request))
-    else
-      block(AuthenticatedRequest[A](None, request))
-  } recover {
-    case e =&gt; Results.Status(Status.INTERNAL_SERVER_ERROR)
-  }
-}
-&lt;/code&gt;
-</code></pre>
+<p><div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span style="color: #66d9ef">def</span> <span style="color: #f8f8f2">invokeBlock</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #f8f8f2">request</span><span style="color: #66d9ef">:</span> <span style="color: #66d9ef">Request</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">],</span> <span style="color: #f8f8f2">block</span><span style="color: #66d9ef">:</span> <span style="color: #f92672">(</span><span style="color: #66d9ef">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Future</span><span style="color: #f92672">[</span><span style="color: #66d9ef">SimpleResult</span><span style="color: #f92672">])</span> <span style="color: #66d9ef">=</span> <span style="color: #f92672">{</span>
+  <span style="color: #f92672">(</span><span style="color: #f8f8f2">authenticationActor</span> <span style="color: #f8f8f2">ask</span> <span style="color: #a6e22e">Authenticate</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">request</span><span style="color: #f92672">)).</span><span style="color: #f8f8f2">mapTo</span><span style="color: #f92672">[</span><span style="color: #66d9ef">AuthenticationResult</span><span style="color: #f92672">]</span> <span style="color: #f8f8f2">flatMap</span> <span style="color: #f92672">{</span> <span style="color: #f8f8f2">result</span> <span style="color: #66d9ef">=&gt;</span>
+    <span style="color: #66d9ef">if</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">result</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">valid</span><span style="color: #f92672">)</span>
+      <span style="color: #f8f8f2">block</span><span style="color: #f92672">(</span><span style="color: #a6e22e">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #a6e22e">Some</span><span style="color: #f92672">(</span><span style="color: #f8f8f2">result</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">user</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get</span><span style="color: #f92672">),</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">))</span>
+    <span style="color: #66d9ef">else</span>
+      <span style="color: #f8f8f2">block</span><span style="color: #f92672">(</span><span style="color: #a6e22e">AuthenticatedRequest</span><span style="color: #f92672">[</span><span style="color: #66d9ef">A</span><span style="color: #f92672">](</span><span style="color: #a6e22e">None</span><span style="color: #f92672">,</span> <span style="color: #f8f8f2">request</span><span style="color: #f92672">))</span>
+  <span style="color: #f92672">}</span> <span style="color: #f8f8f2">recover</span> <span style="color: #f92672">{</span>
+    <span style="color: #66d9ef">case</span> <span style="color: #f8f8f2">e</span> <span style="color: #66d9ef">=&gt;</span> <span style="color: #a6e22e">Results</span><span style="color: #f92672">.</span><span style="color: #a6e22e">Status</span><span style="color: #f92672">(</span><span style="color: #a6e22e">Status</span><span style="color: #f92672">.</span><span style="color: #a6e22e">INTERNAL_SERVER_ERROR</span><span style="color: #f92672">)</span>
+  <span style="color: #f92672">}</span>
+<span style="color: #f92672">}</span>
+</pre></div>
+</p>
 
 <p>We can extend our authorisation class in exactly the same way, again sending the authorisation request to an actor. I&rsquo;ll skip it here since the code is so similar to the authentication actor, but you can find it in the full source code on <a href="https://gist.github.com/ian-kent/8941847">GitHub</a>.</p>
 
@@ -671,8 +683,8 @@ implicit val timeout = Timeout(1 second)
 
 <p>Full source code for the Akka example can be <a href="https://gist.github.com/ian-kent/8941847">found on GitHub</a>.</p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

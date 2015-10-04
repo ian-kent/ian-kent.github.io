@@ -48,9 +48,10 @@
 
     
     <base href="http://ian-kent.github.io/">
-    <title>Software engineering and other stuff</title>
+    <title>Introducing Go-MailHog</title>
     <link rel="canonical" href="http://ian-kent.github.io/blog/introducing-go-mailhog/">
     <link href="" rel="alternate" type="application/rss+xml" title="Software engineering and other stuff" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="/assets/semantic/components/site.css">
@@ -72,7 +73,14 @@
 
     <link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans:300' rel='stylesheet' type='text/css'>
 
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52fcc694794e20f7" async="async"></script>
+
+
     <style type="text/css">
+
+      p {
+        font-size: 1.2em;
+      }
 
       .hidden.menu {
         display: none;
@@ -189,6 +197,10 @@
         margin-right: 4px;
       }
 
+      .highlight pre {
+        padding: 0.2em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -277,15 +289,15 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Introducing Go-MailHog</h1>
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
-        <article itemprop="articleBody" id="content">
-           <p><a href="https://github.com/ian-kent/Go-MailHog">Go-MailHog</a> is a lightweight portable application which acts like a SMTP server.</p>
+    <p><a href="https://github.com/ian-kent/Go-MailHog">Go-MailHog</a> is a lightweight portable application which acts like a SMTP server.</p>
 
 <p>It was inspired by <a href="http://mailcatcher.me/">MailCatcher</a>, and does almost exactly the same thing, but without the slow and painful installation you get with Python Ruby.</p>
 
-<p>| edit: it was Ruby, not Python - but painful nonetheless!</p>
+<p><em><strong>edit</strong>: it was Ruby, not Python - but painful nonetheless!</em></p>
 
 <p>It was originally written in Perl based on code from <a href="https://github.com/ian-kent/M3MTA">M3MTA</a>, but it&rsquo;s been rewritten in Go for portability, and now runs on any supported platform without installation.</p>
 
@@ -299,10 +311,10 @@
 
 <p>To view messages, point your browser at <code>http://localhost:8025</code> or send a GET request to <code>http://localhost:8025/api/v1/messages</code>.</p>
 
-<p><a href="http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png"><img src="http://iankent.co.uk/wp-content/uploads/2014/04/MailHog.png" alt="MailHog" /></a></p>
+<p><a href="/img/MailHog.png"><img src="/img/MailHog.png" alt="MailHog" /></a></p>
 
-        </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
 </div>

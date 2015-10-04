@@ -19,33 +19,23 @@
       <description>&lt;p&gt;To get started with &lt;a href=&#34;http://www.mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt;, just as quick and dirty as with &lt;a href=&#34;//iankent.co.uk/2014/02/13/quick-start-with-scala-and-play-framework/&#34;&gt;Scala and Play Framework&lt;/a&gt;, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://vagrantup.com&#34;&gt;Vagrant&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.virtualbox.org/&#34;&gt;VirtualBox&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://git-scm.com/download/win&#34;&gt;Git for Windows&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://vagrantup.com&#34;&gt;Vagrant&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.virtualbox.org/&#34;&gt;VirtualBox&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://git-scm.com/download/win&#34;&gt;Git for Windows&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Once they&amp;rsquo;re all installed, its this easy:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Open Git Bash&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Clone my &lt;a href=&#34;https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb&#34;&gt;Mojolicious/Perl vagrant repository&lt;/a&gt;: &lt;code&gt;git clone https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb.git mojoserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd mojoserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Start the virtual machine: &lt;code&gt;vagrant up&lt;/code&gt; (might take a while, installing Perl is slow!)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Once it&amp;rsquo;s complete, connect using SSH: &lt;code&gt;vagrant ssh&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Create a new Mojolicious app: &lt;code&gt;mojo generate app MyApp&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd my_app&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Start your application: &lt;code&gt;./script/my_app daemon&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;View your new Mojolicious site in a browser: &lt;code&gt;http://localhost:3000&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Open Git Bash&lt;/li&gt;
+&lt;li&gt;Clone my &lt;a href=&#34;https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb&#34;&gt;Mojolicious/Perl vagrant repository&lt;/a&gt;: &lt;code&gt;git clone https://github.com/ian-kent/vagrant-perl-mojolicious-mongodb.git mojoserver&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Change directory: &lt;code&gt;cd mojoserver&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Start the virtual machine: &lt;code&gt;vagrant up&lt;/code&gt; (might take a while, installing Perl is slow!)&lt;/li&gt;
+&lt;li&gt;Once it&amp;rsquo;s complete, connect using SSH: &lt;code&gt;vagrant ssh&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Create a new Mojolicious app: &lt;code&gt;mojo generate app MyApp&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Change directory: &lt;code&gt;cd my_app&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Start your application: &lt;code&gt;./script/my_app daemon&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;View your new Mojolicious site in a browser: &lt;code&gt;http://localhost:3000&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;It installs the latest version of &lt;a href=&#34;http://mojolicio.us&#34;&gt;Mojolicious&lt;/a&gt; and &lt;a href=&#34;http://mojolicio.us/perldoc/Mango&#34;&gt;Mango&lt;/a&gt; along with Perl 5.18.2 and &lt;a href=&#34;http://cpanmin.us&#34;&gt;cpanminus&lt;/a&gt; using Perlbrew.&lt;/p&gt;
@@ -63,33 +53,23 @@
       <description>&lt;p&gt;For the quick and dirty way to get &lt;a href=&#34;http://www.playframework.com/&#34;&gt;Play Framework&lt;/a&gt; up and running, you need only these:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://vagrantup.com&#34;&gt;Vagrant&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.virtualbox.org/&#34;&gt;VirtualBox&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://git-scm.com/download/win&#34;&gt;Git for Windows&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://vagrantup.com&#34;&gt;Vagrant&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.virtualbox.org/&#34;&gt;VirtualBox&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://git-scm.com/download/win&#34;&gt;Git for Windows&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Once they&amp;rsquo;re all installed, its this easy:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Open Git Bash&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Clone my &lt;a href=&#34;https://github.com/ian-kent/vagrant-scala-play-mongodb&#34;&gt;Play/Scala vagrant repository&lt;/a&gt;: &lt;code&gt;git clone https://github.com/ian-kent/vagrant-scala-play-mongodb.git playserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd playserver&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Start the virtual machine: &lt;code&gt;vagrant up&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Once it&amp;rsquo;s complete, connect using SSH: &lt;code&gt;vagrant ssh&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Create a new play app: &lt;code&gt;play new MyApp&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Change directory: &lt;code&gt;cd MyApp&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Start your application: &lt;code&gt;play run&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;View your new Play site in a browser: &lt;code&gt;http://localhost:9000&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;Open Git Bash&lt;/li&gt;
+&lt;li&gt;Clone my &lt;a href=&#34;https://github.com/ian-kent/vagrant-scala-play-mongodb&#34;&gt;Play/Scala vagrant repository&lt;/a&gt;: &lt;code&gt;git clone https://github.com/ian-kent/vagrant-scala-play-mongodb.git playserver&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Change directory: &lt;code&gt;cd playserver&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Start the virtual machine: &lt;code&gt;vagrant up&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Once it&amp;rsquo;s complete, connect using SSH: &lt;code&gt;vagrant ssh&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Create a new play app: &lt;code&gt;play new MyApp&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Change directory: &lt;code&gt;cd MyApp&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Start your application: &lt;code&gt;play run&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;View your new Play site in a browser: &lt;code&gt;http://localhost:9000&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;If you want to edit your Play project in &lt;a href=&#34;http://www.jetbrains.com/idea/&#34;&gt;IntelliJ Idea&lt;/a&gt;, create the project files from the command line using &lt;code&gt;play gen-idea&lt;/code&gt;.&lt;/p&gt;
