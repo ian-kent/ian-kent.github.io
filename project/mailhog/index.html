@@ -203,6 +203,21 @@
         padding: 0.2em;
       }
 
+      .post ul > li {
+        font-size: 1.15em;
+        margin-bottom: 0.3em;
+      }
+      .post ul > li > ul {
+        margin-top: 0.3em;
+      }
+      .post ul > li li {
+        font-size: inherit;
+      }
+
+      .post h4 {
+        font-size: 1.15em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -292,10 +307,10 @@
 
 
 
-<section id="main" class="ui container">
+<section id="main" class="ui post container">
   <h1 itemprop="name" id="title">MailHog: web application e-mail testing</h1>
-  <div class="addthis_sharing_toolbox"></div>
-  
+  <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
+
   <div>
         <article itemprop="articleBody" id="content">
            
@@ -308,15 +323,15 @@
 <li>Optionally release messages to real SMTP servers for delivery</li>
 </ul>
 
-<p>
+<!--
 <figure class="hid">
     
-        <img src="/media/hugo.png" alt="Hugo Website" />
+        <img width="800px" src="/img/MailHog-latest.png" alt="MailHog UI" />
     
     
     <figcaption>
         <p>
-        Hugo Website
+        MailHog UI
         
             
         
@@ -325,39 +340,16 @@
     
 </figure>
 
-</p>
+-->
 
-<p>Hugo is a static site generator written in Go. It is optimized for
-speed, easy use and configurability. Hugo takes a directory with content and
-templates and renders them into a full html website.</p>
+<h2 id="installing-mailhog:32c3b58e5a097b46d3b03faa66c1a06c">Installing MailHog</h2>
 
-<p>Hugo makes use of markdown files with front matter for meta data.<br />
-Written in GoLang for speed, Hugo is significantly faster than most
-other static site generators.</p>
+<p>MailHog is written in Go with support for Windows, Linux, FreeBSD and OSX.</p>
 
-<p>A typical website of moderate size can be
-rendered in a fraction of a second. A good rule of thumb is that Hugo
-takes around 1 millisecond for each piece of content.
-It&rsquo;s so fast that it will render the site in
-less time than it takes to switch to your browser and reload.</p>
-
-<p>Hugo is made to be very flexible. Define your own content types. Define
-your own indexes. Build your own templates, shortcodes and more.
-It is written to work well with any
-kind of website including blogs, tumbles and docs.</p>
-
-<p><strong><a href="http://hugo.spf13.com">Hugo has his own site</a>.</strong></p>
-
-<h2 id="installing-hugo:32c3b58e5a097b46d3b03faa66c1a06c">Installing Hugo</h2>
-
-<p>Hugo is written in GoLang with support for Windows, Linux, FreeBSD and OSX.</p>
-
-<p>The latest release can be found at <a href="https://github.com/spf13/hugo/releases">hugo releases</a>.
-We currently build for Windows, Linux, FreeBSD and OS X for x64
-and 386 architectures.</p>
+<p>The latest release can be found at <a href="https://github.com/mailhog/MailHog/releases">MailHog releases</a>.</p>
 
 <p>Installation is very easy. Simply download the appropriate version for your
-platform from <a href="https://github.com/spf13/hugo/releases">hugo releases</a>.
+platform from <a href="https://github.com/mailhog/MailHog/releases">MailHog releases</a>.
 Once downloaded it can be run from anywhere. You don&rsquo;t need to install
 it into a global location. This works well for shared hosts and other systems
 where you don&rsquo;t have a privileged account.</p>
@@ -365,135 +357,28 @@ where you don&rsquo;t have a privileged account.</p>
 <p>Ideally you should install it somewhere in your path for easy use. <code>/usr/local/bin</code>
 is the most probable location.</p>
 
-<p><em>The Hugo executible has no external dependencies.</em></p>
+<p><em>The MailHog executible has no external dependencies.</em></p>
 
-<h2 id="installing-from-source:32c3b58e5a097b46d3b03faa66c1a06c">Installing from source</h2>
+<h2 id="licence:32c3b58e5a097b46d3b03faa66c1a06c">Licence</h2>
 
-<h3 id="dependencies:32c3b58e5a097b46d3b03faa66c1a06c">Dependencies</h3>
+<p>Copyright ©‎ 2014-2015, Ian Kent (<a href="http://iankent.uk">http://iankent.uk</a>)</p>
 
-<ul>
-<li>Git</li>
-<li>Go 1.1+</li>
-<li>Mercurial</li>
-<li>Bazaar</li>
-</ul>
-
-<h3 id="clone-locally-for-contributors:32c3b58e5a097b46d3b03faa66c1a06c">Clone locally (for contributors):</h3>
-
-<pre><code>git clone https://github.com/spf13/hugo
-cd hugo
-go get
-</code></pre>
-
-<p>Because go expects all of your libraries to be found in either $GOROOT or $GOPATH,
-it&rsquo;s helpful to symlink the project to one of the following paths:</p>
-
-<ul>
-<li>ln -s /path/to/your/hugo $GOPATH/src/github.com/spf13/hugo</li>
-<li>ln -s /path/to/your/hugo $GOROOT/src/pkg/github.com/spf13/hugo</li>
-</ul>
-
-<h3 id="get-directly-from-github:32c3b58e5a097b46d3b03faa66c1a06c">Get directly from Github:</h3>
-
-<p>If you only want to build from source, it&rsquo;s even easier.</p>
-
-<pre><code>go get github.com/spf13/hugo
-</code></pre>
-
-<h3 id="building-hugo:32c3b58e5a097b46d3b03faa66c1a06c">Building Hugo</h3>
-
-<pre><code>cd /path/to/hugo
-go build -o hugo main.go
-mv hugo /usr/local/bin/
-</code></pre>
-
-<h3 id="running-hugo:32c3b58e5a097b46d3b03faa66c1a06c">Running Hugo</h3>
-
-<pre><code>cd /path/to/hugo
-go install github.com/spf13/hugo/hugolibs
-go run main.go
-</code></pre>
-
-<p><strong>Complete documentation is available at <a href="http://hugo.spf13.com">Hugo Documentation</a>.</strong></p>
-
-<h2 id="license:32c3b58e5a097b46d3b03faa66c1a06c">License</h2>
-
-<p>Hugo is released under the Simple Public License. See <a href="https://github.com/spf13/hugo/blob/master/LICENSE.md">LICENSE.md</a>.</p>
+<p>Released under MIT license, see <a href="https://github.com/mailhog/MailHog/blob/master/LICENSE.md">LICENSE</a> for details.</p>
 
         </article>
   </div>
+  <div class="addthis_sharing_toolbox" style="margin-top: 1em;"></div>
 </section>
 
-<aside id="meta">
-    <div itemscope itemtype="http://schema.org/SoftwareApplication" id="projectmeta">
-        
-            <h2 itemprop="name"> MailHog </h2>
-        
-
-        
-        <em itemprop="name"> A web appliaction e-mail testing tool </em><br>
-        
-        <span class="smaller" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            by <span itemprop="name">Steve Francia.</span></span><br>
-         <a href="http://github.com/mailhog/MailHog">http://github.com/mailhog/MailHog</a> <br>
-         <a id="download_link" class="pure-button" href="http://github.com/mailhog/MailHog/releases">
-            <i class="icon-cloud-download"></i> Download<span itemprop="softwareVersion"> 0.9</span>
-        <br> <time itemprop="dateModified" datetime="2013-11-15" id="software_date"> 2013-11-15 </time> 
-             </a><br>
-        
-        <meta itemprop="downloadURL" content="http://github.com/mailhog/MailHog/releases">
-        <meta itemprop="publisher" content="spf13.com">
-        <meta itemprop="softwareApplicationCategory" content="UtilitiesApplication">
-        <meta itemprop="operatingSystems" content="Windows 7 and above, OSX 10.7 and above, linux">
-    </div>
 
 
-    <div>
-        <section id="datecount">
-          <h4 id="date"> Thu Jul 4, 2013 </h4>
-          <h5 id="wc"> 500 Words </h5>
-          <h5 id="readtime"> Read in about 2 Min </h5>
-        </section>
-        <ul id="categories">
-          
-            <li><a href="http://ian-kent.github.io//topics/development">Development</a> </li>
-          
-            <li><a href="http://ian-kent.github.io//topics/blogging">Blogging</a> </li>
-          
-            <li><a href="http://ian-kent.github.io//topics/golang">GoLang</a> </li>
-          
-        </ul>
-        <ul id="tags">
-          
-            <li> <a href="http://ian-kent.github.io//tags/development">Development</a> </li>
-          
-            <li> <a href="http://ian-kent.github.io//tags/golang">golang</a> </li>
-          
-            <li> <a href="http://ian-kent.github.io//tags/blogging">Blogging</a> </li>
-          
-        </ul>
-    </div>
-
-    <div>
-        <section id="prev">
-            &nbsp;<a class="previous" href="http://ian-kent.github.io/blog/action-composition-in-play-framework/"><i class="icon-arrow-left"></i> Action Composition in Play Framework</a><br>
-        </section><section id="next">
-            &nbsp;
-        </section>
-    </div>
-
-</aside>
-
-<meta itemprop="wordCount" content="426">
+<meta itemprop="wordCount" content="155">
 <meta itemprop="datePublished" content="2013-07-04">
 <meta itemprop="url" content="http://ian-kent.github.io/project/mailhog/">
 
 
 
-<div id="outer_ribbon">
-<div id="ribbon">
-    <a href="http://github.com/mailhog/MailHog" rel="me">Fork me on GitHub</a>
-</div> </div>
+<a href="https://github.com/mailhog/MailHog"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
 
 
 </div>

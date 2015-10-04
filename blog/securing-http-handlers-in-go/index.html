@@ -201,6 +201,21 @@
         padding: 0.2em;
       }
 
+      .post ul > li {
+        font-size: 1.15em;
+        margin-bottom: 0.3em;
+      }
+      .post ul > li > ul {
+        margin-top: 0.3em;
+      }
+      .post ul > li li {
+        font-size: inherit;
+      }
+
+      .post h4 {
+        font-size: 1.15em;
+      }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
@@ -289,7 +304,7 @@
       <div class="ui vertical segment content">
 
 
-<section id="main" class="ui container" style="margin-top: 1em;">
+<section id="main" class="ui post container" style="margin-top: 1em;">
   <h1 itemprop="name" id="title" class="ui header">Securing HTTP handlers in Go</h1>
   <div class="addthis_sharing_toolbox" style="margin-bottom: 1em;"></div>
   <div class="ui text">
